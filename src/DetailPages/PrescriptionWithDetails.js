@@ -120,12 +120,14 @@ function PrescriptionWithDetails() {
 
           {/* Clinic & Appointment Info */}
           <MDBox sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-            <MDBox mb={2}>
+            <MDBox mb={2}  sx={{ maxWidth: 200, wordBreak: 'break-word'}}>
               <MDTypography fontWeight="bold" color="green" fontSize="lg">
                 {alldetails?.clinicID?.clinicname}
               </MDTypography>
-              <MDTypography fontSize="small">Near {alldetails?.clinicID?.clinicAddress}</MDTypography>
-              <MDTypography fontSize="small"><strong>Timing:</strong> {alldetails?.clinicID?.openTime} - {alldetails?.clinicID?.closeTime}</MDTypography>
+              <MDTypography fontSize="small" >Near {alldetails?.clinicID?.clinicAddress}</MDTypography>
+              <MDTypography fontSize="small">
+                <strong>Timing:</strong> {alldetails?.clinicID?.openTime} - {alldetails?.clinicID?.closeTime}
+              </MDTypography>
             </MDBox>
             <MDBox>
               <MDTypography fontSize="small"><strong>Date:</strong> {alldetails?.Bookdate?.slice(0, 10)}, {alldetails?.BookTime}</MDTypography>

@@ -175,27 +175,17 @@ function Tables() {
       <MDBox sx={{ padding: 3 }}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            {/* <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
+            {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
                 <MDTypography variant="h6" color="white">
                   Appointments
                 </MDTypography>
               </MDBox> */}
 
-            <Grid padding={1}>
-              <AppBar position="fixed" color="default" sx={{ boxShadow: "none", marginTop:11, width:1100, marginRight:5}}>
+              <AppBar position="sticky" color="default" sx={{ boxShadow: "none", top: '90px', zIndex: 1100, }}>
                 <Tabs
                   value={tabValue}
                   onChange={handleSetTabValue}
-                  // variant="fullWidth"
+                  variant="fullWidth"
                   sx={{ background: "white" }}
                 >
                   {["Pending", "Upcoming", "Completed"].map((label, index) => (
@@ -243,9 +233,9 @@ function Tables() {
                   ))}
                 </Tabs>
               </AppBar>
-            </Grid>
+           
 
-            {/* cards */}
+            {/* Cards */}
             <MDBox pt={3} sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2.5 }}>
               {rows.map((row, index) => (
                 <Card

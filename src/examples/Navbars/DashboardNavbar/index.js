@@ -106,11 +106,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
   return (
     <AppBar
       position="sticky"
-      color="inherit"
       elevation={0}
       sx={{
         py: 1,
-        backgroundColor: "#fff",
+        top: 5,
+        zIndex: 1101,
+        backgroundColor: "rgba(255, 255, 255, 0.7)",
+        backdropFilter: 'blur(20px)',
         borderRadius: 2,
         fontFamily: "Poppins, sans-serif",
       }}
