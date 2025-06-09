@@ -190,12 +190,12 @@ function Tables() {
                 </MDTypography>
               </MDBox> */}
 
-            <Grid padding={3}>
-              <AppBar position="static" color="default" sx={{ boxShadow: "none" }}>
+            <Grid padding={1}>
+              <AppBar position="fixed" color="default" sx={{ boxShadow: "none", marginTop:11, width:1100, marginRight:5}}>
                 <Tabs
                   value={tabValue}
                   onChange={handleSetTabValue}
-                  variant="fullWidth"
+                  // variant="fullWidth"
                   sx={{ background: "white" }}
                 >
                   {["Pending", "Upcoming", "Completed"].map((label, index) => (

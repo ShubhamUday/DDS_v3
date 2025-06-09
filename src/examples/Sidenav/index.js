@@ -134,7 +134,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
       <MDBox pt={3} pb={1} px={4} textAlign="center">
-
         <MDBox
           display={{ xs: "block", xl: "none" }}
           position="absolute"
@@ -167,13 +166,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               {brandName}
             </MDTypography>
           </MDBox>
-
         </MDBox>
-
       </MDBox>
 
       <List>{renderRoutes}</List>
-
 
       <MDBox
         p={2}
@@ -189,7 +185,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           color={sidenavColor}
           fullWidth
         >
-          <Icon fontSize="small">logout</Icon>&nbsp;&nbsp;Log Out
+          <Icon>logout</Icon>
+          {!miniSidenav && (
+            <MDTypography variant="h6" color='white' sx={{ ml: 1 }}>Log Out</MDTypography>
+          )}
         </MDButton>
       </MDBox>
     </SidenavRoot>
