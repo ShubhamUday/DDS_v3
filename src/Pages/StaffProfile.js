@@ -107,46 +107,46 @@ function StaffrProfile() {
       <MDBox sx={{ padding: 3 }}>
         {/* Doctor Info */}
         <Card
-  sx={{
-    p: 3,
-    display: "flex",
-    flexDirection: { xs: "column", sm: "row" },
-    alignItems: "center", // Keeps avatar vertically centered
-    gap: 3,
-    borderRadius: 4,
-    boxShadow: "0px 2px 0px #25408f",
-    transition: "transform 0.3s",
-    '&:hover': {
-      transform: 'translateY(-5px)',
-      boxShadow: 2,
-    },
-  }}
->
-  <MDAvatar
-    src="https://png.pngtree.com/png-clipart/20231002/original/pngtree-young-afro-professional-doctor-png-image_13227671.png"
-    alt="Doctor Profile"
-    size="xl"
-    shadow="lg"
-    sx={{
-      // border: "3px solid #25408f",
-      boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-      transition: "transform 0.3s",
-      '&:hover': { transform: "scale(1.1)" },
-    }}
-  />
+          sx={{
+            p: 3,
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center", // Keeps avatar vertically centered
+            gap: 3,
+            borderRadius: 4,
+            boxShadow: "0px 2px 0px #25408f",
+            transition: "transform 0.3s",
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: 2,
+            },
+          }}
+        >
+          <MDAvatar
+            src="https://png.pngtree.com/png-clipart/20231002/original/pngtree-young-afro-professional-doctor-png-image_13227671.png"
+            alt="Doctor Profile"
+            size="xl"
+            shadow="lg"
+            sx={{
+              // border: "3px solid #25408f",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+              transition: "transform 0.3s",
+              '&:hover': { transform: "scale(1.1)" },
+            }}
+          />
 
-  <MDBox sx={{ flex: 1, width: "100%" }}>
-    {/* Name and designation */}
-    <MDBox sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", mb: 1 }}>
-      <MDBox>
-        <MDTypography variant="h5" fontWeight="bold" sx={{ fontSize: "1.6rem", color: "#1a237e" }}>
-            {role === "Co-Helper" ? localStorage.getItem("name") : doctorData?.drname || "Doctor"}
-        </MDTypography>
-      </MDBox>
-    </MDBox>
+          <MDBox sx={{ flex: 1, width: "100%" }}>
+            {/* Name and designation */}
+            <MDBox sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", mb: 1 }}>
+              <MDBox>
+                <MDTypography variant="h5" fontWeight="bold" sx={{ fontSize: "1.6rem", color: "#1a237e" }}>
+                  {role === "Co-Helper" ? localStorage.getItem("name") : doctorData?.drname || "Doctor"}
+                </MDTypography>
+              </MDBox>
+            </MDBox>
 
-    <Divider sx={{ mb: 2 }} />
-        </MDBox>
+            <Divider sx={{ mb: 2 }} />
+          </MDBox>
         </Card>
       </MDBox>
     </DashboardLayout>

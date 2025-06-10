@@ -148,21 +148,21 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
 
-        <MDBox component={NavLink} to="/dashboard" display="flex" alignItems="center" sx={{paddingTop: 2}}>
+        <MDBox component={NavLink} to="/dashboard" display="flex" alignItems="center" sx={{ paddingTop: 2 }}>
 
-        {brand && (
-          <MDBox
-            component="img"
-            src={img}
-            alt="Brand"
-            width="2rem"
-          />
-        )}
+          {brand && (
+            <MDBox
+              component="img"
+              src={img}
+              alt="Brand"
+              width="2rem"
+            />
+          )}
           <MDBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <MDTypography component="h4" variant="button" fontWeight="medium" color={textColor} sx={{fontSize:'1.2rem'}}>
+            <MDTypography component="h4" variant="button" fontWeight="medium" color={textColor} sx={{ fontSize: '1.2rem' }}>
               {brandName}
             </MDTypography>
           </MDBox>
@@ -171,21 +171,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
       <List>{renderRoutes}</List>
 
-      <MDBox
-        p={2}
-        pb={5}
-        mt="auto"
-        sx={{
-          color: "#299183",
-        }}
-      >
-        <MDButton
-          onClick={handler}
-          variant="gradient"
-          color={sidenavColor}
-          fullWidth
-        >
-          <Icon>logout</Icon>
+      <MDBox p={2} pb={5} mt="auto" sx={{ color: "#299183", }}>
+        <MDButton onClick={handler} variant="gradient" color={sidenavColor} fullWidth >
+          <Icon fontSize="large">logout</Icon>
           {!miniSidenav && (
             <MDTypography variant="h6" color='white' sx={{ ml: 1 }}>Log Out</MDTypography>
           )}

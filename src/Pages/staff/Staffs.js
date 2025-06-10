@@ -21,7 +21,7 @@ function StaffList() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox sx={{padding:3}}>
+      <MDBox sx={{ padding: 3 }}>
         {
           role === "Doctor" &&
           <MDBox display="flex" justifyContent="flex-end" mb={3}>
@@ -34,7 +34,7 @@ function StaffList() {
             >
               Add Staff
             </MDButton>
-        </MDBox>
+          </MDBox>
         }
 
         {/* Staff Cards */}

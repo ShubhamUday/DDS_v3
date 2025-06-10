@@ -98,15 +98,15 @@ function AddClinic() {
     const validFiles = selectedFiles.filter(file => file.type.startsWith("image/"));
 
     if (validFiles.length > 0) {
-        setFiles(prevFiles => [...prevFiles, ...validFiles]);
-        setImagePreviews(prevPreviews => [
-            ...prevPreviews,
-            ...validFiles.map(file => URL.createObjectURL(file)),
-        ]);
+      setFiles(prevFiles => [...prevFiles, ...validFiles]);
+      setImagePreviews(prevPreviews => [
+        ...prevPreviews,
+        ...validFiles.map(file => URL.createObjectURL(file)),
+      ]);
     } else {
-        alert("Please upload valid image files.");
+      alert("Please upload valid image files.");
     }
-};
+  };
 
   const handleRemoveFile = (index) => {
     setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
@@ -143,10 +143,10 @@ function AddClinic() {
       formData.append('EmergencyFee', permissions.EmergencyFee);
 
       if (files && files.length > 0) {
-          files.forEach((file) => {
-              formData.append('images', file,file.name);
-          });
-          
+        files.forEach((file) => {
+          formData.append('images', file, file.name);
+        });
+
       }
 
       const apiUrl = `${process.env.REACT_APP_HOS}/add-clinic-in-doctor-profile`;
@@ -189,31 +189,21 @@ function AddClinic() {
 
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, p: 4, backgroundColor: '#ffffff' }}>
-          
-          <MDTypography variant="h6" fontWeight="medium" gutterBottom>
+
+          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center">
             ➕ Add New Clinic
           </MDTypography>
-
+          <Divider/>
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                fullWidth
-                label="Clinic Name"
-                variant="outlined"
-                size="small"
-                value={clinicName}
+              <TextField fullWidth label="Clinic Name" variant="outlined" size="small" value={clinicName}
                 onChange={(e) => setClinicName(e.target.value)}
                 sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={8}>
               <MDBox sx={{ position: 'relative' }}>
-                <TextField
-                  fullWidth
-                  label="Clinic Address"
-                  variant="outlined"
-                  size="small"
-                  value={clinicAddress}
+                <TextField fullWidth label="Clinic Address" variant="outlined" size="small" value={clinicAddress}
                   onChange={(e) => {
                     setClinicAddress(e.target.value);
                     fetchAddressSuggestions(e.target.value);
@@ -222,23 +212,9 @@ function AddClinic() {
                 />
                 {showSuggestions && addressSuggestions.length > 0 && (
                   <MDBox
-                    sx={{
-                      position: 'absolute',
-                      zIndex: 10,
-                      width: '100%',
-                      bgcolor: 'white',
-                      boxShadow: 3,
-                      borderRadius: 1,
-                      mt: 1,
-                      maxHeight: 200,
-                      overflowY: 'auto',
-                    }}
-                  >
+                    sx={{ position: 'absolute', zIndex: 10, width: '100%', bgcolor: 'white', boxShadow: 3, borderRadius: 1, mt: 1, maxHeight: 200, overflowY: 'auto', }} >
                     {addressSuggestions.map((suggestion, idx) => (
-                      <MDBox
-                        key={idx}
-                        px={2}
-                        py={1}
+                      <MDBox key={idx} px={2} py={1}
                         sx={{ cursor: 'pointer', '&:hover': { bgcolor: '#f0f0f0' } }}
                         onClick={() => {
                           setClinicAddress(suggestion.display_name);
@@ -296,7 +272,7 @@ function AddClinic() {
           <Divider sx={{ my: 3 }} />
 
           <Grid container spacing={2}>
-            {[ 
+            {[
               ['AppointmentFee', 'Consultation Appointment Fee'],
               ['MessageFee', 'Messaging Fee'],
               ['VideoCallFee', 'Video Call Fee'],
@@ -305,26 +281,11 @@ function AddClinic() {
               <Grid item xs={12} key={key}>
                 <FormControl fullWidth>
                   <MDBox
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      backgroundColor: '#f8f9fa',
-                      padding: 2,
-                      borderRadius: 2,
-                      mb: 1,
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                    }}
-                  >
+                    sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8f9fa', padding: 2, borderRadius: 2, mb: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }} >
                     <MDTypography color="text" variant="body2" fontWeight="small">
                       {label}
                     </MDTypography>
-                    <TextField
-                      type="number"
-                      name={key}
-                      size="small"
-                      variant="outlined"
-                      value={permissions[key]}
+                    <TextField type="number" name={key} size="small" variant="outlined" value={permissions[key]}
                       onChange={(e) =>
                         setPermissions((prev) => ({ ...prev, [key]: e.target.value }))}
                       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -341,17 +302,8 @@ function AddClinic() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <MDBox
-                sx={{
-                  border: '2px dashed #bbb',
-                  borderRadius: 2,
-                  padding: 3,
-                  backgroundColor: '#f9f9f9',
-                }}
-              >
-                <TextField
-                  type="file"
-                  fullWidth
-                  variant="standard"
+                sx={{ border: '2px dashed #bbb', borderRadius: 2, padding: 3, backgroundColor: '#f9f9f9', }} >
+                <TextField type="file" fullWidth variant="standard"
                   sx={{ mb: 3 }}
                   inputProps={{ accept: "image/*", multiple: true }}
                   onChange={handleFileChange}
@@ -371,17 +323,8 @@ function AddClinic() {
                   ) : (
                     <MDBox sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center' }}>
                       {imagePreviews.map((preview, idx) => (
-                        <MDBox
-                          key={idx}
-                          sx={{
-                            position: 'relative',
-                            width: 80,
-                            height: 80,
-                            borderRadius: 2,
-                            overflow: 'hidden',
-                            border: '1px solid #ccc',
-                          }}
-                        >
+                        <MDBox key={idx}
+                          sx={{ position: 'relative', width: 80, height: 80, borderRadius: 2, overflow: 'hidden', border: '1px solid #ccc', }} >
                           <img src={preview} alt={`Preview ${idx}`} width="100%" height="100%" style={{ objectFit: 'cover' }} />
                           <IconButton
                             size="small"
@@ -426,7 +369,7 @@ function AddClinic() {
               onClick={handler}
               disabled={loading}
               sx={{
-                color:'white',
+                color: 'white',
                 bgcolor: '#051aa1',
                 borderRadius: 2,
                 textTransform: 'none',
@@ -439,6 +382,22 @@ function AddClinic() {
               startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
             >
               {loading ? "Adding..." : "Add Clinic"}
+            </MDButton>
+            <MDButton variant="contained"
+              onClick={() => navigate(-1)}
+              sx={{
+                color: 'white',
+                bgcolor: '#051aa1',
+                borderRadius: 2,
+                textTransform: 'none',
+                ml: 2,
+                px: 4,
+                py: 1.5,
+                fontWeight: 'medium',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
+              }}>
+              Cancel
             </MDButton>
           </MDBox>
         </Card>

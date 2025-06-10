@@ -34,7 +34,7 @@ import AppointmentWithDetails from "DetailPages/AppointmentsWithDetails";
 import Basic from "layouts/authentication/sign-in";
 import PatientWithDetails from "DetailPages/PatientWithDetails";
 import ClinicWithDetails from "DetailPages/ClinicWithDetails";
-import AddStaff from "Pages/AddStaff";
+import AddStaff from "Pages/staff/AddStaff";
 import PrescriptionWithDetails from "DetailPages/PrescriptionWithDetails";
 import AddClinic from "Pages/AddClinic"
 import DoctorProfile from "Pages/DoctorProfile";

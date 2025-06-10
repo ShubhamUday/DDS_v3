@@ -43,78 +43,56 @@ function CalendarPage() {
       <DashboardNavbar />
       <Grid container spacing={1}>
         <Grid item xs={12} md={6} lg={8}>
-          {filteredData.slice(0).map((item, index) => (
-            <Card
-              key={{index}}
-              onClick={() => navigate(`/appointment-with-details/${item._id}`)}
-              sx={{
-                m: 1,
-                padding: 2,
-                cursor: "pointer",
-                "&:hover": { backgroundColor: "#f9f9f9" },
-              }}
-            >
-              <MDBox key={index}>
-                <MDBox
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                    flexWrap: "wrap",
-                    // border:2,
-                  }}
-                >
-                  <MDBox display="flex" alignItems="center" gap={1}>
-                    <MDTypography variant="h6" fontWeight="bold">
-                      {item?.patientName || item?.userID?.name}
-                    </MDTypography>
-                    <MDTypography fontSize="small" color="text">
-                      {item?.gender} | {item?.age} yrs
-                    </MDTypography>
-                  </MDBox>
-                  <MDBox>
-                    <MDTypography
-                      fontSize="small"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="flex-end"
-                    >
-                      <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
-                      {new Date(item?.Bookdate).toLocaleDateString("en-GB")}{" "}
-                      <Icon sx={{ fontSize: 18, mr: 1, ml: 1, color: "info" }}>access_time</Icon>
-                      {new Date(item?.Bookdate).toLocaleTimeString("en-GB", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </MDTypography>
-                  </MDBox>
-                </MDBox>
+          {filteredData.length > 0 ? (
+            <>
+              {filteredData.slice(0).map((item, index) => (
+                <Card
+                  key={{ index }}
+                  onClick={() => navigate(`/appointment-with-details/${item._id}`)}
+                  sx={{ m: 1, padding: 2, cursor: "pointer", "&:hover": { backgroundColor: "#f9f9f9" }, }} >
+                  <MDBox key={index}>
+                    <MDBox sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, flexWrap: "wrap", }} >
+                      <MDBox display="flex" alignItems="center" gap={1}>
+                        <MDTypography variant="h6" fontWeight="bold">
+                          {item?.patientName || item?.userID?.name}
+                        </MDTypography>
+                        <MDTypography fontSize="small" color="text">
+                          {item?.gender} | {item?.age} yrs
+                        </MDTypography>
+                      </MDBox>
+                      <MDBox>
+                        <MDTypography fontSize="small" display="flex" alignItems="center" justifyContent="flex-end" >
+                          <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
+                          {new Date(item?.Bookdate).toLocaleDateString("en-GB")}{" "}
+                          <Icon sx={{ fontSize: 18, mr: 1, ml: 1, color: "info" }}>access_time</Icon>
+                          {new Date(item?.Bookdate).toLocaleTimeString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </MDTypography>
+                      </MDBox>
+                    </MDBox>
 
-                <Divider sx={{ mt: -1 }} />
-                <MDTypography
-                  fontSize="small"
-                  sx={{ mb: 0.5, mt: -1 }}
-                  display="flex"
-                  alignItems="center"
-                  textTransform="capitalize"
-                >
-                  <Icon sx={{ fontSize: 18, mr: 1, color: "primary.main" }}>medical_services</Icon>
-                  <strong>Treatment:</strong>&nbsp;{item?.Treatmentfor}
-                </MDTypography>
-                <MDTypography
-                  fontSize="small"
-                  sx={{}}
-                  display="flex"
-                  alignItems="center"
-                  textTransform="capitalize"
-                >
-                  <Icon sx={{ fontSize: 18, mr: 1, color: "secondary.main" }}>assignment</Icon>
-                  <strong>Details:</strong>&nbsp;{item?.ProblemDetails}
-                </MDTypography>
-              </MDBox>
-            </Card>
-          ))}
+                    <Divider sx={{ mt: -1 }} />
+                    <MDTypography fontSize="small" display="flex" alignItems="center" textTransform="capitalize" sx={{ mb: 0.5, mt: -1 }} >
+                      <Icon sx={{ fontSize: 18, mr: 1, color: "primary.main" }}>medical_services</Icon>
+                      <strong>Treatment:</strong>&nbsp;{item?.Treatmentfor}
+                    </MDTypography>
+                    <MDTypography fontSize="small" display="flex" alignItems="center" textTransform="capitalize" >
+                      <Icon sx={{ fontSize: 18, mr: 1, color: "secondary.main" }}>assignment</Icon>
+                      <strong>Details:</strong>&nbsp;{item?.ProblemDetails}
+                    </MDTypography>
+                  </MDBox>
+                </Card>
+              ))}
+            </>
+          ) : (
+            <MDBox textAlign="center" m={2}>
+              <MDTypography variant="body2" fontWeight="bold">
+                No appointments found for this date
+              </MDTypography>
+            </MDBox>
+          )}
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <Card sx={{ m: 1 }}>
