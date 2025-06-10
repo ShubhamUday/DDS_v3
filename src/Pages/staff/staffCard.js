@@ -37,12 +37,13 @@ function StaffCard() {
     <Grid container spacing={3}>
       {appointmentdata.map((e, index) => (
         <Grid item xs={12} md={6} lg={4} key={index}>
-          <Card sx={{ borderRadius: 4,boxShadow: "0px 2px 0px #25408f",transition: "transform 0.3s, box-shadow 0.3s",
-            transformOrigin: 'center',
+          <Card sx={{
+            borderRadius: 4, boxShadow: "0px 2px 0px #25408f", transition: "transform 0.3s, box-shadow 0.3s", transformOrigin: 'center',
             '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: 2,
-            }, }}>
+              boxShadow: 2,
+              transform: 'translateY(-5px)',
+            },
+          }}>
             <CardContent>
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
@@ -91,11 +92,8 @@ function StaffCard() {
 
               <MDBox display="flex" alignItems="center" mb={1}>
                 <LocationOnIcon fontSize="small" sx={{ mr: 1, color: 'info.main' }} />
-                <MDTypography
-                  variant="body2"
-                  color="text"
-                  sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                >
+                <MDTypography variant="body2" color="text"
+                  sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} >
                   {e.clinicID?.clinicAddress}
                 </MDTypography>
               </MDBox>

@@ -120,7 +120,7 @@ function PrescriptionWithDetails() {
 
           {/* Clinic & Appointment Info */}
           <MDBox sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-            <MDBox mb={2}  sx={{ maxWidth: 200, wordBreak: 'break-word'}}>
+            <MDBox mb={2} sx={{ maxWidth: 200, wordBreak: 'break-word' }}>
               <MDTypography fontWeight="bold" color="green" fontSize="lg">
                 {alldetails?.clinicID?.clinicname}
               </MDTypography>
@@ -184,7 +184,7 @@ function PrescriptionWithDetails() {
         {/* Advice Section */}
         <MDBox mt={3} display="flex">
           <MDTypography fontSize="small"><strong>Advice:</strong> {alldetails?.advice || "—"}</MDTypography>
-          <MDTypography fontSize="small" sx={{ml:"auto"}}><strong>Note:</strong> {alldetails?.note || "—"}</MDTypography>
+          <MDTypography fontSize="small" sx={{ ml: "auto" }}><strong>Note:</strong> {alldetails?.note || "—"}</MDTypography>
         </MDBox>
       </MDBox>
     </DashboardLayout>

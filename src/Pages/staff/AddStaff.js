@@ -3,17 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
-import {
-  Card,
-  Grid,
-  Divider,
-  TextField,
-  Select,
-  FormControl,
-  InputLabel,
-  Switch,
-  Button,
-} from '@mui/material';
+import { Card, Grid, Divider, TextField, Select, FormControl, InputLabel, Switch, Button } from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -81,9 +71,9 @@ function AddStaff() {
       toast.error("Please fill out all required fields!");
       return;
     }
-  
+
     setLoading(true);
-  
+
     const values = {
       email,
       password,
@@ -100,7 +90,7 @@ function AddStaff() {
       clinicID: selectedClinic,
       assignAs,
     };
-  
+
     try {
       const result = await axios.post(
         `${process.env.REACT_APP_HOS}/add-new-staff`,
@@ -109,7 +99,7 @@ function AddStaff() {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-  
+
       if (result.data) {
         toast.success("Staff added successfully!");
         navigate(-1);
@@ -121,7 +111,7 @@ function AddStaff() {
       setLoading(false);
     }
   };
-  
+
 
   useEffect(() => {
     fetchClinicList();
@@ -148,70 +138,47 @@ function AddStaff() {
   return (
     <DashboardLayout>
       <ToastContainer
-            autoClose={2000}
-            position="top-center"
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable
-            pauseOnHover
-            theme="light"
-            style={{ width: '350px' , font:'message-box' }}
-        />
+        autoClose={2000}
+        position="top-center"
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ width: '350px', font: 'message-box' }}
+      />
 
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, boxShadow: 2, p: 4, backgroundColor: '#ffffff' }}>
 
-          <MDTypography variant="h6" fontWeight="medium" gutterBottom>
+          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center">
             ➕ Add New Staff Member
           </MDTypography>
-
+          <Divider />
           <Grid container spacing={2} sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                fullWidth
-                label="Name"
-                variant="outlined"
-                size="small"
-                value={name}
+              <TextField fullWidth label="Name" variant="outlined" size="small" value={name}
                 onChange={(e) => setName(e.target.value)}
                 sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                fullWidth
-                label="Email"
-                variant="outlined"
-                size="small"
-                type="email"
-                value={email}
+              <TextField fullWidth label="Email" variant="outlined" size="small" type="email" value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                fullWidth
-                label="Password"
-                variant="outlined"
-                size="small"
-                type="password"
-                value={password}
+              <TextField fullWidth label="Password" variant="outlined" size="small" type="password" value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                variant="outlined"
-                size="small"
-                type="tel"
-                value={number}
+              <TextField fullWidth label="Phone Number" variant="outlined" size="small" type="tel" value={number}
                 onChange={(e) => seNumber(e.target.value)}
                 sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
               />
@@ -224,10 +191,7 @@ function AddStaff() {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
                 <InputLabel shrink={true} id="gender-label">Gender</InputLabel>
-                <Select
-                  native
-                  labelId="gender-label"
-                  value={gender}
+                <Select native labelId="gender-label" value={gender}
                   onChange={(e) => setGender(e.target.value)}
                   inputProps={{ name: 'gender', id: 'gender-select' }}
                 >
@@ -241,10 +205,7 @@ function AddStaff() {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
                 <InputLabel shrink={true} id="role-label">Role</InputLabel>
-                <Select
-                  native
-                  labelId="role-label"
-                  value={assignAs}
+                <Select native labelId="role-label" value={assignAs}
                   onChange={(e) => setAssignAs(e.target.value)}
                   inputProps={{ name: 'role', id: 'role-select' }}
                 >
@@ -264,9 +225,7 @@ function AddStaff() {
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
                   <InputLabel id={`${label.toLowerCase().replace(/ /g, '-')}-label`}>{label}</InputLabel>
-                  <Select
-                    native
-                    value={label === 'Check-In Time' ? checkInTime : checkOutTime}
+                  <Select native value={label === 'Check-In Time' ? checkInTime : checkOutTime}
                     onChange={(e) => setter(e.target.value)}
                     inputProps={{ name: label.toLowerCase().replace(/ /g, '-') }}
                   >
@@ -290,11 +249,7 @@ function AddStaff() {
               <Grid item md={6} lg={4} key={index} onClick={() => handleClinicSelect(clinic)}>
                 <Card
                   sx={{
-                    cursor: 'pointer',
-                    borderRadius: 3,
-                    border: selectedClinic === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
-                    backgroundColor: selectedClinic === clinic._id ? '#f3e5f5' : '#ffffff',
-                    transition: 'all 0.3s ease',
+                    cursor: 'pointer', borderRadius: 3, border: selectedClinic === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0', backgroundColor: selectedClinic === clinic._id ? '#f3e5f5' : '#ffffff', transition: 'all 0.3s ease',
                     '&:hover': {
                       boxShadow: 6,
                       backgroundColor: '#fafafa',
@@ -374,25 +329,23 @@ function AddStaff() {
           </Grid>
 
           <MDBox mt={4}>
-          <Button
-            variant="contained"
-            onClick={handler}
-            disabled={loading}
-            sx={{
-                color:'white',
-                bgcolor: '#051aa1',
-                borderRadius: 2,
-                textTransform: 'none',
-                px: 4,
-                py: 1.5,
-                fontWeight: 'medium',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+            <MDButton variant="contained" onClick={handler} disabled={loading}
+              sx={{
+                color: 'white', bgcolor: '#051aa1', borderRadius: 2, textTransform: 'none', px: 4, py: 1.5, fontWeight: 'medium', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
                 '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
-            }}
-            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
+              }}
+              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
             >
-            {loading ? "Adding..." : "Add Staff"}
-          </Button>
+              {loading ? "Adding..." : "Add Staff"}
+            </MDButton>
+            <MDButton variant="contained"
+              onClick={() => navigate(-1)}
+              sx={{
+                color: 'white', bgcolor: '#051aa1', borderRadius: 2, textTransform: 'none', ml: 2, px: 4, py: 1.5, fontWeight: 'medium', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
+              }}>
+              Cancel
+            </MDButton>
           </MDBox>
         </Card>
       </MDBox>
