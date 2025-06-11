@@ -181,59 +181,59 @@ function Tables() {
                 </MDTypography>
               </MDBox> */}
 
-              <AppBar position="sticky" color="default" sx={{ boxShadow: "none", top: '90px', zIndex: 1100, }}>
-                <Tabs
-                  value={tabValue}
-                  onChange={handleSetTabValue}
-                  variant="fullWidth"
-                  sx={{ background: "white" }}
-                >
-                  {["Pending", "Upcoming", "Completed"].map((label, index) => (
-                    <Tab
-                      key={label}
-                      iconPosition="start"
-                      icon={
-                        <Icon sx={{ fontSize: 18, mr: 1 }}>
-                          {index === 0
-                            ? "pending_actions"
-                            : index === 1
+            <AppBar position="sticky" color="default" sx={{ boxShadow: "none", top: '90px', zIndex: 1100, }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleSetTabValue}
+                variant="fullWidth"
+                sx={{ background: "white" }}
+              >
+                {["Pending", "Upcoming", "Completed"].map((label, index) => (
+                  <Tab
+                    key={label}
+                    iconPosition="start"
+                    icon={
+                      <Icon sx={{ fontSize: 18, mr: 1 }}>
+                        {index === 0
+                          ? "pending_actions"
+                          : index === 1
                             ? "event_upcoming"
                             : "checklist"}
-                        </Icon>
-                      }
-                      label={
-                        <MDBox
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            color: tabValue === index ? "#fff" : "inherit",
-                          }}
-                        >
-                          {label}
-                        </MDBox>
-                      }
-                      sx={{
-                        flex: 1,
-                        borderRadius: 1,
-                        mx: 0.5,
+                      </Icon>
+                    }
+                    label={
+                      <MDBox
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: tabValue === index ? "#fff" : "inherit",
+                        }}
+                      >
+                        {label}
+                      </MDBox>
+                    }
+                    sx={{
+                      flex: 1,
+                      borderRadius: 1,
+                      mx: 0.5,
+                      backgroundColor:
+                        tabValue === index ? tabStyles[index].selectedBg : "transparent",
+                      transition: "background-color 0.3s ease",
+                      "& .MuiTab-wrapper": {
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        color: tabValue === index ? "#fff" : "inherit", // For label and icon
+                      },
+                      "&:hover": {
                         backgroundColor:
-                          tabValue === index ? tabStyles[index].selectedBg : "transparent",
-                        transition: "background-color 0.3s ease",
-                        "& .MuiTab-wrapper": {
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          color: tabValue === index ? "#fff" : "inherit", // For label and icon
-                        },
-                        "&:hover": {
-                          backgroundColor:
-                            tabValue === index ? tabStyles[index].selectedBg : "#f0f0f0",
-                        },
-                      }}
-                    />
-                  ))}
-                </Tabs>
-              </AppBar>
-           
+                          tabValue === index ? tabStyles[index].selectedBg : "#f0f0f0",
+                      },
+                    }}
+                  />
+                ))}
+              </Tabs>
+            </AppBar>
+
 
             {/* Cards */}
             <MDBox pt={3} sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2.5 }}>
@@ -250,8 +250,8 @@ function Tables() {
                       tabValue === 0
                         ? "0px 2px 0px #25408f"
                         : tabValue === 1
-                        ? "0px 2px 0px #ff914d"
-                        : "0px 2px 0px #3e87d9",
+                          ? "0px 2px 0px #ff914d"
+                          : "0px 2px 0px #3e87d9",
                     "&:hover": {
                       transform: "translateY(-5px)",
                       boxShadow: 2,
@@ -268,27 +268,16 @@ function Tables() {
                     {tabValue === 0 && (
                       <>
                         {" "}
-                        <MDButton
-                          fullWidth
-                          size="small"
-                          color="primary"
-                          sx={{ margin: 1, border:'1px solid grey',borderRadius:'999px' }}
+                        <MDButton fullWidth size="small" color="primary"
+                          sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
                           onClick={(e) => {
                             e.stopPropagation();
                             console.log("Button clicked", row.id);
                           }}
-                        >
-                          Accept
-                        </MDButton>
-                        <MDButton
-                          fullWidth
-                          size="small"
-                          // color="info"
-                          sx={{ margin: 1, border:'1px solid grey',borderRadius:'999px' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            console.log("Button clicked", row.id);
-                          }}
+                        > Accept </MDButton>
+                        <MDButton fullWidth size="small"
+                          sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                          onClick={(e) => { e.stopPropagation(); console.log("Button clicked", row.id); }}
                         >
                           Reject
                         </MDButton>
@@ -299,7 +288,7 @@ function Tables() {
                         fullWidth
                         size="small"
                         // color="secondary"
-                        sx={{ margin: 1, border:'1px solid grey',borderRadius:'999px' }}
+                        sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
                         onClick={(e) => {
                           e.stopPropagation();
                           console.log("Button clicked", row.id);

@@ -49,7 +49,7 @@ const ClinicWithDetails = () => {
   return (
     <DashboardLayout>
 
-      <MDBox sx={{padding:3}}>
+      <MDBox sx={{ padding: 3 }}>
         <Grid container spacing={4}>
           {/* Clinic Info */}
           <Grid item xs={12} md={6}>
@@ -59,9 +59,7 @@ const ClinicWithDetails = () => {
 
                   <MDBox display="flex" alignItems="center" justifyContent="center">
                     <InfoOutlinedIcon sx={{ color: 'info.main', mr: 1 }} />
-                    <MDTypography variant="h5" fontWeight="bold">
-                      {clinicDetails.clinicname || 'Clinic Name'}
-                    </MDTypography>
+                    <MDTypography variant="h5" fontWeight="bold"> {clinicDetails.clinicname || 'Clinic Name'} </MDTypography>
                   </MDBox>
 
                   <MDTypography variant="body2" color="text.secondary" display="flex" alignItems="center" justifyContent="center">
@@ -72,9 +70,7 @@ const ClinicWithDetails = () => {
 
                   <MDBox display="flex" alignItems="center" justifyContent="center">
                     <LocationOnIcon sx={{ color: 'primary.main', mr: 1 }} />
-                    <MDTypography variant="body2" fontWeight="medium">
-                      {clinicDetails.clinicAddress || 'No address provided.'}
-                    </MDTypography>
+                    <MDTypography variant="body2" fontWeight="medium"> {clinicDetails.clinicAddress || 'No address provided.'} </MDTypography>
                   </MDBox>
 
                   <MDBox display="flex" justifyContent="space-between" alignItems="center">
@@ -92,19 +88,20 @@ const ClinicWithDetails = () => {
 
                   {/* Fees */}
                   <MDBox>
-                  {feeLabels.map(({ key, label }, idx) => (
-                    <MDBox key={idx} display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
-                      <MDBox display="flex" alignItems="center">
-                        <MDTypography variant="body2">{label}</MDTypography>
+                    {feeLabels.map(({ key, label }, idx) => (
+                      <MDBox key={idx} display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
+                        <MDBox display="flex" alignItems="center">
+                          <MDTypography variant="body2">{label}</MDTypography>
+                        </MDBox>
+                        <IndianCurrencyFormatter value={clinicDetails[key]} />
                       </MDBox>
-                      <IndianCurrencyFormatter value={clinicDetails[key]} />
-                    </MDBox>
-                  ))}
+                    ))}
                   </MDBox>
                 </MDBox>
               </CardContent>
             </Card>
           </Grid>
+          
           {/* Image Carousel */}
           <Grid item xs={12} md={6}>
             {clinicArray.length > 0 && (
