@@ -90,15 +90,15 @@ function Dashboard() {
           </Grid>
         </Grid> */}
 
-        <Grid container  sx={{ alignItems:'center', backgroundImage: 'url(https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg)', backgroundSize: 'cover', backgroundPosition: 'center', height: '300px' }}>
-          <Grid item xs={2} sx={{m:1}}>
+        <Grid container sx={{ alignItems: 'center', backgroundImage: 'url(https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg)', backgroundSize: 'cover', backgroundPosition: 'center', height: '300px' }}>
+          <Grid item xs={2} sx={{ m: 1 }}>
             <StatCard
               title="Total Patients"
               value={appointmentdata.patientchecked || 0}
               icon="group"
             />
           </Grid>
-          <Grid item xs={2} sx={{m:1}}>
+          <Grid item xs={2} sx={{ m: 1 }}>
             <StatCard
               title="Current Appointments"
               value={appointment.length}
@@ -107,7 +107,7 @@ function Dashboard() {
               gradient="#4db6ac"
             />
           </Grid>
-          <Grid item xs={2} sx={{m:1}}>
+          <Grid item xs={2} sx={{ m: 1 }}>
             <StatCard
               title="Experience"
               value={`${appointmentdata.yearsofexperience || 0} yrs`}
@@ -116,13 +116,13 @@ function Dashboard() {
               gradient="#64b5f6"
             />
           </Grid>
-        </Grid> 
+        </Grid>
 
-        
+
         <Grid container spacing={2} sx={{ mt: 2 }}>
 
           <Grid item xs={12} md={6}>
-            <Card sx={{borderRadius:"20px"}}>
+            <Card sx={{ borderRadius: "20px" }}>
 
               <MDBox display="flex" px={2} pb={1} alignItems="center" justifyContent="space-between">
                 <MDTypography variant="h6">Appointments</MDTypography>
@@ -160,16 +160,16 @@ function Dashboard() {
 
                   <MDBox flex={2} textAlign="center" >
                     <MDTypography color="text" fontSize="small" fontWeight="regular">
-                    {new Date(item.Bookdate).toLocaleDateString("en-GB")}
+                      {new Date(item.Bookdate).toLocaleDateString("en-GB")}
                     </MDTypography>
                   </MDBox>
 
                   <MDBox flex={2} textAlign="center" >
                     <MDTypography color="text" fontSize="small" fontWeight="regular">
-                    {new Date(item.Bookdate).toLocaleTimeString("en-GB", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                      {new Date(item.Bookdate).toLocaleTimeString("en-GB", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </MDTypography>
                   </MDBox>
 
@@ -180,66 +180,66 @@ function Dashboard() {
           </Grid>
 
           <Grid item xs={12} md={6}>
-          <Card>
+            <Card>
 
-            <MDBox display="flex" px={2} pb={1} alignItems="center" justifyContent="space-between">
-              <MDTypography variant="h6">Patients</MDTypography>
-              <IconButton href="/patients"><MoreVertIcon /></IconButton>
-            </MDBox>
-            <MDBox display="flex" px={2} pb={1} alignItems="center">
-              <MDBox flex={3}>
-                <MDTypography variant="button" fontSize="small" fontWeight="medium">NAME</MDTypography>
+              <MDBox display="flex" px={2} pb={1} alignItems="center" justifyContent="space-between">
+                <MDTypography variant="h6">Patients</MDTypography>
+                <IconButton href="/patients"><MoreVertIcon /></IconButton>
               </MDBox>
-              <MDBox flex={2} textAlign="center">
-                <MDTypography variant="button" fontSize="small" fontWeight="medium">GENDER</MDTypography>
-              </MDBox>
-              <MDBox flex={2} textAlign="center">
-                <MDTypography variant="button" fontSize="small" fontWeight="medium">CLINIC</MDTypography>
-              </MDBox>
-            </MDBox>
-            {patients.slice(0, 4).map((item, index) => (
-              <MDBox
-                key={index}
-                display="flex"
-                alignItems="center"
-                py={1}
-                px={2}
-                sx={{
-                  borderTop: "1px solid #eee",
-                  cursor: "pointer",
-                  "&:hover": { backgroundColor: "#f9f9f9" },
-                }}
-                onClick={() => navigate(`/patient-with-details/${item._id}`)}
-              >
-
-                <MDBox flex={3} display="flex" alignItems="center" gap={1}>
-                  <MDTypography color="text" fontSize="small" fontWeight="regular">{item?.userID?.name || item.patientName}</MDTypography>
+              <MDBox display="flex" px={2} pb={1} alignItems="center">
+                <MDBox flex={3}>
+                  <MDTypography variant="button" fontSize="small" fontWeight="medium">NAME</MDTypography>
                 </MDBox>
-
-                <MDBox flex={2} textAlign="center" >
-                  <MDTypography color="text" fontSize="small" fontWeight="regular">
-                  {item.gender || "Not specified"}
-                  </MDTypography>
+                <MDBox flex={2} textAlign="center">
+                  <MDTypography variant="button" fontSize="small" fontWeight="medium">GENDER</MDTypography>
                 </MDBox>
-
-                <MDBox flex={2} textAlign="center" >
-                  <MDTypography color="text" fontSize="small" fontWeight="regular">
-                  {item?.clinicID?.clinicname || 'Not available'}
-                  </MDTypography>
+                <MDBox flex={2} textAlign="center">
+                  <MDTypography variant="button" fontSize="small" fontWeight="medium">CLINIC</MDTypography>
                 </MDBox>
-
               </MDBox>
-            ))}
+              {patients.slice(0, 4).map((item, index) => (
+                <MDBox
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  py={1}
+                  px={2}
+                  sx={{
+                    borderTop: "1px solid #eee",
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "#f9f9f9" },
+                  }}
+                  onClick={() => navigate(`/patient-with-details/${item._id}`)}
+                >
+
+                  <MDBox flex={3} display="flex" alignItems="center" gap={1}>
+                    <MDTypography color="text" fontSize="small" fontWeight="regular">{item?.userID?.name || item.patientName}</MDTypography>
+                  </MDBox>
+
+                  <MDBox flex={2} textAlign="center" >
+                    <MDTypography color="text" fontSize="small" fontWeight="regular">
+                      {item.gender || "Not specified"}
+                    </MDTypography>
+                  </MDBox>
+
+                  <MDBox flex={2} textAlign="center" >
+                    <MDTypography color="text" fontSize="small" fontWeight="regular">
+                      {item?.clinicID?.clinicname || 'Not available'}
+                    </MDTypography>
+                  </MDBox>
+
+                </MDBox>
+              ))}
 
             </Card>
           </Grid>
 
         </Grid>
 
-        
+
         <Grid container spacing={2} sx={{ mt: 2 }}>
 
-        <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <Card>
 
               <MDBox display="flex" px={2} pb={1} alignItems="center" justifyContent="space-between">
@@ -278,13 +278,13 @@ function Dashboard() {
 
                   <MDBox flex={2} textAlign="center" >
                     <MDTypography color="text" fontSize="small" fontWeight="regular">
-                    {item.gender}
+                      {item.gender}
                     </MDTypography>
                   </MDBox>
 
                   <MDBox flex={2} textAlign="center" >
                     <MDTypography color="text" fontSize="small" fontWeight="regular">
-                    {item.assignAs}
+                      {item.assignAs}
                     </MDTypography>
                   </MDBox>
 
@@ -295,56 +295,56 @@ function Dashboard() {
           </Grid>
 
           <Grid item xs={12} md={6}>
-          <Card>
+            <Card>
 
-            <MDBox display="flex" px={2} pb={1} alignItems="center" justifyContent="space-between">
-              <MDTypography variant="h6">Clinics</MDTypography>
-              <IconButton href="/clinics"><MoreVertIcon /></IconButton>
-            </MDBox>
-            <MDBox display="flex" px={2} pb={1} alignItems="center">
-              <MDBox flex={3}>
-                <MDTypography variant="button" fontSize="small" fontWeight="medium">NAME</MDTypography>
+              <MDBox display="flex" px={2} pb={1} alignItems="center" justifyContent="space-between">
+                <MDTypography variant="h6">Clinics</MDTypography>
+                <IconButton href="/clinics"><MoreVertIcon /></IconButton>
               </MDBox>
-              <MDBox flex={2} textAlign="center">
-                <MDTypography variant="button" fontSize="small" fontWeight="medium">OPEN</MDTypography>
-              </MDBox>
-              <MDBox flex={2} textAlign="center">
-                <MDTypography variant="button" fontSize="small" fontWeight="medium">CLOSE</MDTypography>
-              </MDBox>
-            </MDBox>
-            {clinic.slice(0, 2).map((item, index) => (
-              <MDBox
-                key={index}
-                display="flex"
-                alignItems="center"
-                py={1}
-                px={2}
-                sx={{
-                  borderTop: "1px solid #eee",
-                  cursor: "pointer",
-                  "&:hover": { backgroundColor: "#f9f9f9" },
-                }}
-                onClick={() => navigate(`/clinic-with-details/${item._id}`)}
-              >
-
-                <MDBox flex={3} display="flex" alignItems="center" gap={1}>
-                  <MDTypography color="text" fontSize="small" fontWeight="regular">{item.clinicname}</MDTypography>
+              <MDBox display="flex" px={2} pb={1} alignItems="center">
+                <MDBox flex={3}>
+                  <MDTypography variant="button" fontSize="small" fontWeight="medium">NAME</MDTypography>
                 </MDBox>
-
-                <MDBox flex={2} textAlign="center" >
-                  <MDTypography color="text" fontSize="small" fontWeight="regular">
-                  {item.openTime || "Not available"}
-                  </MDTypography>
+                <MDBox flex={2} textAlign="center">
+                  <MDTypography variant="button" fontSize="small" fontWeight="medium">OPEN</MDTypography>
                 </MDBox>
-
-                <MDBox flex={2} textAlign="center" >
-                  <MDTypography color="text" fontSize="small" fontWeight="regular">
-                  {item.closeTime || 'Not available'}
-                  </MDTypography>
+                <MDBox flex={2} textAlign="center">
+                  <MDTypography variant="button" fontSize="small" fontWeight="medium">CLOSE</MDTypography>
                 </MDBox>
-
               </MDBox>
-            ))}
+              {clinic.slice(0, 2).map((item, index) => (
+                <MDBox
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  py={1}
+                  px={2}
+                  sx={{
+                    borderTop: "1px solid #eee",
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "#f9f9f9" },
+                  }}
+                  onClick={() => navigate(`/clinic-with-details/${item._id}`)}
+                >
+
+                  <MDBox flex={3} display="flex" alignItems="center" gap={1}>
+                    <MDTypography color="text" fontSize="small" fontWeight="regular">{item.clinicname}</MDTypography>
+                  </MDBox>
+
+                  <MDBox flex={2} textAlign="center" >
+                    <MDTypography color="text" fontSize="small" fontWeight="regular">
+                      {item.openTime || "Not available"}
+                    </MDTypography>
+                  </MDBox>
+
+                  <MDBox flex={2} textAlign="center" >
+                    <MDTypography color="text" fontSize="small" fontWeight="regular">
+                      {item.closeTime || 'Not available'}
+                    </MDTypography>
+                  </MDBox>
+
+                </MDBox>
+              ))}
 
             </Card>
           </Grid>

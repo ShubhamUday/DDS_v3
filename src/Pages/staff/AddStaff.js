@@ -3,7 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
-import { Card, Grid, Divider, TextField, Select, FormControl, InputLabel, Switch, Button } from '@mui/material';
+import { Card, Grid, Divider, TextField, Select, FormControl, InputLabel, Switch, Button, MenuItem } from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -27,8 +27,8 @@ function AddStaff() {
   const [number, seNumber] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("");
-  const [assignAs, setAssignAs] = useState("");
+  const [gender, setGender] = useState("Male");
+  const [assignAs, setAssignAs] = useState("Receptionist");
   const [permissions, setPermissions] = useState({
     canAcceptAppointments: false,
     canAddAppointments: false,
@@ -36,6 +36,12 @@ function AddStaff() {
     canSendTickets: false,
   });
   const navigate = useNavigate();
+
+  const [age, setAge] = useState('age');
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
 
   const fetchClinicList = async () => {
     try {
@@ -137,6 +143,7 @@ function AddStaff() {
 
   return (
     <DashboardLayout>
+
       <ToastContainer
         autoClose={2000}
         position="top-center"
@@ -154,9 +161,7 @@ function AddStaff() {
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, boxShadow: 2, p: 4, backgroundColor: '#ffffff' }}>
 
-          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center">
-            ➕ Add New Staff Member
-          </MDTypography>
+          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center"> ➕ Add New Staff Member </MDTypography>
           <Divider />
           <Grid container spacing={2} sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={12} sm={6} md={3}>
@@ -190,13 +195,13 @@ function AddStaff() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
-                <InputLabel shrink={true} id="gender-label">Gender</InputLabel>
-                <Select native labelId="gender-label" value={gender}
+                <InputLabel  id="gender-label">Gender</InputLabel>
+                <Select native labelId="gender-label" value={gender} label="Gender"
                   onChange={(e) => setGender(e.target.value)}
                   inputProps={{ name: 'gender', id: 'gender-select' }}
                 >
                   <option value="" disabled>Select gender</option>
-                  {['Male', 'Female', 'Other'].map(opt => (
+                  {['Male', 'Female', 'Other'].map((opt) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </Select>
@@ -204,8 +209,8 @@ function AddStaff() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
-                <InputLabel shrink={true} id="role-label">Role</InputLabel>
-                <Select native labelId="role-label" value={assignAs}
+                <InputLabel  id="role-label">Role</InputLabel>
+                <Select native labelId="role-label" value={assignAs} label="Role"
                   onChange={(e) => setAssignAs(e.target.value)}
                   inputProps={{ name: 'role', id: 'role-select' }}
                 >
@@ -225,7 +230,7 @@ function AddStaff() {
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
                   <InputLabel id={`${label.toLowerCase().replace(/ /g, '-')}-label`}>{label}</InputLabel>
-                  <Select native value={label === 'Check-In Time' ? checkInTime : checkOutTime}
+                  <Select native value={label === 'Check-In Time' ? checkInTime : checkOutTime} label={label}
                     onChange={(e) => setter(e.target.value)}
                     inputProps={{ name: label.toLowerCase().replace(/ /g, '-') }}
                   >

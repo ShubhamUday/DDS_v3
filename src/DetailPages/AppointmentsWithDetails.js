@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, CircularProgress, Alert, Divider, Rating, Box } from '@mui/material';
+import { Grid, CircularProgress, Alert, Divider, Rating, Box, Stack, IconButton, Modal, MenuItem, Menu } from '@mui/material';
 
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import MDBox from 'components/MDBox';
@@ -10,7 +10,8 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import MDButton from "components/MDButton";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import calendarIcon from 'assets/images/icon.png'
+import calendarIcon from 'assets/images/schedule-calendar-and-blue-clock-18292.png'
+import { EditOutlined, FamilyRestroomOutlined, LogoutOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpdateOutlined, UpgradeOutlined, MoreVertOutlined } from '@mui/icons-material';
 
 
 const previousAppointments = [
@@ -34,12 +35,39 @@ const previousAppointments = [
   },
 ];
 
+const prescriptions = [
+  { date: "2025-06-01" },
+  { date: "2025-05-25" },
+  { date: "2025-05-15" },
+];
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 function AppointmentWithDetails() {
   const [appointmentData, setAppointmentData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open2 = Boolean(anchorEl);
+
   const params = useParams();
   const param1 = params.id;
+
 
   const getDetails = async () => {
     setLoading(true);
@@ -57,34 +85,49 @@ function AppointmentWithDetails() {
   };
 
   console.log('Appointment Data', appointmentData)
+  console.log('status', appointmentData?.PayStatus)
+
+  const handleClick2 = (event) => setAnchorEl(event.currentTarget);
+  const handleClose2 = () => setAnchorEl(null);
 
   useEffect(() => {
     getDetails();
   }, [param1]);
 
+  const renderButtons = () => {
+    switch (appointmentData?.requestStatus) {
+      case "Pending":
+        return [
+          <MDButton key="accept" variant="contained" color="success" size="small"> Accept </MDButton>,
+          <MDButton key="reject" variant="outlined" color="error" size="small"> Reject </MDButton>,
+        ];
+      case "Completed":
+        return [
+          <MDButton key="reschedule" variant="contained" color="primary" size="small"> Reschedule </MDButton>,
+          <MDButton key="feedback" variant="outlined" color="secondary" size="small"> Feedback </MDButton>,
+        ];
+      case "Accepted":
+        return [
+          <MDButton key="reschedule" variant="contained" color="primary" size="small"> Reschedule </MDButton>,
+          <MDButton key="details" variant="outlined" color="info" size="small"> Details </MDButton>,
+        ];
+      default:
+        return null;
+    }
+  };
+  const buttons = renderButtons();
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox sx={{ padding: 3 }}>
-        <MDBox
-          sx={{
-            minHeight: '100vh',
-            // position: 'relative',
-            backgroundColor: '#f4f6f9',
-          }}
-        >
+        <MDBox sx={{ minHeight: '100vh', backgroundColor: '#f4f6f9' }} >
           {loading ? (
             <MDBox
               sx={{
-                backgroundColor: 'rgba(255,255,255,0.9)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: 4,
-                p: 4,
-              }}
-            >
-              <MDBox display="flex" justifyContent="center" alignItems="center" sx={{ minHeight: '200px' }}>
-                <CircularProgress />
-              </MDBox>
+                backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', borderRadius: 4, p: 4,
+              }} >
+              <MDBox display="flex" justifyContent="center" alignItems="center" sx={{ minHeight: '200px' }}> <CircularProgress /> </MDBox>
             </MDBox>
           ) : error ? (
             <Alert severity="error">{error}</Alert>
@@ -254,15 +297,11 @@ function AppointmentWithDetails() {
                   <CloudUploadIcon sx={{ cursor: 'pointer' }} />
                 </MDBox>
               </Grid> */}
+
               <Grid item xs={12} md={12}>
                 <MDBox
                   sx={{
-                    p: 2,
-                    margin: "0 auto",
-                    backgroundColor: "#fff",
-                    borderRadius: 3,
-                    border: '1px solid #d2d4d6',
-                    boxShadow: "0px 2px 0px #25408f",
+                    p: 2, margin: "0 auto", backgroundColor: "#fff", borderRadius: 3, border: '1px solid #d2d4d6', boxShadow: "0px 2px 0px #25408f",
                     transition: 'all 0.3s ease-in-out',
                     '&:hover': {
                       boxShadow: 6,
@@ -270,102 +309,266 @@ function AppointmentWithDetails() {
                     },
                   }}>
 
-                  <MDTypography variant="h4" align="center" color="info" gutterBottom
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
-                    <Box component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 50, height: 40 }} />
-                    Appointment
-                  </MDTypography>
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center" mb={2} >
+                    {buttons[0] && (<MDBox > {buttons[0]} </MDBox>)}
 
-                  <Divider />
-                  <MDBox display="flex" justifyContent="space-between" flexWrap="wrap" sx={{ flexDirection: { xs: 'column', md: 'row' } }} >
-                    {/* Booking ID */}
-                    <MDBox display="flex" alignItems="center" borderRadius="lg" m={0.5} p={0.5}
-                      sx={{ border: '1px solid #d2d4d6', width: { xs: '100%', md: '30%' }, }} >
-                      <MDTypography variant="body2" color="info" mr={1}> <b>Booking ID:</b> </MDTypography>
-                      <MDTypography variant="body2">{appointmentData?._id}</MDTypography>
-                    </MDBox>
+                    <MDTypography variant="h4" align="center" color="info" gutterBottom
+                      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
+                      <Box component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
+                      Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {new Date(appointmentData?.Bookdate).toLocaleTimeString("en-GB")}
+                    </MDTypography>
 
-                    {/* Patient ID */}
-                    <MDBox display="flex" alignItems="center" borderRadius="lg" m={0.5} p={0.5}
-                      sx={{ border: '1px solid #d2d4d6', width: { xs: '100%', md: '30%' }, justifyContent: { xs: 'flex-start', md: 'flex-end' }, }} >
-                      <MDTypography variant="body2" color="info" mr={1}> <b>Patient ID:</b> </MDTypography>
-                      <MDTypography variant="body2">{appointmentData?.userID?._id}</MDTypography>
-                    </MDBox>
+                    {buttons[1] && (<MDBox> {buttons[1]} </MDBox>)}
+
                   </MDBox>
 
-                  <MDBox display="flex" justifyContent="space-between" >
-                    <Grid item xs={12} md={12}>
-                      <MDBox display="flex" justifyContent="space-between">
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='info' sx={{ fontWeight: 'bold', mr: 1 }}> Date : </MDTypography>
-                          <MDTypography variant="body2">{new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")}</MDTypography>
+                  <Divider sx={{ mb: 2 }} />
+
+                  {/* IDs Section */}
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Booking ID</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?._id}</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Patient ID</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?._id}</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Family ID</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?._id}</MDTypography>
+                    </Grid>
+                  </Grid>
+
+                  {/* <MDBox display="flex" justifyContent="space-between" flexWrap="wrap" sx={{ flexDirection: { xs: 'column', md: 'row' } }} >
+                    <Grid container>
+                      <Grid item xs={12} md={4}>
+                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6', minWidth: '45%', flex: 1, justifyContent: 'center' }}>
+                          <MDTypography fontSize="medium" color='info' mr={1}> <b>Booking ID:</b> </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?._id}</MDTypography>
                         </MDBox>
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='info' sx={{ fontWeight: 'bold', mr: 1 }}> Time : </MDTypography>
-                          <MDTypography variant="body2">{new Date(appointmentData?.Bookdate).toLocaleTimeString("en-GB")}</MDTypography>
+                      </Grid>
+
+                      <Grid item xs={12} md={4}>
+                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6', minWidth: '45%', flex: 1, justifyContent: 'center' }}>
+                          <MDTypography fontSize="medium" color='info' mr={1}> <b>Family ID:</b> </MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.userID?._id} </MDTypography>
                         </MDBox>
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='info' sx={{ fontWeight: 'bold', mr: 1 }}>Name :</MDTypography>
-                          <MDTypography variant="body2">{appointmentData?.userID?.name || appointmentData.patientName}</MDTypography>
+                      </Grid>
+
+                      <Grid item xs={12} md={4}>
+                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6', minWidth: '45%', flex: 1, justifyContent: 'center' }}>
+                          <MDTypography fontSize="medium" color='info' mr={1}> <b>Patient ID:</b> </MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.userID?._id} </MDTypography>
                         </MDBox>
+                      </Grid>
+
+                    </Grid>
+                  </MDBox> */}
+
+                  <Divider />
+
+                  {/* Patient Details */}
+                  <MDBox position="relative" p={1}>
+
+                    <IconButton
+                      onClick={handleClick2}
+                      sx={{ position: "absolute", top: 0, right: 0 }}
+                      size="small"
+                    >
+                      <MoreVertOutlined />
+                    </IconButton>
+
+
+                    <MDTypography variant="h6" fontWeight="bold" color="info" sx={{ display: "flex", justifyContent: "center" }} >
+                      Patient Details
+                    </MDTypography>
+
+                    {/* Dropdown Menu */}
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={open2}
+                      onClose={handleClose2}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right", }}
+                      transformOrigin={{ vertical: "top", horizontal: "right", }}
+                    >
+                      <MenuItem onClick={() => { handleClose2(); console.log("Edit clicked"); }}> Edit </MenuItem>
+                      <MenuItem onClick={() => { handleClose2(); console.log("Delete clicked"); }}> Delete </MenuItem>
+                      <MenuItem onClick={() => { handleClose2(); console.log("View History clicked"); }}> View History </MenuItem>
+                    </Menu>
+                  </MDBox>
+                  {/* <MDTypography variant="h6" fontWeight="bold" color='info' sx={{ display: 'flex', justifyContent: 'center' }}> Patient Details</MDTypography>
+                  <IconButton sx={{ display: 'flex', justifyContent: 'flex-end', }}><MoreVertOutlined /></IconButton> */}
+
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Name</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.name}</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Gender</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.gender}</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Mobile</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.number}</MDTypography>
+                    </Grid>
+                  </Grid>
+
+                  {/* Action Buttons */}
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+                    <MDButton variant="outlined" color="secondary"
+                      onClick={handleOpen}
+                      startIcon={<EditOutlined />}>
+                      Edit Patient
+                    </MDButton>
+
+                    <MDButton
+                      variant="text"
+                      color="info"
+                      // onClick={onShowFamilyTree}
+                      startIcon={<FamilyRestroomOutlined />}
+                    >
+                      Show Family Tree
+                    </MDButton>
+                  </MDBox>
+
+                  <Divider sx={{}} />
+
+                  <Grid container spacing={2}>
+
+                    {/* Clinic Info */}
+                    <Grid item xs={12} sm={6}>
+                      <MDBox display="flex" sx={{ flex: 1 }}>
+                        <MDTypography variant="button" fontWeight="bold" color='info' mr={1}> Clinic Name : </MDTypography>
+                        <MDTypography variant="button" fontWeight="bold" color="text"> {appointmentData?.clinicID?.clinicname} </MDTypography>
                       </MDBox>
-                      <MDBox display='flex' justifyContent="space-between">
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant='body2' color='info' sx={{ fontWeight: 'bold', mr: 1 }}>Clinic/Hospital :</MDTypography>
-                          <MDTypography variant="body2">{appointmentData?.clinicID?.clinicname}</MDTypography>
+                      <MDTypography variant="button" fontWeight="bold" color='info' mr={1}> Address</MDTypography>
+                      <MDTypography variant="button" fontWeight="bold" color="text"> {appointmentData?.clinicID?.clinicAddress} </MDTypography>
+                    </Grid>
+
+                    {/* Payment Info */}
+                    <Grid item xs={12} sm={6}>
+                      <MDBox position="relative">
+
+                        <IconButton size="small" color="primary" title="Update Payment"
+                          sx={{ position: 'absolute', top: 1, right: 4, }} >
+                          <UpgradeOutlined />
+                        </IconButton>
+
+                        <MDBox display="flex" mb={1}>
+                          <MDTypography variant="button" fontWeight="bold" color="info" mr={1}> Payment Status: </MDTypography>
+                          <MDTypography variant="button" fontWeight="bold" color="text"> {appointmentData?.PayStatus} </MDTypography>
                         </MDBox>
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='info' sx={{ fontWeight: 'bold', mr: 1 }}>Doctor :</MDTypography>
-                          <MDTypography variant="body2">{appointmentData?.doctorID?.drname || appointmentData.patientName}</MDTypography>
+
+                        <MDBox display="flex">
+                          <MDTypography variant="button" fontWeight="bold" color="info" mr={1}> Payment Amount: </MDTypography>
+                          <MDTypography variant="button" fontWeight="bold" color="text"> ₹ {appointmentData?.PayAmount}  </MDTypography>
                         </MDBox>
+
                       </MDBox>
-                      <MDBox display='flex' justifyContent="space-between">
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant='body2' color='info' sx={{ fontWeight: 'bold', mr: 1 }}>Address :</MDTypography>
-                          <MDTypography variant="body2">{appointmentData?.clinicID?.clinicAddress}</MDTypography>
+                    </Grid>
+
+                  </Grid>
+
+                  <Divider sx={{}} />
+
+                  <MDBox display="flex">
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6} md={6} lg={2}>
+                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Age <br /></MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.userID?.age || 'N/A'} </MDTypography>
                         </MDBox>
-                        <MDBox display="flex" borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='info' sx={{ fontWeight: 'bold', mr: 1 }}>Designation :</MDTypography>
-                          <MDTypography variant="body2">{appointmentData?.doctorID?.designation || appointmentData.patientName}</MDTypography>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={6} lg={2}>
+                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Weight <br /> </MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.userID?.weight || 'N/A'} </MDTypography>
                         </MDBox>
-                      </MDBox>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={6} lg={2}>
+                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Diabities <br /></MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.height || 'N/A'} </MDTypography>
+                        </MDBox>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={6} lg={2}>
+                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Temperature <br /> </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.temperature || 'N/A'} </MDTypography>
+                        </MDBox>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={6} lg={2}>
+                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Bood Pressure <br /> </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.bloodPressure || 'N/A'} </MDTypography>
+                        </MDBox>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={6} lg={2}>
+                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Heart Rate<br /> </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.heartRate || 'N/A'} </MDTypography>
+                        </MDBox>
+                      </Grid>
                     </Grid>
                   </MDBox>
 
                   <MDBox display="flex" justifyContent="space-between">
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={6}>
-                        <MDBox borderRadius="lg" height='10rem' m={0.5} p={0.5}
+                        <MDBox borderRadius="lg" m={0.5} p={0.5}
                           sx={{ border: '1px solid #d2d4d6', backgroundColor: '#f9f9f9', }} >
-                          <MDTypography variant="body2" textAlign="center" color="white"
+                          <MDTypography fontSize="medium" textAlign="center" color="white"
                             sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold', letterSpacing: '0.5px', }} >
                             Reason / Symptoms
                           </MDTypography>
 
-                          <MDTypography variant="body2" sx={{ ml: 1, color: '#333', lineHeight: 1.6 }} >
+                          <MDTypography fontSize="medium" sx={{ ml: 1, color: '#333', lineHeight: 1.6 }} >
                             {appointmentData?.ProblemDetails || 'N/A'}
                           </MDTypography>
-                        </MDBox>
 
+
+                        </MDBox>
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <MDBox borderRadius="lg" height="10rem" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant='body2' textAlign="center" color='white'
+                        <MDBox borderRadius="lg" m={0.5} p={0.5}
+                          sx={{ border: '1px solid #d2d4d6', backgroundColor: '#f9f9f9', }} >
+
+                          <MDTypography fontSize="medium" textAlign="center" color="white"
+                            sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold', letterSpacing: '0.5px', }} >
+                            Treatment
+                          </MDTypography>
+
+                          <MDTypography fontSize="medium" sx={{ ml: 1, color: '#333', lineHeight: 1.6 }} >
+                            {appointmentData?.Treatmentfor || 'N/A'}
+                          </MDTypography>
+                        </MDBox>
+                      </Grid>
+
+                      <Grid item xs={12} md={12}>
+                        <MDBox borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
+                          <MDTypography fontSize="medium" textAlign="center" color='white'
                             sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold', letterSpacing: '0.5px' }}>
-                            Prescription </MDTypography>
-                          {/* <MDTypography variant='button' ml={2}>{ appointmentData?.Treatmentfor || 'N/A'} </MDTypography> */}
+                            Last 3 Prescriptions </MDTypography>
 
                           {appointmentData?.prescriptionID?.length > 0 ? (
                             <>
                               {appointmentData.prescriptionID.slice(0, 3).map((med, index) => (
-                                <MDTypography key={index} variant="body2"
+                                <MDTypography key={index} fontSize="medium"
                                   sx={{ color: '#333', lineHeight: 1.6, ml: 2, display: 'flex', alignItems: 'center' }}
                                 >
                                   <Box component="span" sx={{ mr: 1 }}>•</Box> {med.medicinename}
                                 </MDTypography>
                               ))}
                               {appointmentData.prescriptionID.length > 4 && (
-                                <MDTypography variant="body2" ml={2}> + {appointmentData.prescriptionID.length - 2} more </MDTypography>
+                                <MDTypography fontSize="medium" ml={2}> + {appointmentData.prescriptionID.length - 2} more </MDTypography>
                               )}
                               {appointmentData?.prescriptionID?.length > 0 && (
                                 <MDBox mt={2} textAlign="right" mr={1}>
@@ -386,62 +589,38 @@ function AppointmentWithDetails() {
                               )}
                             </>
                           ) : (
-                            <MDTypography variant="body2" ml={2}>No prescription data yet.</MDTypography>
+                            <>
+                              {prescriptions.map((item, index) => (
+                                <MDBox key={index} display="flex" justifyContent="space-between" alignItems="center" py={1} px={1.5}
+                                  sx={{
+                                    borderBottom: index < prescriptions.length - 1 ? '1px solid #e0e0e0' : 'none',
+                                    backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                                  }}
+                                >
+                                  {/* Date */}
+                                  <MDTypography fontSize="small" fontWeight="medium"> {item.date} </MDTypography>
+
+                                  {/* Action Icons */}
+                                  <MDBox display="flex" gap={1}>
+                                    <IconButton size="small" color="primary" title="Edit"> <EditOutlined fontSize="small" /> </IconButton>
+                                    <IconButton size="small" color="info" title="View"> <VisibilityOutlined fontSize="small" /> </IconButton>
+                                    <IconButton size="small" color="secondary" title="Print"> <PrintOutlined fontSize="small" /> </IconButton>
+                                    <IconButton size="small" color="success" title="Download"> <DownloadOutlined fontSize="small" /> </IconButton>
+                                  </MDBox>
+                                </MDBox>
+                              ))}
+                            </>
                           )}
                         </MDBox>
                       </Grid>
                     </Grid>
                   </MDBox>
 
-                  <MDBox display="flex">
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6} md={6} lg={2}>
-                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Age <br /></MDTypography>
-                          <MDTypography variant='body2'>{appointmentData?.userID?.age || 'N/A'} </MDTypography>
-                        </MDBox>
-                      </Grid>
 
-                      <Grid item xs={12} sm={6} md={6} lg={2}>
-                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Weight <br /> </MDTypography>
-                          <MDTypography variant='body2'>{appointmentData?.userID?.weight || 'N/A'} </MDTypography>
-                        </MDBox>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={6} lg={2}>
-                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Height <br /></MDTypography>
-                          <MDTypography variant='body2'>{appointmentData?.userID?.height || 'N/A'} </MDTypography>
-                        </MDBox>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={6} lg={2}>
-                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Temperature <br /> </MDTypography>
-                          <MDTypography variant='body2'>{appointmentData?.userID?.temperature || 'N/A'} </MDTypography>
-                        </MDBox>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={6} lg={2}>
-                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Bood Pressure <br /> </MDTypography>
-                          <MDTypography variant='body2'>{appointmentData?.userID?.bloodPressure || 'N/A'} </MDTypography>
-                        </MDBox>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={6} lg={2}>
-                        <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
-                          <MDTypography variant="body2" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Heart Rate<br /> </MDTypography>
-                          <MDTypography variant='body2'>{appointmentData?.userID?.heartRate || 'N/A'} </MDTypography>
-                        </MDBox>
-                      </Grid>
-                    </Grid>
-                  </MDBox>
 
                   <Grid item xs={12} md={12}>
                     <MDBox borderRadius="lg" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6', minHeight: '10rem' }} >
-                      <MDTypography textAlign="center" variant="body2" color="white"
+                      <MDTypography textAlign="center" fontSize="medium" color="white"
                         sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold', letterSpacing: '0.5px', }} >
                         Previous Appointments
                       </MDTypography>
@@ -450,17 +629,11 @@ function AppointmentWithDetails() {
                         <MDBox key={appointment.id} display="flex" justifyContent="space-between" alignItems="center" p={1} mb={1}
                           sx={{ backgroundColor: '#f9f9f9', borderRadius: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', "&:hover": { backgroundColor: "#f1f1f1" }, }} >
                           <MDBox>
-                            <MDTypography variant="body2" fontWeight="bold">
-                              {appointment.treatmentFor}
-                            </MDTypography>
-                            <MDTypography variant="caption" color="text.secondary">
-                              Date: {appointment.date} | Doctor: {appointment.doctor}
-                            </MDTypography>
+                            <MDTypography fontSize="medium" fontWeight="bold"> {appointment.treatmentFor} </MDTypography>
+                            <MDTypography fontSize="small" color="text.secondary"> Date: {appointment.date} | Doctor: {appointment.doctor} </MDTypography>
                           </MDBox>
 
-                          <MDButton size="small" variant="outlined" color="info">
-                            Details
-                          </MDButton>
+                          <MDButton size="small" variant="outlined" color="info"> Details </MDButton>
                         </MDBox>
                       ))}
                     </MDBox>
@@ -474,7 +647,13 @@ function AppointmentWithDetails() {
 
         </MDBox>
       </MDBox>
-    </DashboardLayout>
+      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
+        <MDBox sx={style}>
+          <MDTypography id="modal-modal-title" variant="h6" component="h2"> Text in a modal </MDTypography>
+          <MDTypography id="modal-modal-description" sx={{ mt: 2 }}> Duis mollis, est non commodo luctus, nisi erat porttitor ligula. </MDTypography>
+        </MDBox>
+      </Modal>
+    </DashboardLayout >
 
 
   );
