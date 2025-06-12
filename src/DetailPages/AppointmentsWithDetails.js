@@ -1,38 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import { styled } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, CircularProgress, Alert, Divider, Rating, Box, Stack, IconButton, Modal, MenuItem, Menu } from '@mui/material';
-
-import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import { Grid, CircularProgress, Alert, Divider, IconButton, Modal, MenuItem, Menu, Checkbox, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
+import MDButton from "components/MDButton";
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import MDButton from "components/MDButton";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import calendarIcon from 'assets/images/schedule-calendar-and-blue-clock-18292.png'
-import { EditOutlined, FamilyRestroomOutlined, LogoutOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpdateOutlined, UpgradeOutlined, MoreVertOutlined } from '@mui/icons-material';
+import { EditOutlined, FamilyRestroomOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpgradeOutlined, MoreVertOutlined, CheckOutlined, Close, Male, Female } from '@mui/icons-material';
+import PatientFormModal from 'Pages/patient/PatientFormModal';
+import PaymentFormModal from 'Pages/payment/PaymentFormModal';
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const previousAppointments = [
-  {
-    id: "1",
-    treatmentFor: "Back Pain",
-    date: "2025-06-05",
-    doctor: "Dr. Smith",
-  },
-  {
-    id: "2",
-    treatmentFor: "Migraine",
-    date: "2025-05-22",
-    doctor: "Dr. Lee",
-  },
-  {
-    id: "3",
-    treatmentFor: "Physiotherapy",
-    date: "2025-05-10",
-    doctor: "Dr. Patel",
-  },
+  { id: "1", treatmentFor: "Back Pain", date: "2025-06-05", doctor: "Dr. Smith" },
+  { id: "2", treatmentFor: "Migraine", date: "2025-05-22", doctor: "Dr. Lee" },
+  { id: "3", treatmentFor: "Physiotherapy", date: "2025-05-10", doctor: "Dr. Patel" },
 ];
 
 const prescriptions = [
@@ -41,29 +39,45 @@ const prescriptions = [
   { date: "2025-05-15" },
 ];
 
+
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
+  maxHeight: 500,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  borderRadius: 3,
+  p: 3,
+  overflowY: 'auto',
 };
+
+const familyMembers = [
+  { name: 'John Doe', relation: 'Father', gender: 'Male' },
+  { name: 'Jane Doe', relation: 'Mother', gender: 'Female' },
+  { name: 'Sarah Doe', relation: 'Sister', gender: 'Female' },
+  { name: 'Alex Doe', relation: 'Brother', gender: 'Male' },
+];
 
 function AppointmentWithDetails() {
   const [appointmentData, setAppointmentData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selected, setSelected] = useState(false);
+  const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false)
+  const [isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen] = useState(false)
 
+
+  const getGenderIcon = (gender) => {
+    return gender === 'Male' ? <Male color="primary" /> : <Female color="secondary" />;
+  };
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open2 = Boolean(anchorEl);
+
 
   const params = useParams();
   const param1 = params.id;
@@ -85,7 +99,7 @@ function AppointmentWithDetails() {
   };
 
   console.log('Appointment Data', appointmentData)
-  console.log('status', appointmentData?.PayStatus)
+  console.log('status', appointmentData?.requestStatus)
 
   const handleClick2 = (event) => setAnchorEl(event.currentTarget);
   const handleClose2 = () => setAnchorEl(null);
@@ -98,24 +112,41 @@ function AppointmentWithDetails() {
     switch (appointmentData?.requestStatus) {
       case "Pending":
         return [
-          <MDButton key="accept" variant="contained" color="success" size="small"> Accept </MDButton>,
+          <MDButton key="accept" variant="contained" color="success" size="small" onClick={() => {  console.log('check resch btn') }} > Accept </MDButton>,
           <MDButton key="reject" variant="outlined" color="error" size="small"> Reject </MDButton>,
         ];
       case "Completed":
         return [
-          <MDButton key="reschedule" variant="contained" color="primary" size="small"> Reschedule </MDButton>,
+          <MDButton key="revisit_reminder" variant="contained" color="primary" size="small" > Revisit Reminder </MDButton>,
           <MDButton key="feedback" variant="outlined" color="secondary" size="small"> Feedback </MDButton>,
         ];
       case "Accepted":
         return [
-          <MDButton key="reschedule" variant="contained" color="primary" size="small"> Reschedule </MDButton>,
-          <MDButton key="details" variant="outlined" color="info" size="small"> Details </MDButton>,
+          <MDButton key="reschedule" variant="contained" color="primary" size="small"
+            onClick={() => {  console.log('check resch btn') }}
+          >
+            Reschedule
+          </MDButton>,
+          <Checkbox
+            key='check'
+            checked={selected}
+            onChange={(e) => setSelected(e.target.checked)}
+            icon={<CheckOutlined sx={{ color: 'grey.500' }} />}       // Unchecked icon
+            checkedIcon={<CheckOutlined sx={{ color: 'success.main' }} />} // Checked icon
+            sx={{
+              '&:hover': {
+                backgroundColor: 'transparent', // Remove hover bg
+              },
+            }}
+          />
+          // <MDButton key="details" variant="outlined" color="info" size="small" onClick={() => {  console.log('check resch btn') }}> Done </MDButton>,
         ];
       default:
         return null;
     }
   };
   const buttons = renderButtons();
+
 
   return (
     <DashboardLayout>
@@ -254,46 +285,21 @@ function AppointmentWithDetails() {
                       },
                     }}
                   >
-                    <MDTypography variant="h6" fontWeight="medium">
-                      ⭐ Patient Rating
-                    </MDTypography>
+                    <MDTypography variant="h6" fontWeight="medium">⭐ Patient Rating </MDTypography>
                     <Divider sx={{ mb: 2 }} />
                     <MDBox display="flex" alignItems="center" gap={1}>
-                      <Rating
-                        name="read-only-rating"
-                        value={appointmentData.ratingID.ratingCount}
-                        precision={0.5}
-                        readOnly
-                      />
+                      <Rating name="read-only-rating" value={appointmentData.ratingID.ratingCount} precision={0.5} readOnly />
                     </MDBox>
-                    <MDTypography variant="body2" mt={1}>
-                      {appointmentData.ratingID.DiscriptionAppare}
-                    </MDTypography>
+                    <MDTypography variant="body2" mt={1}> {appointmentData.ratingID.DiscriptionAppare} </MDTypography>
                   </MDBox>
                 </Grid>
               )} */}
 
               {/* 📁 Documents Card */}
               {/* <Grid item xs={12} md={12}>
-                <MDBox
-                  p={3}
-                  borderRadius="xl"
-                  bgcolor="white"
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{
-                    transition: '0.3s',
-                    border: '1px solid #d2d4d6',
-                    '&:hover': {
-                      boxShadow: 6,
-                      transform: 'translateY(-3px)',
-                    },
-                  }}
-                >
-                  <MDTypography variant="h6" fontWeight="medium">
-                    📁 Patient Documents
-                  </MDTypography>
+                <MDBox p={3} borderRadius="xl" bgcolor="white" display="flex" justifyContent="space-between" alignItems="center"
+                  sx={{ transition: '0.3s', border: '1px solid #d2d4d6', '&:hover': { boxShadow: 6, transform: 'translateY(-3px)' } }} >
+                  <MDTypography variant="h6" fontWeight="medium"> 📁 Patient Documents </MDTypography>
                   <CloudUploadIcon sx={{ cursor: 'pointer' }} />
                 </MDBox>
               </Grid> */}
@@ -314,7 +320,7 @@ function AppointmentWithDetails() {
 
                     <MDTypography variant="h4" align="center" color="info" gutterBottom
                       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
-                      <Box component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
+                      <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
                       Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {new Date(appointmentData?.Bookdate).toLocaleTimeString("en-GB")}
                     </MDTypography>
 
@@ -369,20 +375,15 @@ function AppointmentWithDetails() {
                   <Divider />
 
                   {/* Patient Details */}
-                  <MDBox position="relative" p={1}>
+                  <MDBox display="flex" justifyContent="space-between">
 
-                    <IconButton
-                      onClick={handleClick2}
-                      sx={{ position: "absolute", top: 0, right: 0 }}
-                      size="small"
-                    >
-                      <MoreVertOutlined />
-                    </IconButton>
+                    <MDButton variant="text" color="success" title="Family Tree" startIcon={<FamilyRestroomOutlined />}
+                      onClick={() => { setIsFamilyModalOpen(true) }}
+                    />
 
+                    <MDTypography variant="h6" fontWeight="bold" color="info"> Patient Details </MDTypography>
 
-                    <MDTypography variant="h6" fontWeight="bold" color="info" sx={{ display: "flex", justifyContent: "center" }} >
-                      Patient Details
-                    </MDTypography>
+                    <IconButton onClick={handleClick2} size="small"> <MoreVertOutlined /> </IconButton>
 
                     {/* Dropdown Menu */}
                     <Menu
@@ -392,7 +393,7 @@ function AppointmentWithDetails() {
                       anchorOrigin={{ vertical: "bottom", horizontal: "right", }}
                       transformOrigin={{ vertical: "top", horizontal: "right", }}
                     >
-                      <MenuItem onClick={() => { handleClose2(); console.log("Edit clicked"); }}> Edit </MenuItem>
+                      <MenuItem onClick={() => { setIsModalOpen(true); handleClose2(); console.log("Edit clicked"); }}> Edit </MenuItem>
                       <MenuItem onClick={() => { handleClose2(); console.log("Delete clicked"); }}> Delete </MenuItem>
                       <MenuItem onClick={() => { handleClose2(); console.log("View History clicked"); }}> View History </MenuItem>
                     </Menu>
@@ -402,37 +403,72 @@ function AppointmentWithDetails() {
 
 
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={3}>
                       <MDTypography variant="button" fontWeight="bold" color='info'>Name</MDTypography>
                       <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.name}</MDTypography>
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={3}>
                       <MDTypography variant="button" fontWeight="bold" color='info'>Gender</MDTypography>
                       <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.gender}</MDTypography>
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={3}>
                       <MDTypography variant="button" fontWeight="bold" color='info'>Mobile</MDTypography>
                       <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.number}</MDTypography>
                     </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <MDTypography variant="button" fontWeight="bold" color='info'>Patients Documents</MDTypography>
+                      <MDButton
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        tabIndex={-1}
+                        startIcon={<CloudUploadIcon />}
+                      >
+                        Upload files
+                        <VisuallyHiddenInput
+                          type="file"
+                          onChange={(event) => console.log(event.target.files)}
+                          multiple
+                        />
+                      </MDButton>
+                    </Grid>
                   </Grid>
 
-                  {/* Action Buttons */}
-                  <MDBox display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                    <MDButton variant="outlined" color="secondary"
-                      onClick={handleOpen}
-                      startIcon={<EditOutlined />}>
-                      Edit Patient
-                    </MDButton>
 
-                    <MDButton
-                      variant="text"
-                      color="info"
-                      // onClick={onShowFamilyTree}
-                      startIcon={<FamilyRestroomOutlined />}
-                    >
-                      Show Family Tree
-                    </MDButton>
-                  </MDBox>
+                  {/* Action Buttons */}
+                  {/* <MDBox display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+                    <MDButton variant="outlined" color="secondary" onClick={handleOpen} startIcon={<EditOutlined />}> Edit Patient </MDButton>
+
+                    <MDButton variant="text" color="info" startIcon={<FamilyRestroomOutlined />}
+                    // onClick={onShowFamilyTree}
+                    > Show Family Tree </MDButton>
+                  </MDBox> */}
+
+                  {isFamilyModalOpen && (
+                    <Modal open={isFamilyModalOpen} onClose={() => { setIsFamilyModalOpen(false) }}>
+                      <MDBox sx={style}>
+                        <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                          <MDTypography variant="h6" fontWeight="bold"> Patient&apos;s Family Tree </MDTypography>
+                          <IconButton onClick={() => { setIsFamilyModalOpen(false) }}> <Close /> </IconButton>
+                        </MDBox>
+
+                        <Divider />
+
+                        <List>
+                          {familyMembers.map((member, index) => (
+                            <ListItem key={index}>
+                              <ListItemIcon>{getGenderIcon(member.gender)}</ListItemIcon>
+                              <ListItemText
+                                primary={member.name}
+                                secondary={member.relation}
+                                primaryTypographyProps={{ fontWeight: 'medium' }}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </MDBox>
+                    </Modal>
+                  )}
 
                   <Divider sx={{}} />
 
@@ -448,14 +484,17 @@ function AppointmentWithDetails() {
                       <MDTypography variant="button" fontWeight="bold" color="text"> {appointmentData?.clinicID?.clinicAddress} </MDTypography>
                     </Grid>
 
-                    {/* Payment Info */}
+                    {/* Payment Details */}
                     <Grid item xs={12} sm={6}>
                       <MDBox position="relative">
 
                         <IconButton size="small" color="primary" title="Update Payment"
-                          sx={{ position: 'absolute', top: 1, right: 4, }} >
+                          sx={{ position: 'absolute', top: 1, right: 4, }}
+                          onClick={() => { setIsPaymentUpdateModalOpen(true) }}
+                        >
                           <UpgradeOutlined />
                         </IconButton>
+
 
                         <MDBox display="flex" mb={1}>
                           <MDTypography variant="button" fontWeight="bold" color="info" mr={1}> Payment Status: </MDTypography>
@@ -469,8 +508,17 @@ function AppointmentWithDetails() {
 
                       </MDBox>
                     </Grid>
-
                   </Grid>
+
+                  {/* Update Payment */}
+                  {isPaymentUpdateModalOpen && (
+                    <PaymentFormModal
+                      selectedPayment={appointmentData}
+                      isPaymentUpdateModalOpen={isPaymentUpdateModalOpen}
+                      setIsPaymentUpdateModalOpen={setIsPaymentUpdateModalOpen}
+                      style={style}
+                    />
+                  )}
 
                   <Divider sx={{}} />
 
@@ -564,7 +612,7 @@ function AppointmentWithDetails() {
                                 <MDTypography key={index} fontSize="medium"
                                   sx={{ color: '#333', lineHeight: 1.6, ml: 2, display: 'flex', alignItems: 'center' }}
                                 >
-                                  <Box component="span" sx={{ mr: 1 }}>•</Box> {med.medicinename}
+                                  <MDBox component="span" sx={{ mr: 1 }}>•</MDBox> {med.medicinename}
                                 </MDTypography>
                               ))}
                               {appointmentData.prescriptionID.length > 4 && (
@@ -630,7 +678,7 @@ function AppointmentWithDetails() {
                           sx={{ backgroundColor: '#f9f9f9', borderRadius: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', "&:hover": { backgroundColor: "#f1f1f1" }, }} >
                           <MDBox>
                             <MDTypography fontSize="medium" fontWeight="bold"> {appointment.treatmentFor} </MDTypography>
-                            <MDTypography fontSize="small" color="text.secondary"> Date: {appointment.date} | Doctor: {appointment.doctor} </MDTypography>
+                            <MDTypography fontSize="small" color="info"> Date: {appointment.date} | Doctor: {appointment.doctor} </MDTypography>
                           </MDBox>
 
                           <MDButton size="small" variant="outlined" color="info"> Details </MDButton>
@@ -647,12 +695,18 @@ function AppointmentWithDetails() {
 
         </MDBox>
       </MDBox>
-      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
-        <MDBox sx={style}>
-          <MDTypography id="modal-modal-title" variant="h6" component="h2"> Text in a modal </MDTypography>
-          <MDTypography id="modal-modal-description" sx={{ mt: 2 }}> Duis mollis, est non commodo luctus, nisi erat porttitor ligula. </MDTypography>
-        </MDBox>
-      </Modal>
+
+      {isModalOpen && (
+        <PatientFormModal
+          selectedAppointment={appointmentData}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          getDetails={getDetails}
+          style={style}
+        />
+      )}
+
+
     </DashboardLayout >
 
 

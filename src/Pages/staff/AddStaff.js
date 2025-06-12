@@ -162,7 +162,9 @@ function AddStaff() {
         <Card sx={{ borderRadius: 4, boxShadow: 2, p: 4, backgroundColor: '#ffffff' }}>
 
           <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center"> ➕ Add New Staff Member </MDTypography>
+
           <Divider />
+
           <Grid container spacing={2} sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={12} sm={6} md={3}>
               <TextField fullWidth label="Name" variant="outlined" size="small" value={name}
@@ -245,9 +247,7 @@ function AddStaff() {
 
           <Divider sx={{ my: 3 }} />
 
-          <MDTypography variant="h6" color="text" fontWeight="medium" gutterBottom>
-            Clinics
-          </MDTypography>
+          <MDTypography variant="h6" color="text" fontWeight="medium" gutterBottom> Clinics </MDTypography>
 
           <Grid container spacing={2}>
             {clinicList.map((clinic, index) => (
