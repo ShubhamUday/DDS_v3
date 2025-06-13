@@ -42,6 +42,7 @@ import StaffrProfile from "Pages/StaffProfile";
 
 
 import PrivateComponets from "components/PrivateComponets";
+import Test from "DetailPages/Test";
 
 export default function App() {
   const role = localStorage.getItem("role");
@@ -153,6 +154,7 @@ export default function App() {
         <Route path="/patient-with-details/:id" element={<PatientWithDetails />} />
         <Route path="/appointment-with-details/:id" element={<AppointmentWithDetails />} />
         <Route path="/prescription-with-details/:id" element={<PrescriptionWithDetails />} />
+        <Route path="/test" element={<Test />} />
         <Route path="*" element={<Navigate to="/sign-in" />} />
         </Route>
         <Route path="/sign-in" element={<Basic />} />

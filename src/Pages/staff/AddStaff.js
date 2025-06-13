@@ -237,7 +237,7 @@ function AddStaff() {
                     inputProps={{ name: label.toLowerCase().replace(/ /g, '-') }}
                   >
                     {timeOptions.map((time) => (
-                      <option key={time} value={time}>{time}</option>
+                      <option key={time} value={time}> {time} </option>
                     ))}
                   </Select>
                 </FormControl>

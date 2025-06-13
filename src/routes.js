@@ -11,6 +11,7 @@ import Staffs from "Pages/staff/Staffs";
 import DoctorProfile from "Pages/DoctorProfile";
 // @mui icons
 import Icon from "@mui/material/Icon";
+import Test from "DetailPages/Test";
 
 const routes = [
   {
@@ -69,14 +70,14 @@ const routes = [
     route: "/staffs",
     component: <Staffs />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Profile",
-  //   key: "profile",
-  //   icon: <Icon fontSize="small">medical_information</Icon>,
-  //   route: "/profile",
-  //   component: <DoctorProfile />,
-  // },
+  {
+    type: "collapse",
+    name: "Test",
+    key: "profile",
+    icon: <Icon fontSize="small">medical_information</Icon>,
+    route: "/test",
+    component: <Test />,
+  },
 ];
 
 export default routes;

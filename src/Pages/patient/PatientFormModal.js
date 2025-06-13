@@ -15,26 +15,7 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
         bloodPressure: '',
     });
 
-
-    const [gender, setGender] = useState('');
-    const [diabities, setDiabities] = useState('');
-    const [bloodPressure, setBloodPressure] = useState('');
-    const [treatmentFor, setTreatmentFor] = useState('')
-
     const handleClose = () => setIsModalOpen(false);
-
-    const handleGender = (event, newAlignment) => {
-        setGender(newAlignment);
-    };
-    const handleTreatment = (event, newAlignment) => {
-        setTreatmentFor(newAlignment);
-    };
-    const handleDiabities = (event, newAlignment) => {
-        setDiabities(newAlignment);
-    };
-    const handleBloodPressure = (event, newAlignment) => {
-        setBloodPressure(newAlignment);
-    };
 
     // Handlers
     const handleChange = (field) => (e) => {
@@ -126,7 +107,6 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                     size="small"
                                     color="primary"
                                     exclusive
-                                    // onChange={handleTreatment}
                                     fullWidth
                                     value={formData.treatmentFor}
                                     onChange={handleChange('treatmentFor')}

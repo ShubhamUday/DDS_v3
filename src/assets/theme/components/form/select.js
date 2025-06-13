@@ -23,26 +23,26 @@ const { transparent } = colors;
 
 const select = {
   styleOverrides: {
-    select: {
-      display: "grid",
-      alignItems: "center",
-      padding: `0 ${pxToRem(12)} !important`,
+    // select: {
+    //   display: "grid",
+    //   alignItems: "center",
+    //   padding: `0 ${pxToRem(12)} !important`,
 
-      "& .Mui-selected": {
-        backgroundColor: transparent.main,
-      },
-    },
+    //   "& .Mui-selected": {
+    //     backgroundColor: transparent.main,
+    //   },
+    // },
 
-    selectMenu: {
-      background: "none",
-      height: "none",
-      minHeight: "none",
-      overflow: "unset",
-    },
+    // selectMenu: {
+    //   background: "none",
+    //   height: "none",
+    //   minHeight: "none",
+    //   overflow: "unset",
+    // },
 
-    icon: {
-      display: "none",
-    },
+    // icon: {
+    //   display: "none",
+    // },
   },
 };
 

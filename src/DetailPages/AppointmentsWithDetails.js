@@ -151,7 +151,7 @@ function AppointmentWithDetails() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox sx={{ padding: 3 }}>
+      <MDBox p={3}>
         <MDBox sx={{ minHeight: '100vh', backgroundColor: '#f4f6f9' }} >
           {loading ? (
             <MDBox
@@ -534,14 +534,14 @@ function AppointmentWithDetails() {
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Weight <br /> </MDTypography>
-                          <MDTypography fontSize="medium"> {appointmentData?.userID?.weight || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.Weight || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Diabities <br /></MDTypography>
-                          <MDTypography fontSize="medium">{appointmentData?.userID?.height || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.diabetes || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
@@ -555,7 +555,7 @@ function AppointmentWithDetails() {
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Bood Pressure <br /> </MDTypography>
-                          <MDTypography fontSize="medium">{appointmentData?.userID?.bloodPressure || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.Bloodpressure || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 

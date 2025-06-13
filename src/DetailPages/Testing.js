@@ -1,5 +1,4 @@
 <>
-
     <MDBox display="flex" justifyContent="space-between" flexWrap="wrap" sx={{ flexDirection: { xs: 'column', md: 'row' } }} >
         {/* Booking ID */}
         <MDBox display="flex" alignItems="center" borderRadius="lg" m={0.5} p={0.5}
@@ -35,4 +34,15 @@
         </MDBox>
     </Grid>
 
+    <TextField select size="small" value="Week" sx={{ width: 400 }}>
+        <MenuItem value="Day">Day</MenuItem>
+        <MenuItem value="Week">Week</MenuItem>
+        <MenuItem value="Month">Month</MenuItem>
+    </TextField>
+
+    <Select defaultValue="All Dentist" size="small" sx={{ ml: "auto" }}>
+        <MenuItem value="All Dentist">All Dentist</MenuItem>
+        <MenuItem value="Dr. Olivia">Dr. Olivia</MenuItem>
+        <MenuItem value="Dr. Carter">Dr. Carter</MenuItem>
+    </Select>
 </>
