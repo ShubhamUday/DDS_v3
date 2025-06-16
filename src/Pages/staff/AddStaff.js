@@ -21,14 +21,14 @@ function AddStaff() {
   const [loading, setLoading] = useState(false);
   const [clinicList, setClinicList] = useState([]);
   const [selectedClinic, setSelectedClinic] = useState(null);
-  const [checkInTime, setCheckInTime] = useState("09:00");
-  const [checkOutTime, setCheckOutTime] = useState("17:00");
+  const [checkInTime, setCheckInTime] = useState("");
+  const [checkOutTime, setCheckOutTime] = useState("");
   const [name, setName] = useState("");
   const [number, seNumber] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("Male");
-  const [assignAs, setAssignAs] = useState("Receptionist");
+  const [gender, setGender] = useState("");
+  const [assignAs, setAssignAs] = useState("");
   const [permissions, setPermissions] = useState({
     canAcceptAppointments: false,
     canAddAppointments: false,
@@ -38,6 +38,7 @@ function AddStaff() {
   const navigate = useNavigate();
 
   const [age, setAge] = useState('age');
+  
   const handleChange = (event) => {
     setAge(event.target.value);
   };
@@ -99,9 +100,7 @@ function AddStaff() {
 
     try {
       const result = await axios.post(
-        `${process.env.REACT_APP_HOS}/add-new-staff`,
-        values,
-        {
+        `${process.env.REACT_APP_HOS}/add-new-staff`, values,{
           headers: { 'Content-Type': 'application/json' },
         }
       );
@@ -185,9 +184,20 @@ function AddStaff() {
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <TextField fullWidth label="Phone Number" variant="outlined" size="small" type="tel" value={number}
+              <TextField fullWidth size="small" label="Phone Number" variant="outlined" type="number" value={number}
                 onChange={(e) => seNumber(e.target.value)}
-                sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
+                sx={{
+                  backgroundColor: '#fafafa', borderRadius: 1,
+                  // For Chrome, Safari, Edge
+                  '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                    WebkitAppearance: 'none',
+                    margin: 0,
+                  },
+                  // For Firefox
+                  '& input[type=number]': {
+                    MozAppearance: 'textfield',
+                  },
+                }}
               />
             </Grid>
           </Grid>
@@ -197,28 +207,28 @@ function AddStaff() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
-                <InputLabel  id="gender-label">Gender</InputLabel>
-                <Select native labelId="gender-label" value={gender} label="Gender"
+                <InputLabel id="gender-label">Gender</InputLabel>
+                <Select labelId="gender-label" value={gender} label="Gender"
                   onChange={(e) => setGender(e.target.value)}
-                  inputProps={{ name: 'gender', id: 'gender-select' }}
+                // inputProps={{ name: 'gender', id: 'gender-select' }}
                 >
-                  <option value="" disabled>Select gender</option>
+                  <MenuItem value="" disabled>Select gender</MenuItem>
                   {['Male', 'Female', 'Other'].map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <MenuItem key={opt} value={opt}>{opt}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size="small">
-                <InputLabel  id="role-label">Role</InputLabel>
-                <Select native labelId="role-label" value={assignAs} label="Role"
+                <InputLabel id="role-label">Role</InputLabel>
+                <Select labelId="role-label" value={assignAs} label="Role"
                   onChange={(e) => setAssignAs(e.target.value)}
                   inputProps={{ name: 'role', id: 'role-select' }}
                 >
-                  <option value="" disabled>Select role</option>
+                  <MenuItem value="" disabled>Select role</MenuItem>
                   {['Receptionist', 'Co-helper', 'Nurse', 'Assistant', 'Ward Boy'].map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <MenuItem key={opt} value={opt}>{opt}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -232,12 +242,12 @@ function AddStaff() {
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
                   <InputLabel id={`${label.toLowerCase().replace(/ /g, '-')}-label`}>{label}</InputLabel>
-                  <Select native value={label === 'Check-In Time' ? checkInTime : checkOutTime} label={label}
+                  <Select value={label === 'Check-In Time' ? checkInTime : checkOutTime} label={label}
                     onChange={(e) => setter(e.target.value)}
                     inputProps={{ name: label.toLowerCase().replace(/ /g, '-') }}
                   >
                     {timeOptions.map((time) => (
-                      <option key={time} value={time}> {time} </option>
+                      <MenuItem key={time} value={time}> {time} </MenuItem>
                     ))}
                   </Select>
                 </FormControl>

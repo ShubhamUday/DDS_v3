@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Grid, CardContent, Divider, CardActions } from "@mui/material";
+import { Card, Grid, CardContent, Divider, CardActions, Fab } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -10,6 +10,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import img from "skel2.png";
+import AddIcon from '@mui/icons-material/Add';
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -20,10 +21,12 @@ import projectsTableData from "layouts/tables/data/AppointmentData";
 import { AlignVerticalBottomTwoTone } from "@mui/icons-material";
 import MDButton from "components/MDButton";
 import tab from "assets/theme/components/tabs/tab";
+import AddAppoinmentFormModal from "Pages/appoinment/AddAppoinmentFormModal";
 
 function Tables() {
   const { appointmentdata, columns } = projectsTableData();
   const [tabValue, setTabValue] = useState(0);
+  const [isAppoinmentModalOpen, setIsAppoinmentModalOpen] = useState(false)
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
@@ -172,7 +175,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox sx={{ padding: 3 }}>
+      <MDBox p={3} >
         <Grid container spacing={6}>
           <Grid item xs={12}>
             {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
@@ -302,9 +305,25 @@ function Tables() {
                 </Card>
               ))}
             </MDBox>
+
+            <Fab color="primary" aria-label="add" onClick={() => { setIsAppoinmentModalOpen(true) }}
+              sx={{
+                position: 'fixed',
+                bottom: 16,
+                right: 16,
+              }}
+            > <AddIcon /> </Fab>
+            
+            {isAppoinmentModalOpen && (
+              <AddAppoinmentFormModal
+                isAppoinmentModalOpen={isAppoinmentModalOpen}
+                setIsAppoinmentModalOpen={setIsAppoinmentModalOpen}
+              />
+            )}
           </Grid>
         </Grid>
       </MDBox>
+
     </DashboardLayout>
   );
 }

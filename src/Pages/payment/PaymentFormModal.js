@@ -43,7 +43,7 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
             amount: data?.PayAmount || '',
         });
 
-    })
+    },[])
     return (
         <>
             <Modal open={isPaymentUpdateModalOpen} onClose={() => { setIsPaymentUpdateModalOpen(false) }}>
