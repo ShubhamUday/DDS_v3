@@ -373,3 +373,40 @@
    
     
 </>
+
+<>
+## Drop down for selecting appoinment slot
+<FormControl fullWidth>
+  <InputLabel id="available-time-label">Available Time</InputLabel>
+  <Select
+    labelId="available-time-label"
+    value={availableTime || ''}
+    label="Available Time"
+    onChange={(e) => {
+      const selectedLabel = e.target.value;
+      const selectedInterval = intervalArray.find(i => i.label === selectedLabel);
+      setAvailableTime(selectedLabel);
+      setBookTimenew(selectedInterval?.value || null);
+    }}
+  >
+    {intervalArray.map((interval, index) => {
+      const isBooked = isSlotBooked(interval.label);
+      return (
+        <MenuItem
+          key={index}
+          value={interval.label}
+          disabled={isBooked}
+          sx={{
+            textDecoration: isBooked ? 'line-through' : 'none',
+            fontWeight: isBooked ? 'bold' : 'normal'
+          }}
+        >
+          {interval.label} {isBooked ? ' (Booked)' : ''}
+        </MenuItem>
+      );
+    })}
+  </Select>
+</FormControl>
+
+
+</>

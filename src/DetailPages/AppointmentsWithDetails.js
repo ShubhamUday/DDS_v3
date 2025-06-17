@@ -14,6 +14,7 @@ import calendarIcon from 'assets/images/schedule-calendar-and-blue-clock-18292.p
 import { EditOutlined, FamilyRestroomOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpgradeOutlined, MoreVertOutlined, CheckOutlined, Close, Male, Female } from '@mui/icons-material';
 import PatientFormModal from 'Pages/patient/PatientFormModal';
 import PaymentFormModal from 'Pages/payment/PaymentFormModal';
+import moment from 'moment';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -321,7 +322,7 @@ function AppointmentWithDetails() {
                     <MDTypography variant="h4" align="center" color="info" gutterBottom
                       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
                       <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
-                      Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {new Date(appointmentData?.Bookdate).toLocaleTimeString("en-GB")}
+                      Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
                     </MDTypography>
 
                     {buttons[1] && (<MDBox> {buttons[1]} </MDBox>)}

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import { Card, Divider, Grid, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Card, Chip, Divider, Grid, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
-import { Schedule } from '@mui/icons-material';
+import { CatchingPokemonSharp, Schedule } from '@mui/icons-material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -14,7 +14,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DateTimePicker } from '@mui/x-date-pickers';
-// momentObj = moment(); // example from a DateTimePicker
+import moment from 'moment';
+import LockIcon from '@mui/icons-material/Lock';
+
 
 
 const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
@@ -51,6 +53,13 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     const drID = localStorage.getItem('doctorID');
     const [clinicList, setClinicList] = useState([]);
     const [selectedClinic, setSelectedClinic] = useState(null);
+    const [submitAttempted, setSubmitAttempted] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
+    const [intervalArray, setIntervalArray] = useState([]);
+    const [bookedSlots, setBookedSlots] = useState([]);
+    const [availableTime, setAvailableTime] = useState(null);
+    const [bookTimenew, setBookTimenew] = useState(null);
+
     const [formData, setFormData] = useState({
         doctorID: "",
         patientName: "",
@@ -70,8 +79,52 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     });
 
 
-    console.log('date', formData.Bookdate)
     console.log('form data', formData)
+    console.log('form data date', formData.Bookdate)
+    console.log('selected clinic', selectedClinic)
+    // console.log('Time interval', intervalArray)
+    console.log('bookTimenew', bookTimenew)
+    console.log("bookedSlots", bookedSlots)
+    console.log("availableTime", availableTime)
+
+
+    // Helper
+    const extractHour = (timeStr) => {
+        if (!timeStr || typeof timeStr !== 'string') {
+            console.warn("Invalid time string:", timeStr);
+            return 0; // or return null if you want to skip
+        }
+        const [time, modifier] = timeStr.split(' ');
+        if (!time || !modifier) {
+            console.warn("Time or modifier missing:", timeStr);
+            return 0;
+        }
+        let [hours, minutes] = time.split(':');
+
+        hours = parseInt(hours, 10);
+
+        if (modifier === 'PM' && hours !== 12) {
+            hours += 12;
+        }
+        if (modifier === 'AM' && hours === 12) {
+            hours = 0;
+        }
+
+        return hours;
+    };
+
+    // Helper
+    const normalizeTime = (time) => {
+        const date = new Date(`1970-01-01T${time}`);
+        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    };
+
+    const handleClose = () => { setIsAppoinmentModalOpen(false) }
+
+    const handleChange = (field) => (e) => {
+        const value = e.target.value;
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     const fetchClinicList = async () => {
         try {
@@ -82,42 +135,97 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                 }
             );
             setClinicList(result.data.clinicID);
-            console.log('clinic daa', result)
+            // console.log('clinic daa', result)
         } catch (error) {
             console.log(error);
         }
     };
 
     const handleClinicSelect = (clinic) => {
-        setSelectedClinic(clinic._id);
+        setSelectedClinic(clinic);
         setFormData((prev) => ({
             ...prev,
             doctorID: drID,
             clinicID: clinic._id,
         }));
+        generateTimeIntervals(clinic?.openTime, clinic?.closeTime)
     };
 
-    // Handlers
-    const handleClose = () => { setIsAppoinmentModalOpen(false) }
+    const generateTimeIntervals = (openTime, closeTime) => {
+        const finalStarttime = extractHour(openTime);
+        const finalEndtime = extractHour(closeTime);
 
-    const handleChange = (field) => (e) => {
-        const value = e.target.value;
-        setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+        const intervals = [];
 
+        const startTime = new Date();
+        startTime.setHours(finalStarttime, 0, 0, 0);
+
+        const endTime = new Date();
+        endTime.setHours(finalEndtime, 0, 0, 0);
+
+        let currentTime = new Date(startTime);
+
+        while (currentTime <= endTime) {
+            const hours24 = currentTime.getHours();
+            const hours12 = hours24 % 12 || 12;
+            const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+            const ampm = hours24 < 12 ? 'AM' : 'PM';
+
+            intervals.push({
+                label: `${hours12}:${minutes} ${ampm}`,
+                value: { hours: hours24, minutes: currentTime.getMinutes() },
+            });
+
+            currentTime.setMinutes(currentTime.getMinutes() + 15);
+        }
+        setIntervalArray(intervals);
+    }
 
     const handleScheduleChange = (momentObj) => {
+
+        console.log('DatePicker changed:', momentObj?.format("YYYY-MM-DD"));
+
+        const formattedDate = momentObj.format('YYYY-MM-DD');
+
         if (!momentObj || !momentObj.isValid()) return;
 
         setFormData((prev) => ({
             ...prev,
-            Bookdate: momentObj.toISOString(),              // ISO format: "2024-07-30T12:30:00.000Z"
-            BookTime: momentObj.format("h:mm A"),           // Time format: "6:00 PM"
+            Bookdate: formattedDate,              // ISO format: "2024-07-30 T 12:30:00.000Z"
         }));
+        setShowTimePicker(true)
+        getBookedSlots(formattedDate)
+    };
+
+    const isSlotBooked = (time) => {
+        return bookedSlots.map(normalizeTime).includes(normalizeTime(time));
     };
 
 
+    const getBookedSlots = async (selectedDate) => {
+        if (!selectedDate) return;
+        console.log("Fetching slots for:", selectedDate);
+
+        try {
+            const result = await axios.get(`${process.env.REACT_APP_HOS}/get-booked-slots/${drID}/${selectedDate}`)
+            console.log('API get booked slots', result.data)
+
+            const data = result.data
+            if (Array.isArray(data)) {
+                setBookedSlots(data.map(appt => appt.BookTime));
+            } else if (data.appointments) {
+                setBookedSlots(data.appointments.map(appt => appt.BookTime));
+            } else {
+                setBookedSlots([]);
+            }
+
+        } catch (error) {
+            console.error('Error fetching booked slots:', error);
+        }
+    }
+
     const handleSubmit = async () => {
+        setSubmitAttempted(true)
         const { patientName, age, gender, treatmentFor, ProblemDetails, Bookdate, clinicID } = formData;
         if (
             !patientName.trim() ||
@@ -170,8 +278,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     useEffect(() => {
         fetchClinicList();
-        setFormData
-    }, []);
+        // getBookedSlots();
+    }, [selectedClinic, bookedSlots]);
 
 
 
@@ -188,11 +296,11 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex" mb={1} mr={2}>
                                     {/* <MDTypography variant="subtitle2"  color="textPrimary" mt={0.5} mr={1}> Name </MDTypography> */}
-                                    <TextField required fullWidth label="Name" size="small"
+                                    <TextField fullWidth label="Name" size="small"
                                         value={formData.patientName}
                                         onChange={handleChange('patientName')}
-                                        error={!formData.patientName.trim()}
-                                        helperText={!formData.patientName.trim() && "Required"} />
+                                        error={submitAttempted && !formData.patientName.trim()}
+                                        helperText={submitAttempted && !formData.patientName.trim() && "Required"} />
                                 </MDBox>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -237,8 +345,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                 <TextField size="small" id="outlined-number" label="Age" type="number"
                                     value={formData.age}
                                     onChange={handleChange('age')}
-                                    error={!formData.age}
-                                    helperText={!formData.age && "Required"}
+                                    error={submitAttempted && !formData.age}
+                                    helperText={submitAttempted && !formData.age && "Required"}
                                     sx={{
                                         // For Chrome, Safari, Edge
                                         '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
@@ -283,8 +391,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     <TextField label="Treatment" size="small" fullWidth
                                         value={formData.treatmentFor}
                                         onChange={handleChange('treatmentFor')}
-                                        error={!formData.treatmentFor.trim()}
-                                        helperText={!formData.treatmentFor.trim() && "Required"} />
+                                        error={submitAttempted && !formData.treatmentFor.trim()}
+                                        helperText={submitAttempted && !formData.treatmentFor.trim() && "Required"} />
 
                                 </MDBox>
                             </Grid>
@@ -313,12 +421,12 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                             <TextField fullWidth label="Problem" size="small"
                                 value={formData.ProblemDetails}
                                 onChange={handleChange('ProblemDetails')}
-                                error={!formData.ProblemDetails.trim()}
-                                helperText={!formData.ProblemDetails.trim() && "Required"}
+                                error={submitAttempted && !formData.ProblemDetails.trim()}
+                                helperText={submitAttempted && !formData.ProblemDetails.trim() && "Required"}
                             />
                         </MDBox>
 
-                        <MDTypography variant="h6" color="text" fontWeight="medium" gutterBottom> Clinics </MDTypography>
+                        <MDTypography variant="h6" gutterBottom> Clinics </MDTypography>
                         <Grid container>
                             <Grid container spacing={2}>
                                 {clinicList.map((clinic, index) => (
@@ -327,8 +435,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                             sx={{
                                                 cursor: 'pointer',
                                                 borderRadius: 2,
-                                                border: selectedClinic === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
-                                                backgroundColor: selectedClinic === clinic._id ? '#f3e5f5' : '#fff',
+                                                border: selectedClinic?._id === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
+                                                backgroundColor: selectedClinic?._id === clinic._id ? '#f3e5f5' : '#fff',
                                                 transition: 'all 0.3s ease',
                                                 '&:hover': {
                                                     boxShadow: 4,
@@ -386,14 +494,97 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                         </Grid>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DateTimePicker
+                            <DatePicker
+                                // disablePast
                                 label="Schedule"
-                                value={formData.Bookdate}
+                                value={formData.Bookdate ? moment(formData.Bookdate) : null}
+                                // minDate={moment()} // today
+                                maxDate={moment().add(20, "days")} // today + 20 days
                                 onChange={handleScheduleChange}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        fullWidth
+                                        error={submitAttempted && !formData.Bookdate}
+                                        helperText={submitAttempted && !formData.Bookdate && "Required"}
+                                    />
+                                )}
                             />
                         </LocalizationProvider>
 
+
+                        {showTimePicker && (
+                            <MDBox sx={{ mt: 2 }}>
+                                <MDTypography variant="h6" gutterBottom> Available Slot </MDTypography>
+                                <MDBox sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 2,
+                                    justifyContent: 'center', // or 'flex-start' for left alignment
+                                }}>
+                                    {intervalArray.map((interval, index) => {
+                                        // console.log("intrv arr", interval)
+                                        const isBooked = isSlotBooked(interval.label);
+
+                                        return (
+                                            <MDButton
+                                                key={index}
+                                                variant={
+                                                    isBooked ? "contained"
+                                                        : availableTime === interval.label ? "contained" : "outlined"
+                                                }
+                                                color={isBooked ? "error" : "primary"}
+                                                disabled={isBooked}
+                                                onClick={() => {
+                                                    if (!isBooked) {
+                                                        setAvailableTime(interval.label);
+                                                        setBookTimenew(interval.value);
+                                                    }
+                                                }}
+                                                sx={{
+                                                    width: isBooked ?  160 : 50,
+                                                    height: 20, 
+                                                    fontWeight: isBooked ? 'bold' : 'normal',
+                                                    whiteSpace: 'nowrap', flexShrink: 0
+                                                }}
+                                            >
+                                                <MDTypography
+                                                    variant="button"
+                                                    sx={{
+                                                        textDecoration: isBooked ? 'line-through' : 'none',
+                                                        fontWeight: 'bold',
+                                                        color: isBooked ? '#fff' : availableTime === interval.label ? "#fff" : 'normal',
+                                                    }}
+                                                >
+                                                    {interval.label}
+                                                </MDTypography>
+                                                {isBooked && (
+                                                    <MDBox
+                                                        sx={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            // gap: 0.5,
+                                                            backgroundColor: '#ff6b6b',
+                                                            color: '#fff',
+                                                            borderRadius: '5px',
+                                                            padding: '2px 8px',
+                                                            fontSize: '12px',
+                                                            fontWeight: 'bold',
+                                                            textDecoration: 'none !important',
+                                                            ml: 1,
+                                                        }}
+                                                    >
+                                                        <LockIcon sx={{ fontSize: 14 }} />
+                                                        Booked
+                                                    </MDBox>
+                                                )}
+                                            </MDButton>
+                                        );
+                                    })}
+                                </MDBox>
+                            </MDBox>
+                        )}
+                        <Divider />
                         <Grid container>
                             <Grid item xs={12} sm={6}>
                                 {/* Diabities */}
@@ -423,7 +614,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         value={formData.Bloodpressure}
                                         exclusive
                                         onChange={handleChange('Bloodpressure')}
-
                                     >
                                         <StyledToggleButton value="Yes"> Yes </StyledToggleButton>
                                         <StyledToggleButton value="No"> No </StyledToggleButton>
@@ -442,7 +632,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         value={formData.plan}
                                         exclusive
                                         onChange={handleChange('plan')}
-
                                     >
                                         <StyledToggleButton value="online"> Online </StyledToggleButton>
                                         <StyledToggleButton value="inClinic"> In-Clinic </StyledToggleButton>
@@ -459,7 +648,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         value={formData.PayType}
                                         exclusive
                                         onChange={handleChange('PayType')}
-
                                     >
                                         <StyledToggleButton value="online"> Paid </StyledToggleButton>
                                         <StyledToggleButton value="inClinic"> In-Clinic </StyledToggleButton>

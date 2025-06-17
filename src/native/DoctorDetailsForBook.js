@@ -64,6 +64,7 @@ const DoctorDetailsForBook = ({ navigation, route }) => {
     const [ageError, setAgeError] = useState('');
     const [treatmentError, setTreatmentError] = useState('');
     const [problemError, setProblemError] = useState('');
+    
 
     const next20Days = getNext20Days();
 
@@ -128,6 +129,7 @@ const DoctorDetailsForBook = ({ navigation, route }) => {
             }
             const data = await response.json();
             console.log('Received data:', data);
+
             if (Array.isArray(data)) {
                 setBookedSlots(data.map(appointment => appointment.BookTime));
               } else if (data.appointments) {

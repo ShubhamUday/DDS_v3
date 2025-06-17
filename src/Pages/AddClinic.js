@@ -12,6 +12,7 @@ import {
   FormControl,
   InputLabel,
   IconButton,
+  MenuItem,
 } from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -29,10 +30,10 @@ function AddClinic() {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedClinic, setSelectedClinic] = useState(null);
   const [clinicCoordinates, setClinicCoordinates] = useState({ lat: null, lng: null });
-  const [checkInTime, setCheckInTime] = useState("09:00");
-  const [checkOutTime, setCheckOutTime] = useState("17:00");
-  const [EmergencycheckInTime, setEmergencyCheckInTime] = useState("09:00");
-  const [EmergencycheckOutTime, setEmergencyCheckOutTime] = useState("17:00");
+  const [checkInTime, setCheckInTime] = useState("");
+  const [checkOutTime, setCheckOutTime] = useState("");
+  const [EmergencycheckInTime, setEmergencyCheckInTime] = useState("");
+  const [EmergencycheckOutTime, setEmergencyCheckOutTime] = useState("");
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
   const [clinicDetails, setClinicDetails] = useState("");
@@ -241,10 +242,10 @@ function AddClinic() {
             {[['Open Time', checkInTime, setCheckInTime], ['Close Time', checkOutTime, setCheckOutTime]].map(([label, value, setter]) => (
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
-                  <InputLabel shrink>{label}</InputLabel>
-                  <Select native value={value} onChange={(e) => setter(e.target.value)}>
+                  <InputLabel id="E-close-time"> {label} </InputLabel>
+                  <Select labelId='E-close-time' label={label} value={value} onChange={(e) => setter(e.target.value)}>
                     {timeOptions.map((time) => (
-                      <option key={time} value={time}>{time}</option>
+                      <MenuItem key={time} value={time}>{time}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -258,10 +259,10 @@ function AddClinic() {
             {[['Emergency Open Time', EmergencycheckInTime, setEmergencyCheckInTime], ['Emergency Close Time', EmergencycheckOutTime, setEmergencyCheckOutTime]].map(([label, value, setter]) => (
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
-                  <InputLabel shrink>{label}</InputLabel>
-                  <Select native value={value} onChange={(e) => setter(e.target.value)}>
+                  <InputLabel id="E-open-time"> {label} </InputLabel>
+                  <Select labelId='E-open-time' label={label} value={value} onChange={(e) => setter(e.target.value)}>
                     {timeOptions.map((time) => (
-                      <option key={time} value={time}>{time}</option>
+                      <MenuItem key={time} value={time}>{time}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>

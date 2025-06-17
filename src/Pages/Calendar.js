@@ -65,10 +65,7 @@ function CalendarPage() {
                           <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
                           {new Date(item?.Bookdate).toLocaleDateString("en-GB")}{" "}
                           <Icon sx={{ fontSize: 18, mr: 1, ml: 1, color: "info" }}>access_time</Icon>
-                          {new Date(item?.Bookdate).toLocaleTimeString("en-GB", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {item?.BookTime}
                         </MDTypography>
                       </MDBox>
                     </MDBox>
