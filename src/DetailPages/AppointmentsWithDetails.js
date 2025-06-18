@@ -406,11 +406,11 @@ function AppointmentWithDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={3}>
                       <MDTypography variant="button" fontWeight="bold" color='info'>Name</MDTypography>
-                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.name}</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.name || appointmentData?.patientName}</MDTypography>
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <MDTypography variant="button" fontWeight="bold" color='info'>Gender</MDTypography>
-                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.gender}</MDTypography>
+                      <MDTypography fontSize="medium" color="text">{appointmentData?.userID?.gender || appointmentData?.gender}</MDTypography>
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <MDTypography variant="button" fontWeight="bold" color='info'>Mobile</MDTypography>

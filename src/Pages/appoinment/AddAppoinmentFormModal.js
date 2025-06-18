@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import { Card, Chip, Divider, Grid, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Card, Chip, Dialog, DialogContent, Divider, Grid, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
@@ -33,22 +33,6 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     },
 }));
 
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 900,
-    maxHeight: 700,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    borderRadius: 3,
-    p: 3,
-    overflowY: 'auto',
-};
-
-
 const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpen }) => {
     const drID = localStorage.getItem('doctorID');
     const [clinicList, setClinicList] = useState([]);
@@ -78,16 +62,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
         clinicID: "",
     });
 
-
-    console.log('form data', formData)
-    console.log('form data date', formData.Bookdate)
-    console.log('selected clinic', selectedClinic)
-    // console.log('Time interval', intervalArray)
-    console.log('bookTimenew', bookTimenew)
-    console.log("bookedSlots", bookedSlots)
-    console.log("availableTime", availableTime)
-
-
     // Helper
     const extractHour = (timeStr) => {
         if (!timeStr || typeof timeStr !== 'string') {
@@ -113,11 +87,10 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
         return hours;
     };
 
-    // Helper
-    const normalizeTime = (time) => {
-        const date = new Date(`1970-01-01T${time}`);
-        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    };
+    // const normalizeTime = (time) => {
+    //     const date = new Date(`1970-01-01T${time}`);
+    //     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    // };
 
     const handleClose = () => { setIsAppoinmentModalOpen(false) }
 
@@ -191,16 +164,18 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
         setFormData((prev) => ({
             ...prev,
-            Bookdate: formattedDate,              // ISO format: "2024-07-30 T 12:30:00.000Z"
+            Bookdate: formattedDate,
         }));
         setShowTimePicker(true)
         getBookedSlots(formattedDate)
     };
 
-    const isSlotBooked = (time) => {
-        return bookedSlots.map(normalizeTime).includes(normalizeTime(time));
-    };
+    // const isSlotBooked = (time) => {
+    //     console.log('intervalArray', time)
+    //     return bookedSlots.map(normalizeTime).includes(normalizeTime(time));
+    // };
 
+    const isSlotBooked = (time) => bookedSlots.includes(time);
 
     const getBookedSlots = async (selectedDate) => {
         if (!selectedDate) return;
@@ -218,7 +193,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
             } else {
                 setBookedSlots([]);
             }
-
         } catch (error) {
             console.error('Error fetching booked slots:', error);
         }
@@ -279,22 +253,32 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     useEffect(() => {
         fetchClinicList();
         // getBookedSlots();
-    }, [selectedClinic, bookedSlots]);
+    }, []);
 
 
 
     return (
         <>
-            <Modal open={isAppoinmentModalOpen} onClose={handleClose}>
-                <MDBox sx={style}>
-                    <MDTypography variant="h6" mb={2} fontWeight="bold"> Add Appoinment </MDTypography>
+            <Dialog open={isAppoinmentModalOpen} onClose={handleClose} maxWidth="md" fullWidth>
+                <DialogContent
+                    sx={{ p: 0, overflow: 'hidden' }} >
+                    <MDBox
+                        sx={{
+                            maxHeight: '80vh',
+                            overflowY: 'auto',
+                            px: 3,
+                            py: 2,
+                            borderRadius: '12px',
+                        }}
+                    >
+                        <MDTypography variant="h6" mb={2} fontWeight="bold"> Add Appoinment </MDTypography>
 
-                    <Divider />
+                        <Divider />
 
-                    <Stack spacing={2}>
-                        <Grid container>
+                        <Grid container spacing={2}>
+                            {/* Name */}
                             <Grid item xs={12} sm={6}>
-                                <MDBox display="flex" mb={1} mr={2}>
+                                <MDBox display="flex" >
                                     {/* <MDTypography variant="subtitle2"  color="textPrimary" mt={0.5} mr={1}> Name </MDTypography> */}
                                     <TextField fullWidth label="Name" size="small"
                                         value={formData.patientName}
@@ -303,6 +287,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         helperText={submitAttempted && !formData.patientName.trim() && "Required"} />
                                 </MDBox>
                             </Grid>
+                            {/* Phone Number */}
                             <Grid item xs={12} sm={6}>
                                 <TextField fullWidth size="small" id="outlined-number" label="Phone Number" type="number"
                                     value={formData.phone}
@@ -320,11 +305,10 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     }}
                                 />
                             </Grid>
-                        </Grid>
 
-                        <Grid container>
+                            {/* Gender */}
                             <Grid item xs={12} sm={4}>
-                                <MDBox display="flex" ml={3}>
+                                <MDBox display="flex">
                                     {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Gender </MDTypography> */}
                                     <ToggleButtonGroup
                                         size="small"
@@ -337,9 +321,9 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         <StyledToggleButton value="Female"> Female </StyledToggleButton>
                                     </ToggleButtonGroup>
                                 </MDBox>
-
                             </Grid>
 
+                            {/* Age */}
                             <Grid item xs={12} sm={4}>
                                 {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Age </MDTypography> */}
                                 <TextField size="small" id="outlined-number" label="Age" type="number"
@@ -360,8 +344,10 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     }}
                                 />
                             </Grid>
+
+                            {/* Weight */}
                             <Grid item xs={12} sm={4}>
-                                <MDBox display="flex">
+                                <MDBox display="flex" justifyContent="flex-end">
                                     {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography> */}
                                     <TextField label="Weight" size="small" type="number"
                                         value={formData.Weight}
@@ -381,10 +367,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                 </MDBox>
                             </Grid>
 
-                        </Grid>
-
-
-                        <Grid container>
+                            {/* Treatment */}
                             <Grid item xs={12} sm={12}>
                                 <MDBox display="flex" mb={1}>
                                     {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography> */}
@@ -413,181 +396,191 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     <StyledToggleButton value="Tooth Ache"> Tooth Ache </StyledToggleButton>
                                 </ToggleButtonGroup>
                             </Grid>
-                        </Grid>
 
-
-                        <MDBox display="flex">
-                            {/* <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography> */}
-                            <TextField fullWidth label="Problem" size="small"
-                                value={formData.ProblemDetails}
-                                onChange={handleChange('ProblemDetails')}
-                                error={submitAttempted && !formData.ProblemDetails.trim()}
-                                helperText={submitAttempted && !formData.ProblemDetails.trim() && "Required"}
-                            />
-                        </MDBox>
-
-                        <MDTypography variant="h6" gutterBottom> Clinics </MDTypography>
-                        <Grid container>
-                            <Grid container spacing={2}>
-                                {clinicList.map((clinic, index) => (
-                                    <Grid item xs={12} sm={6} key={index} onClick={() => handleClinicSelect(clinic)}>
-                                        <Card
-                                            sx={{
-                                                cursor: 'pointer',
-                                                borderRadius: 2,
-                                                border: selectedClinic?._id === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
-                                                backgroundColor: selectedClinic?._id === clinic._id ? '#f3e5f5' : '#fff',
-                                                transition: 'all 0.3s ease',
-                                                '&:hover': {
-                                                    boxShadow: 4,
-                                                    backgroundColor: '#fafafa',
-                                                },
-                                            }}
-                                        >
-                                            <MDBox sx={{ display: 'flex', padding: 1.5, gap: 2 }}>
-                                                {/* Clinic Image */}
-                                                <MDBox sx={{ width: 70, height: 70, borderRadius: 2, overflow: 'hidden', flexShrink: 0 }}>
-                                                    <img
-                                                        src={clinic.imgarry[0]?.profile_url}
-                                                        alt={clinic.clinicname}
-                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                    />
-                                                </MDBox>
-
-                                                {/* Clinic Info */}
-                                                <MDBox sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                                    <MDTypography variant="body2" fontWeight="bold">
-                                                        {clinic.clinicname}
-                                                    </MDTypography>
-
-                                                    <MDTypography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                        <PhoneIcon fontSize="inherit" color="secondary" /> {clinic.phone || 'N/A'}
-                                                    </MDTypography>
-
-                                                    <MDTypography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                        <AccessTimeIcon fontSize="inherit" color="success" /> {clinic.openTime} - {clinic.closeTime}
-                                                    </MDTypography>
-
-                                                    <MDTypography
-                                                        variant="caption"
-                                                        sx={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: 0.5,
-                                                            color: 'text.secondary',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            displayWebkitBox: true,
-                                                            WebkitLineClamp: 2,
-                                                            WebkitBoxOrient: 'vertical',
-                                                        }}
-                                                    >
-                                                        <LocationOnIcon fontSize="inherit" color="info" /> {clinic.clinicAddress}
-                                                    </MDTypography>
-                                                </MDBox>
-                                            </MDBox>
-                                        </Card>
-                                    </Grid>
-
-                                ))}
+                            {/* Problem */}
+                            <Grid item xs={12} sm={12}>
+                                {/* <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography> */}
+                                <TextField fullWidth label="Problem" size="small"
+                                    value={formData.ProblemDetails}
+                                    onChange={handleChange('ProblemDetails')}
+                                    error={submitAttempted && !formData.ProblemDetails.trim()}
+                                    helperText={submitAttempted && !formData.ProblemDetails.trim() && "Required"}
+                                />
                             </Grid>
-                        </Grid>
 
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DatePicker
-                                // disablePast
-                                label="Schedule"
-                                value={formData.Bookdate ? moment(formData.Bookdate) : null}
-                                // minDate={moment()} // today
-                                maxDate={moment().add(20, "days")} // today + 20 days
-                                onChange={handleScheduleChange}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        fullWidth
-                                        error={submitAttempted && !formData.Bookdate}
-                                        helperText={submitAttempted && !formData.Bookdate && "Required"}
-                                    />
-                                )}
-                            />
-                        </LocalizationProvider>
-
-
-                        {showTimePicker && (
-                            <MDBox sx={{ mt: 2 }}>
-                                <MDTypography variant="h6" gutterBottom> Available Slot </MDTypography>
-                                <MDBox sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    gap: 2,
-                                    justifyContent: 'center', // or 'flex-start' for left alignment
-                                }}>
-                                    {intervalArray.map((interval, index) => {
-                                        // console.log("intrv arr", interval)
-                                        const isBooked = isSlotBooked(interval.label);
-
-                                        return (
-                                            <MDButton
-                                                key={index}
-                                                variant={
-                                                    isBooked ? "contained"
-                                                        : availableTime === interval.label ? "contained" : "outlined"
-                                                }
-                                                color={isBooked ? "error" : "primary"}
-                                                disabled={isBooked}
-                                                onClick={() => {
-                                                    if (!isBooked) {
-                                                        setAvailableTime(interval.label);
-                                                        setBookTimenew(interval.value);
-                                                    }
-                                                }}
+                            {/* Select Clinic */}
+                            <Grid item xs={12} sm={12}>
+                                <MDTypography variant="h6" gutterBottom> Clinics </MDTypography>
+                                <Grid container spacing={2}>
+                                    {clinicList.map((clinic, index) => (
+                                        <Grid item xs={12} sm={6} key={index} onClick={() => handleClinicSelect(clinic)}>
+                                            <Card
                                                 sx={{
-                                                    width: isBooked ?  160 : 50,
-                                                    height: 20, 
-                                                    fontWeight: isBooked ? 'bold' : 'normal',
-                                                    whiteSpace: 'nowrap', flexShrink: 0
+                                                    cursor: 'pointer',
+                                                    borderRadius: 2,
+                                                    border: selectedClinic?._id === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
+                                                    backgroundColor: selectedClinic?._id === clinic._id ? '#f3e5f5' : '#fff',
+                                                    transition: 'all 0.3s ease',
+                                                    '&:hover': {
+                                                        boxShadow: 4,
+                                                        backgroundColor: '#fafafa',
+                                                    },
                                                 }}
                                             >
-                                                <MDTypography
-                                                    variant="button"
-                                                    sx={{
-                                                        textDecoration: isBooked ? 'line-through' : 'none',
-                                                        fontWeight: 'bold',
-                                                        color: isBooked ? '#fff' : availableTime === interval.label ? "#fff" : 'normal',
-                                                    }}
-                                                >
-                                                    {interval.label}
-                                                </MDTypography>
-                                                {isBooked && (
-                                                    <MDBox
+                                                <MDBox sx={{ display: 'flex', padding: 1.5, gap: 2 }}>
+                                                    {/* Clinic Image */}
+                                                    <MDBox sx={{ width: 70, height: 70, borderRadius: 2, overflow: 'hidden', flexShrink: 0 }}>
+                                                        <img
+                                                            src={clinic.imgarry[0]?.profile_url}
+                                                            alt={clinic.clinicname}
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                        />
+                                                    </MDBox>
+
+                                                    {/* Clinic Info */}
+                                                    <MDBox sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                                        <MDTypography variant="body2" fontWeight="bold">
+                                                            {clinic.clinicname}
+                                                        </MDTypography>
+
+                                                        <MDTypography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                            <PhoneIcon fontSize="inherit" color="secondary" /> {clinic.phone || 'N/A'}
+                                                        </MDTypography>
+
+                                                        <MDTypography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                            <AccessTimeIcon fontSize="inherit" color="success" /> {clinic.openTime} - {clinic.closeTime}
+                                                        </MDTypography>
+
+                                                        <MDTypography
+                                                            variant="caption"
+                                                            sx={{
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: 0.5,
+                                                                color: 'text.secondary',
+                                                                overflow: 'hidden',
+                                                                textOverflow: 'ellipsis',
+                                                                displayWebkitBox: true,
+                                                                WebkitLineClamp: 2,
+                                                                WebkitBoxOrient: 'vertical',
+                                                            }}
+                                                        >
+                                                            <LocationOnIcon fontSize="inherit" color="info" /> {clinic.clinicAddress}
+                                                        </MDTypography>
+                                                    </MDBox>
+                                                </MDBox>
+                                            </Card>
+                                        </Grid>
+
+                                    ))}
+                                </Grid>
+                            </Grid>
+
+                            {/* Select Date */}
+                            <Grid item xs={12} sm={12}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                    <DatePicker
+                                        // disablePast
+                                        label="Schedule"
+                                        value={formData.Bookdate ? moment(formData.Bookdate) : null}
+                                        // minDate={moment()} // today
+                                        maxDate={moment().add(20, "days")} // today + 20 days
+                                        onChange={handleScheduleChange}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                fullWidth
+                                                error={submitAttempted && !formData.Bookdate}
+                                                helperText={submitAttempted && !formData.Bookdate && "Required"}
+                                            />
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+
+                            {/* Select Slot */}
+                            <Grid item xs={12} sm={12}>
+                                {showTimePicker && (
+                                    <MDBox sx={{ mt: 2 }}>
+                                        <MDTypography variant="h6" gutterBottom> Available Slot </MDTypography>
+                                        <MDBox sx={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: 2,
+                                            justifyContent: 'center', // or 'flex-start' for left alignment
+                                        }}>
+                                            {intervalArray.map((interval, index) => {
+                                                const isBooked = isSlotBooked(interval.label);
+                                                console.log('isBooked', isBooked)
+
+                                                return (
+                                                    <MDButton
+                                                        key={index}
+                                                        variant={
+                                                            isBooked ? "contained"
+                                                                : availableTime === interval.label ? "contained" : "outlined"
+                                                        }
+                                                        color={isBooked ? "error" : "primary"}
+                                                        disabled={isBooked}
+                                                        onClick={() => {
+                                                            if (!isBooked) {
+                                                                setAvailableTime(interval.label);
+                                                                setBookTimenew(interval.label);
+                                                                setFormData((prev) => ({
+                                                                    ...prev,
+                                                                    BookTime: interval.label,
+                                                                }));
+                                                            }
+                                                        }}
                                                         sx={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            // gap: 0.5,
-                                                            backgroundColor: '#ff6b6b',
-                                                            color: '#fff',
-                                                            borderRadius: '5px',
-                                                            padding: '2px 8px',
-                                                            fontSize: '12px',
-                                                            fontWeight: 'bold',
-                                                            textDecoration: 'none !important',
-                                                            ml: 1,
+                                                            width: isBooked ? 160 : 100,
+                                                            height: 20,
+                                                            fontWeight: isBooked ? 'bold' : 'normal',
+                                                            whiteSpace: 'nowrap', flexShrink: 0
                                                         }}
                                                     >
-                                                        <LockIcon sx={{ fontSize: 14 }} />
-                                                        Booked
-                                                    </MDBox>
-                                                )}
-                                            </MDButton>
-                                        );
-                                    })}
-                                </MDBox>
-                            </MDBox>
-                        )}
-                        <Divider />
-                        <Grid container>
+                                                        <MDTypography
+                                                            variant="button"
+                                                            sx={{
+                                                                textDecoration: isBooked ? 'line-through' : 'none',
+                                                                fontWeight: 'bold',
+                                                                color: isBooked ? '#fff' : availableTime === interval.label ? "#fff" : 'normal',
+                                                            }}
+                                                        >
+                                                            {interval.label}
+                                                        </MDTypography>
+                                                        {isBooked && (
+                                                            <MDBox
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    // gap: 0.5,
+                                                                    backgroundColor: '#ff6b6b',
+                                                                    color: '#fff',
+                                                                    borderRadius: '5px',
+                                                                    padding: '2px 8px',
+                                                                    fontSize: '12px',
+                                                                    fontWeight: 'bold',
+                                                                    textDecoration: 'none !important',
+                                                                    ml: 1,
+                                                                }}
+                                                            >
+                                                                <LockIcon sx={{ fontSize: 14 }} />
+                                                                Booked
+                                                            </MDBox>
+                                                        )}
+                                                    </MDButton>
+                                                );
+                                            })}
+                                        </MDBox>
+                                    </MDBox>
+                                )}
+                            </Grid>
+
+                            <Divider />
+
+                            {/* Diabities */}
                             <Grid item xs={12} sm={6}>
-                                {/* Diabities */}
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Diabities </MDTypography>
                                     <ToggleButtonGroup
@@ -604,8 +597,9 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     </ToggleButtonGroup>
                                 </MDBox>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
 
+                            {/* Blood Pressure */}
+                            <Grid item xs={12} sm={6}>
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Blood Pressure </MDTypography>
                                     <ToggleButtonGroup
@@ -620,9 +614,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     </ToggleButtonGroup>
                                 </MDBox>
                             </Grid>
-                        </Grid>
 
-                        <Grid container>
+                            {/* Plan */}
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Plan </MDTypography>
@@ -639,6 +632,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                 </MDBox>
                             </Grid>
 
+                            {/* Payment */}
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Payment </MDTypography>
@@ -654,19 +648,21 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     </ToggleButtonGroup>
                                 </MDBox>
                             </Grid>
+
+                            <Divider />
+
+                            {/* Buttons */}
+                            <Grid item xs={12} sm={12}>
+                                <MDBox display="flex" justifyContent="flex-end" gap={1}>
+                                    <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
+                                    <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Book </MDButton>
+                                </MDBox>
+                            </Grid>
                         </Grid>
 
-                        <Divider />
-
-                        {/* Buttons */}
-                        <MDBox display="flex" justifyContent="flex-end" gap={1}>
-                            <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
-                            <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Book </MDButton>
-                        </MDBox>
-                    </Stack>
-
-                </MDBox>
-            </Modal>
+                    </MDBox>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

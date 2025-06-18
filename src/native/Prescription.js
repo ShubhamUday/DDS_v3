@@ -17,16 +17,9 @@ const Prescription = ({ navigation, route }) => {
     const [adviceNew, setadviceNew] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [NoteOld, setNoteOld] = useState('');
-
-
-
     const { param1 } = route.params;
+
     console.log("gggggggggggggggggggggg", param1)
-
-
-
-
-
 
     // Initialize with two pairs of input fields and toggle states
     const [inputs, setInputs] = useState([{ medicinename: '', morningdos: 'Morning', afternoon: '', evening: '', night: 'Night', foodtime: 'After', medicinetype: 'Tablet', quantity: '', count: 1, days: '7' }]);
@@ -50,8 +43,6 @@ const Prescription = ({ navigation, route }) => {
         setInputs(newInputs);
     };
 
-
-
     const handleafternoonChange = (index, value) => {
         const newInputs = [...inputs];
         newInputs[index].afternoon = value;
@@ -70,7 +61,6 @@ const Prescription = ({ navigation, route }) => {
         setInputs(newInputs);
     };
 
-
     // Function to handle toggle change for the second set of toggle buttons
     const handlefoodtimeChange = (index, value) => {
         const newInputs = [...inputs];
@@ -78,14 +68,11 @@ const Prescription = ({ navigation, route }) => {
         setInputs(newInputs);
     };
 
-
-
     const handlemedicinetypeChange = (index, value) => {
         const newInputs = [...inputs];
         newInputs[index].medicinetype = value; // Update the medicinetype value
         setInputs(newInputs);
     };
-
 
     // Function to handle increment
     const handleIncrement = (index) => {
@@ -102,14 +89,6 @@ const Prescription = ({ navigation, route }) => {
         }
         setInputs(newInputs);
     };
-
-
-
-
-
-
-
-
 
     // Function to handle deleting a specific set of input fields
     const handleDelete = (index) => {
@@ -134,44 +113,8 @@ const Prescription = ({ navigation, route }) => {
         } catch (error) {
             console.error('Error uploading document', error);
             setIsLoading(false)
-
         }
-
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     const getAllApointments = async () => {
 
@@ -187,8 +130,6 @@ const Prescription = ({ navigation, route }) => {
         }
     }
 
-
-
     const handleFocus = (inputName) => {
         setFocusedInput(inputName);
     };
@@ -197,19 +138,10 @@ const Prescription = ({ navigation, route }) => {
         setFocusedInput(null);
     };
 
-
-
-
-
-
     const uploadImages = async () => {
         setIsLoading(true)
 
     };
-
-
-
-
 
     useEffect(() => {
         getAllApointments()
@@ -222,7 +154,6 @@ const Prescription = ({ navigation, route }) => {
                     <View style={styles.installmentheadtxtbox}>
                         <TouchableOpacity onPress={() => { navigation.goBack() }} style={styles.installmentheadicon}><AntDesign name="arrowleft" size={23} color="white" /></TouchableOpacity>
                         <Text style={styles.installmentnamee}>Prescription</Text></View>
-
                 </View>
 
                 <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -240,8 +171,6 @@ const Prescription = ({ navigation, route }) => {
 
                             <View>
                                 <View style={styles.icon_text_div}>
-
-
                                     <Text style={styles.light_main_text}>Name : {Appointmentdata.patientName ? <Text style={styles.gender_text}> {Appointmentdata.patientName}</Text> : <Text style={styles.gender_text}> {Appointmentdata.userID?.name}</Text>}</Text>
                                 </View>
                                 <View style={styles.icon_text_div}>
@@ -271,82 +200,32 @@ const Prescription = ({ navigation, route }) => {
 
                                 <Text style={styles.light_main_text}>Payment : <Text style={styles.gender_text}> {Appointmentdata.PayType}</Text></Text>
                             </View>
-
                         </View>
-
                     </View>
-
-
 
                     <View style={styles.marginBox}>
                         <Text style={styles.text4}>Treatment : <Text style={styles.details_text}>{Appointmentdata.Treatmentfor}</Text></Text>
-
                         {Appointmentdata.checkInStatus === "Checked-In" ? <View style={{ flexDirection: 'row', alignItems: 'center' }} ><Text style={[styles.date_main_text, { marginRight: 10 }]} >Checked-In</Text><Fontisto name="checkbox-active" size={20} color={'#03ccbb'} /></View> : ''}
-
-
-
-
 
                     </View>
 
                     <Text style={{ paddingHorizontal: 16 }} >Details :<Text style={styles.details_text}> {Appointmentdata.ProblemDetails}</Text></Text>
+
                     <View style={styles.divider} />
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} >
 
-
-
                         <View style={{ flexDirection: 'column' }}>
                             <View style={{ flexDirection: 'row', paddingLeft: 16 }}>
-                                <Text style={styles.text2}>Medicine Name                                       </Text>
-
-                                <Text style={styles.text2}>Dosage Time                                                                         </Text>
-
-                                <Text style={styles.text2}>Food                                        </Text>
-                                <Text style={styles.text2}>Medicine Type                                                                       </Text>
-                                <Text style={styles.text2}>Quantity                 </Text>
-                                <Text style={styles.text2}>Duration</Text>
+                                <Text style={styles.text2}> Medicine Name </Text>
+                                <Text style={styles.text2}> Dosage Time </Text>
+                                <Text style={styles.text2}> Food </Text>
+                                <Text style={styles.text2}> Medicine Type </Text>
+                                <Text style={styles.text2}> Quantity </Text>
+                                <Text style={styles.text2}> Duration</Text>
                             </View>
 
-
-
-
                             <View style={styles.divider} />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             {inputs.map((input, index) => (<>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -359,15 +238,12 @@ const Prescription = ({ navigation, route }) => {
                                         onChangeText={(text) => handleInputChange(index, 'medicinename', text)}
 
                                     />
-
-
                                     <TouchableOpacity
                                         style={[input.morningdos === 'Morning' ? styles.clickbtntwo : styles.btntwo]}
                                         onPress={() => handlemorningdosChange(index, input.morningdos === 'Morning' ? '' : 'Morning')}
                                     >
                                         <Text style={[input.morningdos === 'Morning' ? styles.btntext : styles.btntexttwo]}>Morning</Text>
                                     </TouchableOpacity>
-
 
                                     <TouchableOpacity
                                         style={[input.afternoon === 'Afternoon' ? styles.clickbtntwo : styles.btntwo]}
@@ -376,16 +252,12 @@ const Prescription = ({ navigation, route }) => {
                                         <Text style={[input.afternoon === 'Afternoon' ? styles.btntext : styles.btntexttwo]}>Afternoon</Text>
                                     </TouchableOpacity>
 
-
-
                                     <TouchableOpacity
                                         style={[input.evening === 'Evening' ? styles.clickbtntwo : styles.btntwo]}
                                         onPress={() => handleeveningChange(index, input.evening === 'Evening' ? '' : 'Evening')}
                                     >
                                         <Text style={[input.evening === 'Evening' ? styles.btntext : styles.btntexttwo]}>Evening</Text>
                                     </TouchableOpacity>
-
-
 
                                     <TouchableOpacity
                                         style={[input.night === 'Night' ? styles.clickbtntwo : styles.btntwo]}
@@ -394,16 +266,12 @@ const Prescription = ({ navigation, route }) => {
                                         <Text style={[input.night === 'Night' ? styles.btntext : styles.btntexttwo]}>Night</Text>
                                     </TouchableOpacity>
 
-
-
-
                                     <TouchableOpacity
                                         style={[input.foodtime === 'Before' ? styles.clickbtntwo : styles.btntwo]}
                                         onPress={() => handlefoodtimeChange(index, 'Before')}
                                     >
                                         <Text style={[input.foodtime === 'Before' ? styles.btntext : styles.btntexttwo]}>Before</Text>
                                     </TouchableOpacity>
-
 
                                     <TouchableOpacity
                                         style={[input.foodtime === 'After' ? styles.clickbtntwo : styles.btntwo]}
@@ -412,21 +280,12 @@ const Prescription = ({ navigation, route }) => {
                                         <Text style={[input.foodtime === 'After' ? styles.btntext : styles.btntexttwo]}>After</Text>
                                     </TouchableOpacity>
 
-
-
-
-
-
-
                                     <TouchableOpacity
                                         style={[input.medicinetype === 'Tablet' ? styles.clickbtntwo : styles.btntwo]}
                                         onPress={() => handlemedicinetypeChange(index, 'Tablet')}
                                     >
                                         <Text style={[input.medicinetype === 'Tablet' ? styles.btntext : styles.btntexttwo]}>Tablet</Text>
                                     </TouchableOpacity>
-
-
-
 
                                     <TouchableOpacity
                                         style={[input.medicinetype === 'Capsule' ? styles.clickbtntwo : styles.btntwo]}
@@ -435,9 +294,6 @@ const Prescription = ({ navigation, route }) => {
                                         <Text style={[input.medicinetype === 'Capsule' ? styles.btntext : styles.btntexttwo]}>Capsule</Text>
                                     </TouchableOpacity>
 
-
-
-
                                     <TouchableOpacity
                                         style={[input.medicinetype === 'Tonic' ? styles.clickbtntwo : styles.btntwo]}
                                         onPress={() => handlemedicinetypeChange(index, 'Tonic')}
@@ -445,17 +301,12 @@ const Prescription = ({ navigation, route }) => {
                                         <Text style={[input.medicinetype === 'Tonic' ? styles.btntext : styles.btntexttwo]}>Tonic</Text>
                                     </TouchableOpacity>
 
-
-
                                     <TouchableOpacity
                                         style={[input.medicinetype === 'Other' ? styles.clickbtntwo : styles.btntwo]}
                                         onPress={() => handlemedicinetypeChange(index, 'Other')}
                                     >
                                         <Text style={[input.medicinetype === 'Other' ? styles.btntext : styles.btntexttwo]}>Other</Text>
                                     </TouchableOpacity>
-
-
-
 
                                     {input.medicinetype === "Tonic" ? <><TextInput placeholder='Enter ml' placeholderTextColor={'#b0b0b0'}
                                         style={[styles.inpunewCut, focusedInput === index && styles.inputFocused]}
@@ -483,10 +334,6 @@ const Prescription = ({ navigation, route }) => {
                                         </TouchableOpacity>
 
                                     </>}
-
-
-
-
                                     <TextInput placeholder='Enter days' placeholderTextColor={'#b0b0b0'}
                                         style={[styles.inpunewCut, focusedInput === index && styles.inputFocused]}
                                         onFocus={() => handleFocus(index)}
@@ -497,44 +344,13 @@ const Prescription = ({ navigation, route }) => {
 
 
                                     <Text style={styles.btntexttwo}>Days  </Text>
-
-
-
-
-
                                     <TouchableOpacity onPress={() => handleDelete(index)} >
                                         <AntDesign name="close" size={25} color='#FF5733' />
                                     </TouchableOpacity>
-
-
-
-
                                 </View>
-
-
-
-
-
-
-
                                 <View style={styles.divider} /></>))}
-
-
-
-
-
-
-
                         </View>
-
-
-
-
-
                     </ScrollView>
-
-
-
 
                     <LinearGradient
                         colors={['#06aeeb', '#4ccdfc']}
@@ -542,47 +358,21 @@ const Prescription = ({ navigation, route }) => {
                         end={{ x: 1, y: 0 }}
                         style={styles.gnewadd}
                     >
-                        <TouchableOpacity  onPress={addFields}  style={{ alignItems: 'center', width: '100%', height: 'auto', paddingVertical: 13, flexDirection: 'row' , justifyContent:"center"}}>
+                        <TouchableOpacity onPress={addFields} style={{ alignItems: 'center', width: '100%', height: 'auto', paddingVertical: 13, flexDirection: 'row', justifyContent: "center" }}>
                             <AntDesign name="plus" size={20} color='white' />
                             <Text style={styles.daytext_color}> Add medicine</Text>
                         </TouchableOpacity>
                     </LinearGradient>
-
-
                     <Text style={styles.tetype2}>Advice</Text>
                     <TextInput placeholder='Enter advice here...' placeholderTextColor={'#969696'} style={styles.intype2}
                         value={adviceNew}
                         multiline={true}
                         numberOfLines={4}
                         onChangeText={(text) => { setadviceNew(text) }} />
-
-
-
-
-
                     <Text style={styles.tetype2}>Note</Text>
                     <TextInput placeholder='Enter note here...' placeholderTextColor={'#969696'} style={styles.intype2}
                         value={NoteOld}
-
                         onChangeText={(text) => { setNoteOld(text) }} />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <LinearGradient
                         colors={['#06aeeb', '#4ccdfc']}
                         start={{ x: 0, y: 0 }}
@@ -601,56 +391,7 @@ const Prescription = ({ navigation, route }) => {
                             )}
                         </TouchableOpacity>
                     </LinearGradient>
-
-
-
-
-
-
-
-
-
-
-
-
                 </ScrollView>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </>}</>
     )
 }
@@ -830,11 +571,11 @@ const styles = StyleSheet.create({
     gnewadd: {
         width: '48%',
         alignItems: 'center',
-   
-        
+
+
 
         borderRadius: 250,
-     
+
         elevation: 8,
         shadowColor: '#06aeeb',
         shadowOffset: { width: 0, height: 2 },

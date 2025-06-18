@@ -184,7 +184,7 @@ function Tables() {
                 </MDTypography>
               </MDBox> */}
 
-            <AppBar position="sticky" color="default" sx={{ boxShadow: "none", top: '90px', zIndex: 1100, }}>
+            <AppBar position="sticky" color="default" sx={{ border:'.5px solid #ccc', borderRadius: 3, boxShadow: "none", top: '90px', zIndex: 1100, }}>
               <Tabs
                 value={tabValue}
                 onChange={handleSetTabValue}
@@ -313,7 +313,7 @@ function Tables() {
                 right: 16,
               }}
             > <AddIcon /> </Fab>
-            
+
             {isAppoinmentModalOpen && (
               <AddAppoinmentFormModal
                 isAppoinmentModalOpen={isAppoinmentModalOpen}
