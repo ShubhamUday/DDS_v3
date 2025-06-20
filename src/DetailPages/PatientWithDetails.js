@@ -28,7 +28,7 @@ const PatientWithDetails = () => {
 
   const getDetails = async () => {
     try {
-      
+
       const result = await axios.get(
         `${process.env.REACT_APP_HOS}/get-single-appointment-with-details/${param1}`,
         {
@@ -37,13 +37,13 @@ const PatientWithDetails = () => {
       );
       setAppointmentdata(result.data);
       console.log("Patient-with-details", result.data);
-      
+
     } catch (error) {
       console.log(error);
     }
   };
 
-  // console.log(Appointmentdata.prescriptionID.length);
+  console.log(Appointmentdata?.prescriptionID?.length);
   useEffect(() => {
     getDetails();
   }, []);
@@ -51,14 +51,9 @@ const PatientWithDetails = () => {
   return (
     <DashboardLayout>
 
-      <MDBox sx={{padding:3}}>
-        <Card
-          sx={{
-            mt: 1,
-            mx: 1,
-            p: 1,
-          }}
-        >
+      <MDBox sx={{ padding: 3 }}>
+        <Card sx={{ mt: 1, mx: 1, p: 1, }} >
+
           <Card sx={{ boxShadow: "none" }}>
             <Grid container spacing={3} alignItems="center">
               <Grid item>

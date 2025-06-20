@@ -5,10 +5,12 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
+import MDButton from "components/MDButton";
 import img from "skel2.png";
 import AddIcon from '@mui/icons-material/Add';
 
@@ -19,7 +21,6 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 // Data
 import projectsTableData from "layouts/tables/data/AppointmentData";
 import { AlignVerticalBottomTwoTone } from "@mui/icons-material";
-import MDButton from "components/MDButton";
 import tab from "assets/theme/components/tabs/tab";
 import AddAppoinmentFormModal from "Pages/appoinment/AddAppoinmentFormModal";
 
@@ -60,6 +61,7 @@ function Tables() {
     id: appointment._id,
     project: (
       <>
+
         <MDBox
           sx={{
             display: "flex",
@@ -153,6 +155,7 @@ function Tables() {
             </MDTypography>
           )}
         </MDBox>
+
       </>
     ),
   }));
@@ -177,14 +180,14 @@ function Tables() {
       <DashboardNavbar />
       <MDBox p={3} >
         <Grid container spacing={6}>
-          <Grid item xs={12}>
-            {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
+
+          {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
                 <MDTypography variant="h6" color="white">
                   Appointments
                 </MDTypography>
               </MDBox> */}
-
-            <AppBar position="sticky" color="default" sx={{ border:'.5px solid #ccc', borderRadius: 3, boxShadow: "none", top: '90px', zIndex: 1100, }}>
+          <Grid item xs={12} md={12} lg={12}>
+            <AppBar position="sticky" color="default" sx={{ border: '.5px solid #ccc', borderRadius: 3, boxShadow: "none", top: '90px', zIndex: 1100, }}>
               <Tabs
                 value={tabValue}
                 onChange={handleSetTabValue}
@@ -197,21 +200,11 @@ function Tables() {
                     iconPosition="start"
                     icon={
                       <Icon sx={{ fontSize: 18, mr: 1 }}>
-                        {index === 0
-                          ? "pending_actions"
-                          : index === 1
-                            ? "event_upcoming"
-                            : "checklist"}
+                        {index === 0 ? "pending_actions" : index === 1 ? "event_upcoming" : "checklist"}
                       </Icon>
                     }
                     label={
-                      <MDBox
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: tabValue === index ? "#fff" : "inherit",
-                        }}
-                      >
+                      <MDBox sx={{ display: "flex", alignItems: "center", color: tabValue === index ? "#fff" : "inherit", }} >
                         {label}
                       </MDBox>
                     }
@@ -236,76 +229,81 @@ function Tables() {
                 ))}
               </Tabs>
             </AppBar>
+          </Grid>
 
+          <Grid item lg={12}>
 
             {/* Cards */}
-            <MDBox pt={3} sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2.5 }}>
+            <Grid container spacing={2}>
               {rows.map((row, index) => (
-                <Card
-                  key={index}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    p: 0,
-                    borderRadius: 4,
-                    transition: "all 0.3s ease",
-                    boxShadow:
-                      tabValue === 0
-                        ? "0px 2px 0px #25408f"
-                        : tabValue === 1
-                          ? "0px 2px 0px #ff914d"
-                          : "0px 2px 0px #3e87d9",
-                    "&:hover": {
-                      transform: "translateY(-5px)",
-                      boxShadow: 2,
-                    },
-                  }}
-                  onClick={() => handleRowClick(row.id)}
-                >
-                  <CardContent>
-                    <MDBox sx={{ display: "flex", flexDirection: "column", mb: 0 }}>
-                      {row.project}
-                    </MDBox>
-                  </CardContent>
-                  <CardActions sx={{ marginTop: "auto" }}>
-                    {tabValue === 0 && (
-                      <>
-                        {" "}
-                        <MDButton fullWidth size="small" color="primary"
+                <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
+                  <Card
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      height: "100%",
+                      flexDirection: "column",
+                      p: 0,
+                      borderRadius: 4,
+                      transition: "all 0.3s ease",
+                      boxShadow:
+                        tabValue === 0
+                          ? "0px 2px 0px #25408f"
+                          : tabValue === 1
+                            ? "0px 2px 0px #ff914d"
+                            : "0px 2px 0px #3e87d9",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: 2,
+                      },
+                    }}
+                    onClick={() => handleRowClick(row.id)}
+                  >
+                    <CardContent>
+                      <MDBox sx={{ display: "flex", flexDirection: "column", mb: 0 }}> {row.project} </MDBox>
+                    </CardContent>
+
+                    <CardActions sx={{ marginTop: "auto" }}>
+                      {tabValue === 0 && (
+                        <>
+                          <MDButton fullWidth size="small" color="primary"
+                            sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("Button clicked", row.id);
+                            }}
+                          > Accept </MDButton>
+                          <MDButton fullWidth size="small"
+                            sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                            onClick={(e) => { e.stopPropagation(); console.log("Button clicked", row.id); }}
+                          >
+                            Reject
+                          </MDButton>
+                        </>
+                      )}
+                      {tabValue === 1 && (
+                        <MDButton
+                          fullWidth
+                          size="small"
+                          // color="secondary"
                           sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
                           onClick={(e) => {
                             e.stopPropagation();
                             console.log("Button clicked", row.id);
                           }}
-                        > Accept </MDButton>
-                        <MDButton fullWidth size="small"
-                          sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                          onClick={(e) => { e.stopPropagation(); console.log("Button clicked", row.id); }}
                         >
-                          Reject
+                          Reschedule
                         </MDButton>
-                      </>
-                    )}
-                    {tabValue === 1 && (
-                      <MDButton
-                        fullWidth
-                        size="small"
-                        // color="secondary"
-                        sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log("Button clicked", row.id);
-                        }}
-                      >
-                        Reschedule
-                      </MDButton>
-                    )}
-                    {tabValue === 2 && <></>}
-                  </CardActions>
-                </Card>
+                      )}
+                      {tabValue === 2 && <></>}
+                    </CardActions>
+                  </Card>
+                </Grid>
               ))}
-            </MDBox>
+            </Grid>
+          </Grid>
 
+          <Grid item >
             <Fab color="primary" aria-label="add" onClick={() => { setIsAppoinmentModalOpen(true) }}
               sx={{
                 position: 'fixed',
@@ -313,14 +311,15 @@ function Tables() {
                 right: 16,
               }}
             > <AddIcon /> </Fab>
-
-            {isAppoinmentModalOpen && (
-              <AddAppoinmentFormModal
-                isAppoinmentModalOpen={isAppoinmentModalOpen}
-                setIsAppoinmentModalOpen={setIsAppoinmentModalOpen}
-              />
-            )}
           </Grid>
+          
+          {isAppoinmentModalOpen && (
+            <AddAppoinmentFormModal
+              isAppoinmentModalOpen={isAppoinmentModalOpen}
+              setIsAppoinmentModalOpen={setIsAppoinmentModalOpen}
+            />
+          )}
+
         </Grid>
       </MDBox>
 

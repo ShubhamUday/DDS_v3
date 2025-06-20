@@ -63,6 +63,8 @@ const familyMembers = [
 ];
 
 function AppointmentWithDetails() {
+  const params = useParams();
+  const param1 = params.id;
   const [appointmentData, setAppointmentData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,19 +72,13 @@ function AppointmentWithDetails() {
   const [selected, setSelected] = useState(false);
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false)
   const [isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open2 = Boolean(anchorEl);
 
 
   const getGenderIcon = (gender) => {
     return gender === 'Male' ? <Male color="primary" /> : <Female color="secondary" />;
   };
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open2 = Boolean(anchorEl);
-
-
-  const params = useParams();
-  const param1 = params.id;
-
 
   const getDetails = async () => {
     setLoading(true);
@@ -107,13 +103,13 @@ function AppointmentWithDetails() {
 
   useEffect(() => {
     getDetails();
-  }, [param1]);
+  }, []);
 
   const renderButtons = () => {
     switch (appointmentData?.requestStatus) {
       case "Pending":
         return [
-          <MDButton key="accept" variant="contained" color="success" size="small" onClick={() => {  console.log('check resch btn') }} > Accept </MDButton>,
+          <MDButton key="accept" variant="contained" color="success" size="small" onClick={() => { console.log('check resch btn') }} > Accept </MDButton>,
           <MDButton key="reject" variant="outlined" color="error" size="small"> Reject </MDButton>,
         ];
       case "Completed":
@@ -124,7 +120,7 @@ function AppointmentWithDetails() {
       case "Accepted":
         return [
           <MDButton key="reschedule" variant="contained" color="primary" size="small"
-            onClick={() => {  console.log('check resch btn') }}
+            onClick={() => { console.log('check resch btn') }}
           >
             Reschedule
           </MDButton>,
@@ -528,42 +524,42 @@ function AppointmentWithDetails() {
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Age <br /></MDTypography>
-                          <MDTypography fontSize="medium"> {appointmentData?.userID?.age || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.userID?.age || appointmentData?.age || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Weight <br /> </MDTypography>
-                          <MDTypography fontSize="medium"> {appointmentData?.Weight || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium"> {appointmentData?.userID?.Weight || appointmentData?.Weight || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Diabities <br /></MDTypography>
-                          <MDTypography fontSize="medium">{appointmentData?.diabetes || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.diabetes || appointmentData?.diabetes || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Temperature <br /> </MDTypography>
-                          <MDTypography fontSize="medium">{appointmentData?.userID?.temperature || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.temperature || appointmentData?.temperature || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Bood Pressure <br /> </MDTypography>
-                          <MDTypography fontSize="medium">{appointmentData?.userID?.Bloodpressure || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.Bloodpressure || appointmentData?.Bloodpressure || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
 
                       <Grid item xs={12} sm={6} md={6} lg={2}>
                         <MDBox borderRadius="lg" textAlign="center" m={0.5} p={0.5} sx={{ border: '1px solid #d2d4d6' }}>
                           <MDTypography fontSize="medium" color='white' sx={{ backgroundColor: '#25408f', borderRadius: 1, fontWeight: 'bold' }}>Heart Rate<br /> </MDTypography>
-                          <MDTypography fontSize="medium">{appointmentData?.userID?.heartRate || 'N/A'} </MDTypography>
+                          <MDTypography fontSize="medium">{appointmentData?.userID?.heartRate || appointmentData?.heartRate || 'N/A'} </MDTypography>
                         </MDBox>
                       </Grid>
                     </Grid>

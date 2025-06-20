@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Divider, Button, Grid, TextField, ToggleButton, ToggleButtonGroup, Select, MenuItem, InputLabel, FormControl, InputAdornment, Stack } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Paper, Divider, Button, Grid, TextField, ToggleButton, ToggleButtonGroup, Select, MenuItem, InputLabel, FormControl, InputAdornment, Stack, Dialog, DialogTitle, DialogActions } from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DownloadIcon from '@mui/icons-material/Download';
 import MDBox from "components/MDBox";
@@ -12,42 +14,41 @@ import html2canvas from "html2canvas";
 import img from "assets/images/abc.jpg";
 import { AddCard } from "@mui/icons-material";
 import AddLinkIcon from '@mui/icons-material/AddLink';
-import MDInput from "components/MDInput";
 
 function PrescriptionWithDetails() {
   const { id: param1 } = useParams();
+  const role = localStorage.getItem("role");
   const [alldetails, setAllDetails] = useState(null);
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
-  const role = localStorage.getItem("role");
   const [addMedicine, setAddMedicine] = useState(false)
   const [medicineList, setMedicineList] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [selectedMedId, setSelectedMedId] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [mode, setMode] = useState(null)
+
 
   const [formData, setFormData] = useState({
     afternoon: '',
-    count: "",
-    days: "",
+    count: '',
+    days: '',
     evening: '',
     foodtime: '',
     medicinename: '',
     medicinetype: '',
     morningdos: '',
     night: '',
-    quantity: '',
+    advice: '',
+    note: '',
   });
 
   const toggleForm = () => setAddMedicine((prev) => !prev);
+
   // Handlers
   const handleChange = (field) => (e) => {
     const value = e.target.value;
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleToggleChange = (field) => (e, value) => {
-    if (value !== null) {
-      setFormData((prev) => ({ ...prev, [field]: value }));
-    }
   };
 
   const handleCancel = () => {
@@ -59,36 +60,71 @@ function PrescriptionWithDetails() {
     // Reset all doses first
     setFormData((prev) => ({
       ...prev,
-      morningdos: newDoses.includes('morning') ? 'Yes' : '',
-      afternoon: newDoses.includes('afternoon') ? 'Yes' : '',
-      evening: newDoses.includes('evening') ? 'Yes' : '',
-      night: newDoses.includes('night') ? 'Yes' : '',
+      morningdos: newDoses.includes('Morning') ? 'Morning' : '',
+      afternoon: newDoses.includes('Afternoon') ? 'Afternoon' : '',
+      evening: newDoses.includes('Evening') ? 'Evening' : '',
+      night: newDoses.includes('Night') ? 'Night' : '',
     }));
   };
 
-  const handleSubmit = () => {
-    if (formData.medicinename && formData.medicinetype && formData.quantity && formData.days) {
-      setMedicineList((prev) => [...prev, formData]);
-      resetForm();
-      setAddMedicine(false);
-    } else {
-      alert("Please fill all required fields.");
-    }
-  };
+  const handleSubmit = async () => {
 
-  const handleAddMore = () => {
-    if (formData.medicinename && formData.medicinetype && formData.quantity && formData.days) {
-      setMedicineList((prev) => [...prev, formData]);
-      resetForm();
-    } else {
-      alert("Please fill all required fields.");
+    if (!formData.medicinename || !formData.medicinetype || !formData.count || !formData.days) {
+      toast.error("Please fill all required fields.");
+      return
     }
-  };
 
-  const handleEdit = (med) => {
-    setFormData(med)
-    setAddMedicine(true);
-  };
+    const formArray = [formData]
+    const values = { appointmentID: param1, valuable: formArray }
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_HOS}/add-prescription`, values,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      console.log('add-prescptn response', response.data)
+      if (response.data) {
+        toast.success("Medicine added successfully!");
+      }
+    } catch (error) {
+      console.log('Error adding priscription', error)
+    }
+
+    resetForm();
+    setAddMedicine(false);
+    getDetails();
+  }
+
+  const handleDelete = async (medId) => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_HOS}/delete-prescription/${medId}`,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      console.log('delete response', response)
+      setOpenDelete(false)
+      toast.success("Medicine deleted successfully")
+    } catch (error) {
+      toast.error("Error deleting medinicine")
+      console.log('Error deleting medinicine', error)
+    }
+    getDetails();
+  }
+
+  const handleUpdate = async () => {
+    const values = formData
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_HOS}/update-prescription-Details/${selectedMedId}`, values,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      console.log('update response', response.data)
+      setOpenDeleteDialog(false)
+      toast.error("Medicine updated successfully")
+    } catch (error) {
+      toast.error('Error deleting medinicine')
+      console.log('Error deleting medinicine', error)
+    }
+    resetForm();
+    setAddMedicine(false);
+    getDetails();
+  }
 
   const resetForm = () => {
     setFormData({
@@ -101,19 +137,20 @@ function PrescriptionWithDetails() {
       medicinetype: '',
       morningdos: '',
       night: '',
-      quantity: '',
+      advice: "",
+      note: "",
     });
   };
 
   const getDetails = async () => {
     try {
-      const result = await axios.get(
+      const response = await axios.get(
         `${process.env.REACT_APP_HOS}/get-single-appointment-with-details/${param1}`,
         { headers: { 'Content-Type': 'application/json' } }
       );
-      setAllDetails(result.data);
-      setMedicines(result.data.prescriptionID || []);
-      console.log(result.data);
+      setAllDetails(response.data);
+      setMedicines(response.data.prescriptionID || []);
+      console.log('response details', response.data);
     } catch (error) {
       console.error("Error fetching prescription details:", error);
     } finally {
@@ -125,7 +162,7 @@ function PrescriptionWithDetails() {
 
   useEffect(() => {
     getDetails();
-  }, []);
+  }, [selectedMedId]);
 
   const handleDownload = () => {
     const captureElement = document.getElementById('prescription-capture');
@@ -141,6 +178,20 @@ function PrescriptionWithDetails() {
 
   return (
     <DashboardLayout>
+
+      <ToastContainer
+        autoClose={2000}
+        position="top-center"
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ width: '350px', font: 'message-box' }}
+      />
 
       {/* Download Button */}
       {role === "Doctor" && (
@@ -205,8 +256,7 @@ function PrescriptionWithDetails() {
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
           <MDTypography fontWeight="bold" fontSize="large" mb={1}> Rx </MDTypography>
           <MDButton size="small" color="primary" variant="contained" startIcon={<AddLinkIcon fontSize="large" />}
-            onClick={() => toggleForm()}> Add Medicine</MDButton>
-
+            onClick={() => { toggleForm(); setMode('add'); }}> Add Medicine</MDButton>
         </MDBox>
 
         {/* Add Medicine Form */}
@@ -261,10 +311,10 @@ function PrescriptionWithDetails() {
                 <ToggleButtonGroup size="small" fullWidth multiple
                   value={
                     [
-                      formData.morningdos && 'morning',
-                      formData.afternoon && 'afternoon',
-                      formData.evening && 'evening',
-                      formData.night && 'night',
+                      formData.morningdos && 'Morning',
+                      formData.afternoon && 'Afternoon',
+                      formData.evening && 'Evening',
+                      formData.night && 'Night',
                     ].filter(Boolean)
                   }
                   onChange={handleDoseToggle}
@@ -285,10 +335,10 @@ function PrescriptionWithDetails() {
                     },
                   }}
                 >
-                  <ToggleButton value="morning" aria-label="morning"> Morning </ToggleButton>
-                  <ToggleButton value="afternoon" aria-label="afternoon"> Afternoon </ToggleButton>
-                  <ToggleButton value="evening" aria-label="evening"> Evening </ToggleButton>
-                  <ToggleButton value="night" aria-label="night"> Night </ToggleButton>
+                  <ToggleButton value="Morning" aria-label="morning"> Morning </ToggleButton>
+                  <ToggleButton value="Afternoon" aria-label="afternoon"> Afternoon </ToggleButton>
+                  <ToggleButton value="Evening" aria-label="evening"> Evening </ToggleButton>
+                  <ToggleButton value="Night" aria-label="night"> Night </ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
 
@@ -317,11 +367,10 @@ function PrescriptionWithDetails() {
                     label="Quantity"
                     onChange={handleChange("count")}
                   >
-
-                    <MenuItem value="2"> 2 </MenuItem>
-                    <MenuItem value="1"> 1 </MenuItem>
-                    <MenuItem value="0.5"> 1/2 </MenuItem>
-                    <MenuItem value="0.25"> 1/4 </MenuItem>
+                    <MenuItem value={2}> 2 </MenuItem>
+                    <MenuItem value={1}> 1 </MenuItem>
+                    <MenuItem value={0.5}> 1/2 </MenuItem>
+                    <MenuItem value={0.25}> 1/4 </MenuItem>
 
                   </Select>
                 </FormControl>
@@ -331,8 +380,12 @@ function PrescriptionWithDetails() {
 
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <MDButton size="small" variant="outlined" color="error" onClick={handleCancel}> Cancel </MDButton>
-              <MDButton size="small" variant="contained" color="primary" onClick={handleAddMore}> Add More </MDButton>
-              <MDButton size="small" variant="contained" color="success" onClick={handleSubmit}> Submit </MDButton>
+              {/* <MDButton size="small" variant="contained" color="primary" onClick={handleAddMore}> Add More </MDButton> */}
+              {mode === 'add' ? (
+                <MDButton size="small" variant="contained" color="success" onClick={() => { setMode('add'); handleSubmit() }}> Add </MDButton>
+              ) : (
+                <MDButton size="small" variant="contained" color="success" onClick={() => handleUpdate()}> Update </MDButton>
+              )}
             </Stack>
 
           </Paper>
@@ -349,7 +402,7 @@ function PrescriptionWithDetails() {
           <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> A </MDTypography> </MDBox>
           <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> E </MDTypography> </MDBox>
           <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> N </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center  ' }}> <MDTypography fontSize="small"> Action </MDTypography> </MDBox>
+          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> Action </MDTypography> </MDBox>
         </MDBox>
 
         {medicines.map((med, index) => (
@@ -365,24 +418,40 @@ function PrescriptionWithDetails() {
             <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.afternoon === "Afternoon" ? "✔️" : "—"} </MDTypography> </MDBox>
             <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.evening === "Evening" ? "✔️" : "—"} </MDTypography> </MDBox>
             <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.night === "Night" ? "✔️" : "—"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"
-              onClick={() => { handleEdit(med); console.log(med) }}
-              sx={{ cursor: "pointer" }}
-            > Edit </MDTypography> </MDBox>
+            <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+              <MDTypography fontSize="small" fontWeight="light" sx={{ cursor: "pointer" }}
+                onClick={() => { setMode('edit'); setFormData(med); setAddMedicine(true); setSelectedMedId(med._id); }}
+              > Edit </MDTypography>
+
+              <MDTypography fontSize="small" fontWeight="light" sx={{ cursor: "pointer" }}
+                onClick={() => { setSelectedMedId(med._id); setOpenDeleteDialog(true); }}
+              > Delete </MDTypography>
+            </MDBox>
 
             {/* <MDButton size="small" variant="contained" color="primary" onClick={() => handleEdit(med)}> Edit </MDButton> */}
 
           </MDBox>
         ))}
 
+        <Dialog open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false) }} >
+          <DialogTitle id="alert-dialog-title"> {"Are you sure you want to delete this medicine?"} </DialogTitle>
+          <DialogActions>
+            <MDButton onClick={() => { setOpenDeleteDialog(false); setSelectedMedId(null) }}> Cancel </MDButton>
+            <MDButton onClick={async () => {
+              await handleDelete(selectedMedId);
+              setOpenDeleteDialog(false);
+            }} autoFocus> Delete </MDButton>
+          </DialogActions>
+        </Dialog>
 
         {/* Advice Section */}
         <MDBox mt={3} display="flex">
-          <MDTypography fontSize="small"><strong>Advice:</strong> {alldetails?.advice || "—"} </MDTypography>
-          <MDTypography fontSize="small" sx={{ ml: "auto" }}><strong>Note:</strong> {alldetails?.note || "—"} </MDTypography>
+          <MDTypography fontSize="small"><strong> Advice: </strong> {alldetails?.advice || "—"} </MDTypography>
+          <MDTypography fontSize="small" sx={{ ml: "auto" }}><strong> Note :</strong> {alldetails?.note || "—"} </MDTypography>
         </MDBox>
 
       </MDBox>
+
     </DashboardLayout>
   );
 }

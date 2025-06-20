@@ -11,17 +11,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Basic() {
+  const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState("doctor");
   const [mail, setmail] = useState("");
   const [pass, setpass] = useState("");
-  const navigate = useNavigate();
+const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const handleRoleChange = (event) => {
     setSelectedRole(event.target.value);
   };
 
   const handlesubmit = () => {
+    setSubmitAttempted(true)
     if (selectedRole !== "" && mail !== "" && pass !== "") {
       if (selectedRole === "doctor") {
         handleSubmit();
@@ -152,6 +154,8 @@ function Basic() {
                 type="email"
                 label="Email"
                 fullWidth
+                // helperText="Incorrect entry."
+                error={submitAttempted && !mail}
                 onChange={({ target }) => setmail(target.value)}
               />
             </MDBox>
@@ -160,6 +164,7 @@ function Basic() {
                 type="password"
                 label="Password"
                 fullWidth
+                error={submitAttempted && !pass}
                 onChange={({ target }) => setpass(target.value)}
               />
             </MDBox>

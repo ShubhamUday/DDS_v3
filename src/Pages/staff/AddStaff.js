@@ -43,7 +43,6 @@ function AddStaff() {
     setAge(event.target.value);
   };
 
-
   const fetchClinicList = async () => {
     try {
       const result = await axios.get(
@@ -116,7 +115,6 @@ function AddStaff() {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchClinicList();

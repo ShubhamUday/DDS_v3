@@ -159,7 +159,7 @@ function Patients() {
         {/* Patient Cards Grid */}
         <Grid container spacing={3.5} mt={3}>
           {patients.map((patient, index) => (
-            <Grid item xs={6} sm={4} lg={3} key={index} onClick={() => handleClick(patient._id)}>
+            <Grid item xs={12} md={6} lg={4} key={index} onClick={() => handleClick(patient._id)}>
               <PatientCard patient={patient} />
             </Grid>
           ))}

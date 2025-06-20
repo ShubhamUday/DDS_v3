@@ -84,21 +84,15 @@ function Dashboard() {
       <DashboardNavbar />
       <MDBox sx={{ p: 3 }}>
 
-        {/* <Grid container spacing={2}>
-          <Grid xs={12} sx={{backgroundImage:'https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg'}}>
-
-          </Grid>
-        </Grid> */}
-
         <Grid container sx={{ alignItems: 'center', backgroundImage: 'url(https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg)', backgroundSize: 'cover', backgroundPosition: 'center', height: '300px' }}>
-          <Grid item xs={2} sx={{ m: 1 }}>
+          <Grid item xs={12} md={6} lg={2}sx={{ m: 1 }}>
             <StatCard
               title="Total Patients"
               value={appointmentdata.patientchecked || 0}
               icon="group"
             />
           </Grid>
-          <Grid item xs={2} sx={{ m: 1 }}>
+          <Grid item xs={12} md={6} lg={2}sx={{ m: 1 }}>
             <StatCard
               title="Current Appointments"
               value={appointment.length}
@@ -107,7 +101,7 @@ function Dashboard() {
               gradient="#4db6ac"
             />
           </Grid>
-          <Grid item xs={2} sx={{ m: 1 }}>
+          <Grid item xs={12} md={6} lg={2}sx={{ m: 1 }}>
             <StatCard
               title="Experience"
               value={`${appointmentdata.yearsofexperience || 0} yrs`}

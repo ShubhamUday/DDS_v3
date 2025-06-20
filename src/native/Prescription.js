@@ -22,7 +22,18 @@ const Prescription = ({ navigation, route }) => {
     console.log("gggggggggggggggggggggg", param1)
 
     // Initialize with two pairs of input fields and toggle states
-    const [inputs, setInputs] = useState([{ medicinename: '', morningdos: 'Morning', afternoon: '', evening: '', night: 'Night', foodtime: 'After', medicinetype: 'Tablet', quantity: '', count: 1, days: '7' }]);
+    const [inputs, setInputs] = 
+    useState([{ 
+        medicinename: '', 
+        morningdos: 'Morning', 
+        afternoon: '', 
+        evening: '', 
+        night: 'Night', 
+        foodtime: 'After', 
+        medicinetype: 'Tablet', 
+        quantity: '', 
+        count: 1, 
+        days: '7' }]);
 
     // Function to handle adding a new pair of input fields
     const addFields = () => {
@@ -140,259 +151,261 @@ const Prescription = ({ navigation, route }) => {
 
     const uploadImages = async () => {
         setIsLoading(true)
-
     };
 
     useEffect(() => {
         getAllApointments()
     }, []);
 
-    return (<>
-        {loadingn ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" color="#06aeeb" /></View> :
-            <>
-                <View style={styles.installmentheadbox}>
-                    <View style={styles.installmentheadtxtbox}>
-                        <TouchableOpacity onPress={() => { navigation.goBack() }} style={styles.installmentheadicon}><AntDesign name="arrowleft" size={23} color="white" /></TouchableOpacity>
-                        <Text style={styles.installmentnamee}>Prescription</Text></View>
-                </View>
-
-                <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-                    <View style={{ paddingHorizontal: 16 }}>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={[styles.date_main_text, { marginTop: 12, marginBottom: 4 }]}>{Appointmentdata.Bookdate ? moment(Appointmentdata.Bookdate).format('MMM DD, YYYY') : ''} - {Appointmentdata.BookTime}</Text>
-                        </View>
+    return (
+        <>
+            {loadingn ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" color="#06aeeb" /></View> :
+                <>
+                    <View style={styles.installmentheadbox}>
+                        <View style={styles.installmentheadtxtbox}>
+                            <TouchableOpacity onPress={() => { navigation.goBack() }} style={styles.installmentheadicon}><AntDesign name="arrowleft" size={23} color="white" /></TouchableOpacity>
+                            <Text style={styles.installmentnamee}>Prescription</Text></View>
                     </View>
 
-                    <View style={styles.divider} />
+                    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+                        <View style={{ paddingHorizontal: 16 }}>
 
-                    <View style={styles.flex_for_icon_div}>
-                        <View style={styles.flex_for_image_div}>
-
-                            <View>
-                                <View style={styles.icon_text_div}>
-                                    <Text style={styles.light_main_text}>Name : {Appointmentdata.patientName ? <Text style={styles.gender_text}> {Appointmentdata.patientName}</Text> : <Text style={styles.gender_text}> {Appointmentdata.userID?.name}</Text>}</Text>
-                                </View>
-                                <View style={styles.icon_text_div}>
-                                    <Text style={styles.light_main_text}>Appointment type : <Text style={styles.gender_text}> {Appointmentdata.Plan}</Text></Text>
-                                </View>
-                                <View style={styles.icon_text_div}>
-                                    <Text style={styles.light_main_text}>Booking ID :<Text style={styles.id_text}>#D{Appointmentdata._id?.slice(0, 6)}</Text></Text>
-                                </View>
-                                <View style={styles.icon_text_div}>
-                                    <Text style={styles.light_main_text}>Gender :<Text style={styles.gender_text}> {Appointmentdata.gender}</Text>   Age : <Text style={styles.gender_text}> {Appointmentdata.age}</Text></Text>
-                                </View>
-                                {Appointmentdata.diabetes &&
-                                    <View style={styles.icon_text_div}>
-                                        <Text style={styles.light_main_text}>Diabetes :<Text style={styles.gender_text}> {Appointmentdata.diabetes}</Text></Text>
-                                    </View>}
-
-                                {Appointmentdata.Bloodpressure &&
-                                    <View style={styles.icon_text_div}>
-                                        <Text style={styles.light_main_text}>Blood Pressure : <Text style={styles.gender_text}> {Appointmentdata.Bloodpressure}</Text></Text>
-                                    </View>}
-
-
-                                {Appointmentdata.Weight &&
-                                    <View style={styles.icon_text_div}>
-                                        <Text style={styles.light_main_text}>Weight : <Text style={styles.gender_text}> {Appointmentdata.Weight}</Text></Text>
-                                    </View>}
-
-                                <Text style={styles.light_main_text}>Payment : <Text style={styles.gender_text}> {Appointmentdata.PayType}</Text></Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Text style={[styles.date_main_text, { marginTop: 12, marginBottom: 4 }]}>{Appointmentdata.Bookdate ? moment(Appointmentdata.Bookdate).format('MMM DD, YYYY') : ''} - {Appointmentdata.BookTime}</Text>
                             </View>
                         </View>
-                    </View>
 
-                    <View style={styles.marginBox}>
-                        <Text style={styles.text4}>Treatment : <Text style={styles.details_text}>{Appointmentdata.Treatmentfor}</Text></Text>
-                        {Appointmentdata.checkInStatus === "Checked-In" ? <View style={{ flexDirection: 'row', alignItems: 'center' }} ><Text style={[styles.date_main_text, { marginRight: 10 }]} >Checked-In</Text><Fontisto name="checkbox-active" size={20} color={'#03ccbb'} /></View> : ''}
+                        <View style={styles.divider} />
 
-                    </View>
+                        <View style={styles.flex_for_icon_div}>
+                            <View style={styles.flex_for_image_div}>
 
-                    <Text style={{ paddingHorizontal: 16 }} >Details :<Text style={styles.details_text}> {Appointmentdata.ProblemDetails}</Text></Text>
+                                <View>
+                                    <View style={styles.icon_text_div}>
+                                        <Text style={styles.light_main_text}>Name : {Appointmentdata.patientName ? <Text style={styles.gender_text}> {Appointmentdata.patientName}</Text> : <Text style={styles.gender_text}> {Appointmentdata.userID?.name}</Text>}</Text>
+                                    </View>
+                                    <View style={styles.icon_text_div}>
+                                        <Text style={styles.light_main_text}>Appointment type : <Text style={styles.gender_text}> {Appointmentdata.Plan}</Text></Text>
+                                    </View>
+                                    <View style={styles.icon_text_div}>
+                                        <Text style={styles.light_main_text}>Booking ID :<Text style={styles.id_text}>#D{Appointmentdata._id?.slice(0, 6)}</Text></Text>
+                                    </View>
+                                    <View style={styles.icon_text_div}>
+                                        <Text style={styles.light_main_text}>Gender :<Text style={styles.gender_text}> {Appointmentdata.gender}</Text>   Age : <Text style={styles.gender_text}> {Appointmentdata.age}</Text></Text>
+                                    </View>
+                                    {Appointmentdata.diabetes &&
+                                        <View style={styles.icon_text_div}>
+                                            <Text style={styles.light_main_text}>Diabetes :<Text style={styles.gender_text}> {Appointmentdata.diabetes}</Text></Text>
+                                        </View>}
 
-                    <View style={styles.divider} />
-
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} >
-
-                        <View style={{ flexDirection: 'column' }}>
-                            <View style={{ flexDirection: 'row', paddingLeft: 16 }}>
-                                <Text style={styles.text2}> Medicine Name </Text>
-                                <Text style={styles.text2}> Dosage Time </Text>
-                                <Text style={styles.text2}> Food </Text>
-                                <Text style={styles.text2}> Medicine Type </Text>
-                                <Text style={styles.text2}> Quantity </Text>
-                                <Text style={styles.text2}> Duration</Text>
-                            </View>
-
-                            <View style={styles.divider} />
-
-                            {inputs.map((input, index) => (<>
-                                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-
-                                    <TextInput placeholder='Enter medicine name here..' placeholderTextColor={'#b0b0b0'}
-                                        style={[styles.inpuCut, focusedInput === index && styles.inputFocused]}
-                                        onFocus={() => handleFocus(index)}
-                                        onBlur={handleBlur}
-                                        value={input.medicinename}
-                                        onChangeText={(text) => handleInputChange(index, 'medicinename', text)}
-
-                                    />
-                                    <TouchableOpacity
-                                        style={[input.morningdos === 'Morning' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlemorningdosChange(index, input.morningdos === 'Morning' ? '' : 'Morning')}
-                                    >
-                                        <Text style={[input.morningdos === 'Morning' ? styles.btntext : styles.btntexttwo]}>Morning</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.afternoon === 'Afternoon' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handleafternoonChange(index, input.afternoon === 'Afternoon' ? '' : 'Afternoon')}
-                                    >
-                                        <Text style={[input.afternoon === 'Afternoon' ? styles.btntext : styles.btntexttwo]}>Afternoon</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.evening === 'Evening' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handleeveningChange(index, input.evening === 'Evening' ? '' : 'Evening')}
-                                    >
-                                        <Text style={[input.evening === 'Evening' ? styles.btntext : styles.btntexttwo]}>Evening</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.night === 'Night' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlenightChange(index, input.night === 'Night' ? '' : 'Night')}
-                                    >
-                                        <Text style={[input.night === 'Night' ? styles.btntext : styles.btntexttwo]}>Night</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.foodtime === 'Before' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlefoodtimeChange(index, 'Before')}
-                                    >
-                                        <Text style={[input.foodtime === 'Before' ? styles.btntext : styles.btntexttwo]}>Before</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.foodtime === 'After' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlefoodtimeChange(index, 'After')}
-                                    >
-                                        <Text style={[input.foodtime === 'After' ? styles.btntext : styles.btntexttwo]}>After</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.medicinetype === 'Tablet' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlemedicinetypeChange(index, 'Tablet')}
-                                    >
-                                        <Text style={[input.medicinetype === 'Tablet' ? styles.btntext : styles.btntexttwo]}>Tablet</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.medicinetype === 'Capsule' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlemedicinetypeChange(index, 'Capsule')}
-                                    >
-                                        <Text style={[input.medicinetype === 'Capsule' ? styles.btntext : styles.btntexttwo]}>Capsule</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.medicinetype === 'Tonic' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlemedicinetypeChange(index, 'Tonic')}
-                                    >
-                                        <Text style={[input.medicinetype === 'Tonic' ? styles.btntext : styles.btntexttwo]}>Tonic</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={[input.medicinetype === 'Other' ? styles.clickbtntwo : styles.btntwo]}
-                                        onPress={() => handlemedicinetypeChange(index, 'Other')}
-                                    >
-                                        <Text style={[input.medicinetype === 'Other' ? styles.btntext : styles.btntexttwo]}>Other</Text>
-                                    </TouchableOpacity>
-
-                                    {input.medicinetype === "Tonic" ? <><TextInput placeholder='Enter ml' placeholderTextColor={'#b0b0b0'}
-                                        style={[styles.inpunewCut, focusedInput === index && styles.inputFocused]}
-                                        onFocus={() => handleFocus(index)}
-                                        onBlur={handleBlur}
-                                        keyboardType='numeric'
-                                        value={input.quantity}
-                                        onChangeText={(text) => handleInputChange(index, 'quantity', text)} />
-                                        <Text style={styles.btntexttwo}>ml      </Text>
-                                    </> : <>
-                                        <TouchableOpacity
-                                            style={styles.plusbtns}
-                                            onPress={() => handleIncrement(index)}
-                                        >
-                                            <AntDesign name="minus" size={22} color='#06aeeb' />
-                                        </TouchableOpacity>
-
-                                        <Text style={styles.btntecvtwo}>1/{input.count}</Text>
-
-                                        <TouchableOpacity
-                                            style={styles.plusbtns}
-                                            onPress={() => handleDecrement(index)}
-                                        >
-                                            <AntDesign name="plus" size={22} color='#06aeeb' />
-                                        </TouchableOpacity>
-
-                                    </>}
-                                    <TextInput placeholder='Enter days' placeholderTextColor={'#b0b0b0'}
-                                        style={[styles.inpunewCut, focusedInput === index && styles.inputFocused]}
-                                        onFocus={() => handleFocus(index)}
-                                        onBlur={handleBlur}
-                                        keyboardType='numeric'
-                                        value={input.days}
-                                        onChangeText={(text) => handleInputChange(index, 'days', text)} />
+                                    {Appointmentdata.Bloodpressure &&
+                                        <View style={styles.icon_text_div}>
+                                            <Text style={styles.light_main_text}>Blood Pressure : <Text style={styles.gender_text}> {Appointmentdata.Bloodpressure}</Text></Text>
+                                        </View>}
 
 
-                                    <Text style={styles.btntexttwo}>Days  </Text>
-                                    <TouchableOpacity onPress={() => handleDelete(index)} >
-                                        <AntDesign name="close" size={25} color='#FF5733' />
-                                    </TouchableOpacity>
+                                    {Appointmentdata.Weight &&
+                                        <View style={styles.icon_text_div}>
+                                            <Text style={styles.light_main_text}>Weight : <Text style={styles.gender_text}> {Appointmentdata.Weight}</Text></Text>
+                                        </View>}
+
+                                    <Text style={styles.light_main_text}>Payment : <Text style={styles.gender_text}> {Appointmentdata.PayType}</Text></Text>
                                 </View>
-                                <View style={styles.divider} /></>))}
+                            </View>
                         </View>
-                    </ScrollView>
 
-                    <LinearGradient
-                        colors={['#06aeeb', '#4ccdfc']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={styles.gnewadd}
-                    >
-                        <TouchableOpacity onPress={addFields} style={{ alignItems: 'center', width: '100%', height: 'auto', paddingVertical: 13, flexDirection: 'row', justifyContent: "center" }}>
-                            <AntDesign name="plus" size={20} color='white' />
-                            <Text style={styles.daytext_color}> Add medicine</Text>
-                        </TouchableOpacity>
-                    </LinearGradient>
-                    <Text style={styles.tetype2}>Advice</Text>
-                    <TextInput placeholder='Enter advice here...' placeholderTextColor={'#969696'} style={styles.intype2}
-                        value={adviceNew}
-                        multiline={true}
-                        numberOfLines={4}
-                        onChangeText={(text) => { setadviceNew(text) }} />
-                    <Text style={styles.tetype2}>Note</Text>
-                    <TextInput placeholder='Enter note here...' placeholderTextColor={'#969696'} style={styles.intype2}
-                        value={NoteOld}
-                        onChangeText={(text) => { setNoteOld(text) }} />
-                    <LinearGradient
-                        colors={['#06aeeb', '#4ccdfc']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{ borderRadius: 250, marginHorizontal: 16, marginVertical: 16 }}
-                    >
-                        <TouchableOpacity
-                            style={styles.clickbtn}
-                            onPress={handleSubmit}
-                            disabled={isLoading}
+                        <View style={styles.marginBox}>
+                            <Text style={styles.text4}>Treatment : <Text style={styles.details_text}>{Appointmentdata.Treatmentfor}</Text></Text>
+                            {Appointmentdata.checkInStatus === "Checked-In" ? <View style={{ flexDirection: 'row', alignItems: 'center' }} ><Text style={[styles.date_main_text, { marginRight: 10 }]} >Checked-In</Text><Fontisto name="checkbox-active" size={20} color={'#03ccbb'} /></View> : ''}
+
+                        </View>
+
+                        <Text style={{ paddingHorizontal: 16 }} >Details :<Text style={styles.details_text}> {Appointmentdata.ProblemDetails}</Text></Text>
+
+                        <View style={styles.divider} />
+
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+
+                            <View style={{ flexDirection: 'column' }}>
+                                <View style={{ flexDirection: 'row', paddingLeft: 16 }}>
+                                    <Text style={styles.text2}> Medicine Name </Text>
+                                    <Text style={styles.text2}> Dosage Time </Text>
+                                    <Text style={styles.text2}> Food </Text>
+                                    <Text style={styles.text2}> Medicine Type </Text>
+                                    <Text style={styles.text2}> Quantity </Text>
+                                    <Text style={styles.text2}> Duration</Text>
+                                </View>
+
+                                <View style={styles.divider} />
+
+                                {inputs.map((input, index) => (<>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+
+                                        <TextInput placeholder='Enter medicine name here..' placeholderTextColor={'#b0b0b0'}
+                                            style={[styles.inpuCut, focusedInput === index && styles.inputFocused]}
+                                            onFocus={() => handleFocus(index)}
+                                            onBlur={handleBlur}
+                                            value={input.medicinename}
+                                            onChangeText={(text) => handleInputChange(index, 'medicinename', text)}
+
+                                        />
+                                        <TouchableOpacity
+                                            style={[input.morningdos === 'Morning' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlemorningdosChange(index, input.morningdos === 'Morning' ? '' : 'Morning')}
+                                        >
+                                            <Text style={[input.morningdos === 'Morning' ? styles.btntext : styles.btntexttwo]}>Morning</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.afternoon === 'Afternoon' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handleafternoonChange(index, input.afternoon === 'Afternoon' ? '' : 'Afternoon')}
+                                        >
+                                            <Text style={[input.afternoon === 'Afternoon' ? styles.btntext : styles.btntexttwo]}>Afternoon</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.evening === 'Evening' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handleeveningChange(index, input.evening === 'Evening' ? '' : 'Evening')}
+                                        >
+                                            <Text style={[input.evening === 'Evening' ? styles.btntext : styles.btntexttwo]}>Evening</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.night === 'Night' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlenightChange(index, input.night === 'Night' ? '' : 'Night')}
+                                        >
+                                            <Text style={[input.night === 'Night' ? styles.btntext : styles.btntexttwo]}>Night</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.foodtime === 'Before' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlefoodtimeChange(index, 'Before')}
+                                        >
+                                            <Text style={[input.foodtime === 'Before' ? styles.btntext : styles.btntexttwo]}>Before</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.foodtime === 'After' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlefoodtimeChange(index, 'After')}
+                                        >
+                                            <Text style={[input.foodtime === 'After' ? styles.btntext : styles.btntexttwo]}>After</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.medicinetype === 'Tablet' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlemedicinetypeChange(index, 'Tablet')}
+                                        >
+                                            <Text style={[input.medicinetype === 'Tablet' ? styles.btntext : styles.btntexttwo]}>Tablet</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.medicinetype === 'Capsule' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlemedicinetypeChange(index, 'Capsule')}
+                                        >
+                                            <Text style={[input.medicinetype === 'Capsule' ? styles.btntext : styles.btntexttwo]}>Capsule</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.medicinetype === 'Tonic' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlemedicinetypeChange(index, 'Tonic')}
+                                        >
+                                            <Text style={[input.medicinetype === 'Tonic' ? styles.btntext : styles.btntexttwo]}>Tonic</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[input.medicinetype === 'Other' ? styles.clickbtntwo : styles.btntwo]}
+                                            onPress={() => handlemedicinetypeChange(index, 'Other')}
+                                        >
+                                            <Text style={[input.medicinetype === 'Other' ? styles.btntext : styles.btntexttwo]}>Other</Text>
+                                        </TouchableOpacity>
+
+                                        {input.medicinetype === "Tonic" ? <><TextInput placeholder='Enter ml' placeholderTextColor={'#b0b0b0'}
+                                            style={[styles.inpunewCut, focusedInput === index && styles.inputFocused]}
+                                            onFocus={() => handleFocus(index)}
+                                            onBlur={handleBlur}
+                                            keyboardType='numeric'
+                                            value={input.quantity}
+                                            onChangeText={(text) => handleInputChange(index, 'quantity', text)} />
+                                            <Text style={styles.btntexttwo}>ml      </Text>
+                                        </> : <>
+                                            <TouchableOpacity
+                                                style={styles.plusbtns}
+                                                onPress={() => handleIncrement(index)}
+                                            >
+                                                <AntDesign name="minus" size={22} color='#06aeeb' />
+                                            </TouchableOpacity>
+
+                                            <Text style={styles.btntecvtwo}>1/{input.count}</Text>
+
+                                            <TouchableOpacity
+                                                style={styles.plusbtns}
+                                                onPress={() => handleDecrement(index)}
+                                            >
+                                                <AntDesign name="plus" size={22} color='#06aeeb' />
+                                            </TouchableOpacity>
+
+                                        </>}
+                                        <TextInput placeholder='Enter days' placeholderTextColor={'#b0b0b0'}
+                                            style={[styles.inpunewCut, focusedInput === index && styles.inputFocused]}
+                                            onFocus={() => handleFocus(index)}
+                                            onBlur={handleBlur}
+                                            keyboardType='numeric'
+                                            value={input.days}
+                                            onChangeText={(text) => handleInputChange(index, 'days', text)} />
+
+
+                                        <Text style={styles.btntexttwo}>Days  </Text>
+                                        <TouchableOpacity onPress={() => handleDelete(index)} >
+                                            <AntDesign name="close" size={25} color='#FF5733' />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.divider} /></>))}
+                            </View>
+                        </ScrollView>
+
+                        <LinearGradient
+                            colors={['#06aeeb', '#4ccdfc']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.gnewadd}
                         >
-                            {isLoading ? (
-                                <ActivityIndicator size="small" color="white" />
-                            ) : (
-                                <Text style={styles.clickbtntext}>Create</Text>
-                            )}
-                        </TouchableOpacity>
-                    </LinearGradient>
-                </ScrollView>
-            </>}</>
+                            <TouchableOpacity onPress={addFields} style={{ alignItems: 'center', width: '100%', height: 'auto', paddingVertical: 13, flexDirection: 'row', justifyContent: "center" }}>
+                                <AntDesign name="plus" size={20} color='white' />
+                                <Text style={styles.daytext_color}> Add medicine</Text>
+                            </TouchableOpacity>
+                        </LinearGradient>
+                        <Text style={styles.tetype2}>Advice</Text>
+                        <TextInput placeholder='Enter advice here...' placeholderTextColor={'#969696'} style={styles.intype2}
+                            value={adviceNew}
+                            multiline={true}
+                            numberOfLines={4}
+                            onChangeText={(text) => { setadviceNew(text) }} />
+                        <Text style={styles.tetype2}>Note</Text>
+                        <TextInput placeholder='Enter note here...' placeholderTextColor={'#969696'} style={styles.intype2}
+                            value={NoteOld}
+                            onChangeText={(text) => { setNoteOld(text) }} />
+                        <LinearGradient
+                            colors={['#06aeeb', '#4ccdfc']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={{ borderRadius: 250, marginHorizontal: 16, marginVertical: 16 }}
+                        >
+                            <TouchableOpacity
+                                style={styles.clickbtn}
+                                onPress={handleSubmit}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator size="small" color="white" />
+                                ) : (
+                                    <Text style={styles.clickbtntext}>Create</Text>
+                                )}
+                            </TouchableOpacity>
+                        </LinearGradient>
+                    </ScrollView>
+                </>
+            }
+        </>
     )
 }
 

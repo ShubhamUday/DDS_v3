@@ -30,9 +30,9 @@ function Test() {
         <>
             <DashboardLayout>
                 <div>Test</div>
-                <FormControl >
+                <FormControl fullWidth>
                     <InputLabel id="select-label">Food</InputLabel>
-                    <Select
+                    <Select 
                         labelId="select-label"
                         id="demo-simple-select"
                         label="Food"

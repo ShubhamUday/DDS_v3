@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import { Card, Chip, Dialog, DialogContent, Divider, Grid, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Card, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
@@ -16,7 +18,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import LockIcon from '@mui/icons-material/Lock';
-
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
@@ -101,11 +103,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     const fetchClinicList = async () => {
         try {
-            const result = await axios.get(
-                `${process.env.REACT_APP_HOS}/get-single-doctor/${drID}`,
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                }
+            const result = await axios.get(`${process.env.REACT_APP_HOS}/get-single-doctor/${drID}`,
+                { headers: { 'Content-Type': 'application/json' }, }
             );
             setClinicList(result.data.clinicID);
             // console.log('clinic daa', result)
@@ -201,16 +200,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     const handleSubmit = async () => {
         setSubmitAttempted(true)
         const { patientName, age, gender, treatmentFor, ProblemDetails, Bookdate, clinicID } = formData;
-        if (
-            !patientName.trim() ||
-            !age ||
-            !gender ||
-            !treatmentFor.trim() ||
-            !ProblemDetails.trim() ||
-            !Bookdate ||
-            !clinicID
-        ) {
-            alert("Please fill all required fields: Name, Age, Gender, Treatment, Problem, Schedule, Clinic.");
+        if (!patientName.trim() || !age || !gender || !treatmentFor.trim() || !ProblemDetails.trim() || !Bookdate || !clinicID) {
+            toast.error("Please fill all required fields: Name, Age, Gender, Treatment, Problem, Schedule, Clinic.");
             return;
         }
         try {
@@ -223,9 +214,9 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                 resetForm()
                 setIsAppoinmentModalOpen(false)
             }
-            alert('Appointment booked sucsessfully!');
+            toast.success('Appointment booked sucsessfully!');
         } catch (error) {
-            alert("Something went wrong");
+            toast.error("Something went wrong");
             console.log(error)
         }
     };
@@ -255,11 +246,26 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
         // getBookedSlots();
     }, []);
 
-
-
     return (
         <>
+            <ToastContainer autoClose={2000} position="top-center" hideProgressBar={false} newestOnTop={false} closeOnClick
+                rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover theme="light"
+                style={{ width: '350px', font: 'message-box' }}
+            />
             <Dialog open={isAppoinmentModalOpen} onClose={handleClose} maxWidth="md" fullWidth>
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Appoinment </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <CloseIcon />
+                </IconButton>
                 <DialogContent
                     sx={{ p: 0, overflow: 'hidden' }} >
                     <MDBox
@@ -271,9 +277,9 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                             borderRadius: '12px',
                         }}
                     >
-                        <MDTypography variant="h6" mb={2} fontWeight="bold"> Add Appoinment </MDTypography>
+                        {/* <MDTypography variant="h6" mb={2} fontWeight="bold"> Add Appoinment </MDTypography>
 
-                        <Divider />
+                        <Divider /> */}
 
                         <Grid container spacing={2}>
                             {/* Name */}
@@ -483,7 +489,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         // disablePast
                                         label="Schedule"
                                         value={formData.Bookdate ? moment(formData.Bookdate) : null}
-                                        // minDate={moment()} // today
+                                        minDate={moment()} // today
                                         maxDate={moment().add(20, "days")} // today + 20 days
                                         onChange={handleScheduleChange}
                                         renderInput={(params) => (
