@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, CircularProgress, Alert, Divider, IconButton, Modal, MenuItem, Menu, Checkbox, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Grid, CircularProgress, Alert, Divider, IconButton, MenuItem, Menu, Checkbox, List, ListItem, ListItemIcon, ListItemText, DialogTitle, DialogContent, Dialog, FormControlLabel } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDButton from "components/MDButton";
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import calendarIcon from 'assets/images/schedule-calendar-and-blue-clock-18292.png'
-import { EditOutlined, FamilyRestroomOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpgradeOutlined, MoreVertOutlined, CheckOutlined, Close, Male, Female } from '@mui/icons-material';
+import { EditOutlined, FamilyRestroomOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpgradeOutlined, MoreVertOutlined, CheckOutlined, Male, Female } from '@mui/icons-material';
 import PatientFormModal from 'Pages/patient/PatientFormModal';
 import PaymentFormModal from 'Pages/payment/PaymentFormModal';
 import moment from 'moment';
+import { CloseOutlined } from '@mui/icons-material'
+import Switch from '@mui/material/Switch';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -109,13 +110,13 @@ function AppointmentWithDetails() {
     switch (appointmentData?.requestStatus) {
       case "Pending":
         return [
-          <MDButton key="accept" variant="contained" color="success" size="small" onClick={() => { console.log('check resch btn') }} > Accept </MDButton>,
           <MDButton key="reject" variant="outlined" color="error" size="small"> Reject </MDButton>,
+          <MDButton key="accept" variant="contained" color="success" size="small" onClick={() => { console.log('check resch btn') }} > Accept </MDButton>,
         ];
       case "Completed":
         return [
-          <MDButton key="revisit_reminder" variant="contained" color="primary" size="small" > Revisit Reminder </MDButton>,
           <MDButton key="feedback" variant="outlined" color="secondary" size="small"> Feedback </MDButton>,
+          <MDButton key="revisit_reminder" variant="contained" color="primary" size="small" > Revisit Reminder </MDButton>,
         ];
       case "Accepted":
         return [
@@ -124,19 +125,20 @@ function AppointmentWithDetails() {
           >
             Reschedule
           </MDButton>,
-          <Checkbox
-            key='check'
-            checked={selected}
-            onChange={(e) => setSelected(e.target.checked)}
-            icon={<CheckOutlined sx={{ color: 'grey.500' }} />}       // Unchecked icon
-            checkedIcon={<CheckOutlined sx={{ color: 'success.main' }} />} // Checked icon
-            sx={{
-              '&:hover': {
-                backgroundColor: 'transparent', // Remove hover bg
-              },
-            }}
-          />
-          // <MDButton key="details" variant="outlined" color="info" size="small" onClick={() => {  console.log('check resch btn') }}> Done </MDButton>,
+          // <Checkbox
+          //   key='check'
+          //   checked={selected}
+          //   onChange={(e) => setSelected(e.target.checked)}
+          //   icon={<CheckOutlined sx={{ color: 'grey.500' }} />}       // Unchecked icon
+          //   checkedIcon={<CheckOutlined sx={{ color: 'success.main' }} />} // Checked icon
+          //   sx={{
+          //     '&:hover': {
+          //       backgroundColor: 'transparent', // Remove hover bg
+          //     },
+          //   }}
+          // />,
+
+          <Switch key='switch' color="warning" />
         ];
       default:
         return null;
@@ -312,8 +314,8 @@ function AppointmentWithDetails() {
                     },
                   }}>
 
-                  <MDBox display="flex" justifyContent="space-between" alignItems="center" mb={2} >
-                    {buttons[0] && (<MDBox > {buttons[0]} </MDBox>)}
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center"  >
+
 
                     <MDTypography variant="h4" align="center" color="info" gutterBottom
                       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
@@ -321,7 +323,9 @@ function AppointmentWithDetails() {
                       Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
                     </MDTypography>
 
-                    {buttons[1] && (<MDBox> {buttons[1]} </MDBox>)}
+                    {buttons[0] && (<MDBox ml={'auto'}> {buttons[0]} </MDBox>)}
+                    {buttons[1] && (<MDBox ml={1}> {buttons[1]} </MDBox>)}
+
 
                   </MDBox>
 
@@ -441,15 +445,21 @@ function AppointmentWithDetails() {
                   </MDBox> */}
 
                   {isFamilyModalOpen && (
-                    <Modal open={isFamilyModalOpen} onClose={() => { setIsFamilyModalOpen(false) }}>
-                      <MDBox sx={style}>
-                        <MDBox display="flex" justifyContent="space-between" alignItems="center">
-                          <MDTypography variant="h6" fontWeight="bold"> Patient&apos;s Family Tree </MDTypography>
-                          <IconButton onClick={() => { setIsFamilyModalOpen(false) }}> <Close /> </IconButton>
-                        </MDBox>
-
-                        <Divider />
-
+                    <Dialog open={isFamilyModalOpen} onClose={() => { setIsFamilyModalOpen(false) }} fullWidth>
+                      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Patient&apos;s Family Tree </DialogTitle>
+                      <IconButton
+                        aria-label="close"
+                        onClick={() => { setIsFamilyModalOpen(false) }}
+                        sx={(theme) => ({
+                          position: 'absolute',
+                          right: 8,
+                          top: 8,
+                          color: theme.palette.grey[500],
+                        })}
+                      >
+                        <CloseOutlined />
+                      </IconButton>
+                      <DialogContent>
                         <List>
                           {familyMembers.map((member, index) => (
                             <ListItem key={index}>
@@ -462,8 +472,8 @@ function AppointmentWithDetails() {
                             </ListItem>
                           ))}
                         </List>
-                      </MDBox>
-                    </Modal>
+                      </DialogContent>
+                    </Dialog>
                   )}
 
                   <Divider sx={{}} />
@@ -700,7 +710,6 @@ function AppointmentWithDetails() {
           style={style}
         />
       )}
-
 
     </DashboardLayout >
 

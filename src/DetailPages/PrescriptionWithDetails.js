@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Paper, Divider, Button, Grid, TextField, ToggleButton, ToggleButtonGroup, Select, MenuItem, InputLabel, FormControl, InputAdornment, Stack, Dialog, DialogTitle, DialogActions } from '@mui/material';
+import { toast } from 'react-toastify';
+import { Paper, Divider, Grid, TextField, ToggleButton, ToggleButtonGroup, Select, MenuItem, InputLabel, FormControl, InputAdornment, Stack, Dialog, DialogTitle, DialogActions } from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DownloadIcon from '@mui/icons-material/Download';
 import MDBox from "components/MDBox";
@@ -178,20 +177,6 @@ function PrescriptionWithDetails() {
 
   return (
     <DashboardLayout>
-
-      <ToastContainer
-        autoClose={2000}
-        position="top-center"
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-        theme="light"
-        style={{ width: '350px', font: 'message-box' }}
-      />
 
       {/* Download Button */}
       {role === "Doctor" && (

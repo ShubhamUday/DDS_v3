@@ -3,9 +3,10 @@ import { CloseOutlined } from '@mui/icons-material'
 import { Dialog, DialogContent, DialogTitle, Grid, IconButton, TextField } from '@mui/material'
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const DoctorFormModal = ({ isModalOpen, setIsModalOpen, doctorDetails }) => {
-    const [submitAttempted, setSubmitAttempted] = useState(false);
+const DoctorEditFormModal = ({ isEditModalOpen, setIsEditModalOpen, doctorDetails, getDoctorDetails }) => {
 
     const [formData, setFormData] = useState({
         drname: "",
@@ -18,21 +19,27 @@ const DoctorFormModal = ({ isModalOpen, setIsModalOpen, doctorDetails }) => {
         aadharNumber: "",
     });
 
-    const handleClose = () => { setIsModalOpen(false) }
+    const handleClose = () => { setIsEditModalOpen(false) }
 
     const handleChange = (field) => (e) => {
         const value = e.target.value;
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleSubmit = () => {
-        axios.put('/api/patient/123', formData)
-            .then(() => {
-                alert('Updated successfully!');
-            })
-            .catch((err) => {
-                console.error('Error updating data:', err);
-            });
+    const handleSubmit = async () => {
+        const values = formData
+        try {
+            const response = await axios.put(`${process.env.REACT_APP_HOS}/update-doctor-detail/${doctorDetails._id}`, values,
+                { headers: { 'Content-Type': 'application/json' } })
+
+            toast.success("Doctor's details was successfully updated")
+            console.log('respon update dr', response.data)
+            setIsEditModalOpen(false)
+            getDoctorDetails()
+        } catch (error) {
+            toast.error("Error updating doctor details")
+            console.log("Error updating doctor details", error)
+        }
     };
 
     useEffect(() => {
@@ -64,11 +71,12 @@ const DoctorFormModal = ({ isModalOpen, setIsModalOpen, doctorDetails }) => {
 
     return (
         <>
-            <Dialog open={isModalOpen} onClose={handleClose} fullWidth>
+            <Dialog open={isEditModalOpen} onClose={handleClose} fullWidth>
+
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Edit Doctor Details </DialogTitle>
                 <IconButton
                     aria-label="close"
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => setIsEditModalOpen(false)}
                     sx={(theme) => ({
                         position: 'absolute',
                         right: 8,
@@ -86,16 +94,14 @@ const DoctorFormModal = ({ isModalOpen, setIsModalOpen, doctorDetails }) => {
                             <TextField fullWidth label="Name" size="small"
                                 value={formData.drname}
                                 onChange={handleChange('patiendrnametName')}
-                                error={submitAttempted && !formData.drname.trim()}
-                                helperText={submitAttempted && !formData.drname.trim() && "Required"} />
+                            />
                         </Grid>
 
                         <Grid item xs={12} sm={6}>
                             <TextField fullWidth label="Designation" size="small"
                                 value={formData.designation}
                                 onChange={handleChange('designation')}
-                                error={submitAttempted && !formData.designation.trim()}
-                                helperText={submitAttempted && !formData.designation.trim() && "Required"} />
+                            />
                         </Grid>
 
                         <Grid item xs={12} sm={12}>
@@ -104,8 +110,7 @@ const DoctorFormModal = ({ isModalOpen, setIsModalOpen, doctorDetails }) => {
                                 rows={2}
                                 value={formData.biography}
                                 onChange={handleChange('biography')}
-                                error={submitAttempted && !formData.biography.trim()}
-                                helperText={submitAttempted && !formData.biography.trim() && "Required"} />
+                            />
                         </Grid>
 
                         <Grid item xs={12} sm={6}>
@@ -146,4 +151,4 @@ const DoctorFormModal = ({ isModalOpen, setIsModalOpen, doctorDetails }) => {
     )
 }
 
-export default DoctorFormModal
+export default DoctorEditFormModal

@@ -16,7 +16,7 @@ function Basic() {
   const [selectedRole, setSelectedRole] = useState("doctor");
   const [mail, setmail] = useState("");
   const [pass, setpass] = useState("");
-const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const handleRoleChange = (event) => {
     setSelectedRole(event.target.value);
@@ -41,7 +41,7 @@ const [submitAttempted, setSubmitAttempted] = useState(false);
       const drpassword = pass;
       try {
         const result = await axios.post(
-          `${process.env.REACT_APP_HOS}/login-dental-doctor`,{ dremail, drpassword },
+          `${process.env.REACT_APP_HOS}/login-dental-doctor`, { dremail, drpassword },
           {
             headers: { "Content-Type": "application/json" },
           }
@@ -59,11 +59,8 @@ const [submitAttempted, setSubmitAttempted] = useState(false);
 
           try {
             const updateFcm = await axios.put(
-              `${process.env.REACT_APP_HOS}/update-doctor-detail/${result.data._id}`,
-              values,
-              {
-                headers: { "Content-Type": "application/json" },
-              }
+              `${process.env.REACT_APP_HOS}/update-doctor-detail/${result.data._id}`, values,
+              { headers: { "Content-Type": "application/json" }, }
             );
             if (updateFcm.data) {
               console.log("Doctor login successful!");

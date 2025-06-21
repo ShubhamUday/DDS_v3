@@ -26,7 +26,8 @@ import routes from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav } from "context";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
@@ -128,6 +129,19 @@ export default function App() {
   return  (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
+      <ToastContainer
+              autoClose={2000}
+              position="top-center"
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable
+              pauseOnHover
+              theme="light"
+              style={{ width: '350px', font: 'message-box' }}
+            />
       {layout === "dashboard" && (
         <>
           <Sidenav
@@ -159,6 +173,7 @@ export default function App() {
         </Route>
         <Route path="/sign-in" element={<Basic />} />
       </Routes>
+      
     </ThemeProvider>
   );
 }

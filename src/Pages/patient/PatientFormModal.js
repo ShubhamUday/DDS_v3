@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { Divider, Grid, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
+import { CloseOutlined } from '@mui/icons-material'
+import { styled } from '@mui/material/styles';
+
+
+const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
+    textTransform: "capitalize",
+    borderRadius: 8,
+    fontWeight: 500,
+    borderColor: "#cfd8dc",
+    '&.Mui-selected': {
+        backgroundColor: '#4caf50',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#43a047',
+        },
+    },
+}));
 
 function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, getDetails, style }) {
     const [formData, setFormData] = useState({
@@ -33,6 +50,7 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
         axios.put('/api/patient/123', formData) // Replace with your PUT endpoint
             .then(() => {
                 alert('Updated successfully!');
+                getDetails();
             })
             .catch((err) => {
                 console.error('Error updating data:', err);
@@ -56,9 +74,21 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
 
     return (
         <>
-            <Modal open={isModalOpen} onClose={handleClose}  >
-                <MDBox sx={style}>
-                    <MDTypography variant="h6" mb={2} fontWeight="bold"> Update Patient Details </MDTypography>
+            <Dialog open={isModalOpen} onClose={handleClose} fullWidth>
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Update Patient&apos;s Details </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <CloseOutlined />
+                </IconButton>
+                <DialogContent>
 
                     <Stack spacing={2}>
                         {/* Gender */}
@@ -71,8 +101,8 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                 exclusive
                                 onChange={handleToggleChange('gender')}
                             >
-                                <ToggleButton value="Male">Male</ToggleButton>
-                                <ToggleButton value="Female">Female</ToggleButton>
+                                <StyledToggleButton value="Male"> Male </StyledToggleButton>
+                                <StyledToggleButton value="Female"> Female </StyledToggleButton>
                             </ToggleButtonGroup>
                         </MDBox>
 
@@ -81,13 +111,40 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Age </MDTypography>
-                                    <TextField size="small" type="number" value={formData.age} onChange={handleChange('age')} InputLabelProps={{ shrink: true }} />
+                                    <TextField size="small" type="number"
+                                        value={formData.age}
+                                        onChange={handleChange('age')}
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{
+                                            // For Chrome, Safari, Edge
+                                            '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                                                WebkitAppearance: 'none',
+                                                margin: 0,
+                                            },
+                                            // For Firefox
+                                            '& input[type=number]': {
+                                                MozAppearance: 'textfield',
+                                            },
+                                        }} />
                                 </MDBox>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography>
-                                    <TextField size="small" type="number" value={formData.weight} onChange={handleChange('weight')} InputLabelProps={{ shrink: true }} />
+                                    <TextField size="small" type="number"
+                                        value={formData.weight}
+                                        onChange={handleChange('weight')}
+                                        sx={{
+                                            // For Chrome, Safari, Edge
+                                            '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                                                WebkitAppearance: 'none',
+                                                margin: 0,
+                                            },
+                                            // For Firefox
+                                            '& input[type=number]': {
+                                                MozAppearance: 'textfield',
+                                            },
+                                        }} />
                                 </MDBox>
                             </Grid>
 
@@ -111,11 +168,11 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                     value={formData.treatmentFor}
                                     onChange={handleChange('treatmentFor')}
                                 >
-                                    <ToggleButton value="Tooth Pain">Tooth Pain</ToggleButton>
-                                    <ToggleButton value="Brace">Brace</ToggleButton>
-                                    <ToggleButton value="Crown">Crown</ToggleButton>
-                                    <ToggleButton value="Bridge">Bridge</ToggleButton>
-                                    <ToggleButton value="Tooth Ache">Tooth Ache</ToggleButton>
+                                    <StyledToggleButton value="Tooth Pain">Tooth Pain</StyledToggleButton>
+                                    <StyledToggleButton value="Brace">Brace</StyledToggleButton>
+                                    <StyledToggleButton value="Crown">Crown</StyledToggleButton>
+                                    <StyledToggleButton value="Bridge">Bridge</StyledToggleButton>
+                                    <StyledToggleButton value="Tooth Ache">Tooth Ache</StyledToggleButton>
                                 </ToggleButtonGroup>
                             </Grid>
 
@@ -139,9 +196,9 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                 exclusive
                                 onChange={handleToggleChange('diabities')}
                             >
-                                <ToggleButton value="Yes">Yes</ToggleButton>
-                                <ToggleButton value="No">No</ToggleButton>
-                                <ToggleButton value="Pre">Pre</ToggleButton>
+                                <StyledToggleButton value="Yes">Yes</StyledToggleButton>
+                                <StyledToggleButton value="No">No</StyledToggleButton>
+                                <StyledToggleButton value="Pre">Pre</StyledToggleButton>
                             </ToggleButtonGroup>
                         </MDBox>
 
@@ -155,12 +212,10 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                 exclusive
                                 onChange={handleToggleChange('bloodPressure')}
                             >
-                                <ToggleButton value="Yes">Yes</ToggleButton>
-                                <ToggleButton value="No">No</ToggleButton>
+                                <StyledToggleButton value="Yes">Yes</StyledToggleButton>
+                                <StyledToggleButton value="No">No</StyledToggleButton>
                             </ToggleButtonGroup>
                         </MDBox>
-
-                        <Divider />
 
                         {/* Buttons */}
                         <MDBox display="flex" justifyContent="flex-end" gap={1}>
@@ -168,9 +223,8 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                             <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Save </MDButton>
                         </MDBox>
                     </Stack>
-
-                </MDBox>
-            </Modal>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

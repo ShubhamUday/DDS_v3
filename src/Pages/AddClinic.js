@@ -1,19 +1,8 @@
 import React, { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {  toast } from 'react-toastify';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
-import {
-  Card,
-  Grid,
-  Divider,
-  TextField,
-  Select,
-  FormControl,
-  InputLabel,
-  IconButton,
-  MenuItem,
-} from '@mui/material';
+import { Card, Grid, Divider, TextField, Select, FormControl, InputLabel, IconButton, MenuItem} from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -105,7 +94,7 @@ function AddClinic() {
         ...validFiles.map(file => URL.createObjectURL(file)),
       ]);
     } else {
-      alert("Please upload valid image files.");
+      toast.alert("Please upload valid image files.");
     }
   };
 
@@ -147,7 +136,6 @@ function AddClinic() {
         files.forEach((file) => {
           formData.append('images', file, file.name);
         });
-
       }
 
       const apiUrl = `${process.env.REACT_APP_HOS}/add-clinic-in-doctor-profile`;
@@ -185,15 +173,13 @@ function AddClinic() {
 
   return (
     <DashboardLayout>
-      <ToastContainer autoClose={2000} position="top-center" />
+     
 
 
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, p: 4, backgroundColor: '#ffffff' }}>
 
-          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center">
-            ➕ Add New Clinic
-          </MDTypography>
+          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center"> ➕ Add New Clinic </MDTypography>
           <Divider/>
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid item xs={12} sm={6} md={4}>

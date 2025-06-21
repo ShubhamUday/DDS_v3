@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { Card, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
-import { CatchingPokemonSharp, Schedule } from '@mui/icons-material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PhoneIcon from '@mui/icons-material/Phone';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import LockIcon from '@mui/icons-material/Lock';
 import CloseIcon from '@mui/icons-material/Close';
@@ -248,10 +244,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center" hideProgressBar={false} newestOnTop={false} closeOnClick
-                rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover theme="light"
-                style={{ width: '350px', font: 'message-box' }}
-            />
             <Dialog open={isAppoinmentModalOpen} onClose={handleClose} maxWidth="md" fullWidth>
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Appoinment </DialogTitle>
                 <IconButton
@@ -331,7 +323,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
                             {/* Age */}
                             <Grid item xs={12} sm={4}>
-                                {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Age </MDTypography> */}
                                 <TextField size="small" id="outlined-number" label="Age" type="number"
                                     value={formData.age}
                                     onChange={handleChange('age')}

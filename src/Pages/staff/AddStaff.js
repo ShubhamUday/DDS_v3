@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
@@ -141,19 +141,7 @@ function AddStaff() {
   return (
     <DashboardLayout>
 
-      <ToastContainer
-        autoClose={2000}
-        position="top-center"
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-        theme="light"
-        style={{ width: '350px', font: 'message-box' }}
-      />
+      
 
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, boxShadow: 2, p: 4, backgroundColor: '#ffffff' }}>

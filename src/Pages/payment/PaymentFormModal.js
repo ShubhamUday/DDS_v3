@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, TextField, Select, MenuItem, FormControl, InputLabel, IconButton, Stack, ToggleButtonGroup, ToggleButton, } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { TextField, FormControl, IconButton, Stack, ToggleButtonGroup, ToggleButton, Dialog, DialogContent, DialogTitle, } from '@mui/material';
 import axios from 'axios';
 import MDButton from 'components/MDButton';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
+import { styled } from '@mui/material/styles';
+import { CloseOutlined } from '@mui/icons-material'
+
+const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
+    textTransform: "capitalize",
+    borderRadius: 8,
+    fontWeight: 500,
+    borderColor: "#cfd8dc",
+    '&.Mui-selected': {
+        backgroundColor: '#4caf50',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#43a047',
+        },
+    },
+}));
 
 function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen, style }) {
     const [status, setStatus] = useState('');
@@ -43,11 +58,24 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
             amount: data?.PayAmount || '',
         });
 
-    },[])
+    }, [])
     return (
         <>
-            <Modal open={isPaymentUpdateModalOpen} onClose={() => { setIsPaymentUpdateModalOpen(false) }}>
-                <MDBox sx={style}>
+            <Dialog open={isPaymentUpdateModalOpen} onClose={() => { setIsPaymentUpdateModalOpen(false) }} fullWidth>
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Update Payment Details </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={() => { setIsPaymentUpdateModalOpen(false) }}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <CloseOutlined />
+                </IconButton>
+                <DialogContent>
                     <MDTypography variant="h6" mb={2} fontWeight="bold"> Update Payment Details </MDTypography>
 
                     <Stack spacing={2}>
@@ -63,8 +91,8 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                                     exclusive
                                     onChange={(e) => setStatus(e.target.value)}
                                 >
-                                    <ToggleButton value="Paid">Paid</ToggleButton>
-                                    <ToggleButton value="Pending">Pending</ToggleButton>
+                                    <StyledToggleButton value="Paid">Paid</StyledToggleButton>
+                                    <StyledToggleButton value="Pending">Pending</StyledToggleButton>
                                 </ToggleButtonGroup>
                             </MDBox>
                         </FormControl>
@@ -80,8 +108,8 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                                     exclusive
                                     onChange={(e) => setTransactionType(e.target.value)}
                                 >
-                                    <ToggleButton value="Case">Cash</ToggleButton>
-                                    <ToggleButton value="Online">Online</ToggleButton>
+                                    <StyledToggleButton value="Case">Cash</StyledToggleButton>
+                                    <StyledToggleButton value="Online">Online</StyledToggleButton>
                                 </ToggleButtonGroup>
                             </MDBox>
                         </FormControl>
@@ -107,8 +135,8 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                         </MDBox>
 
                     </Stack>
-                </MDBox>
-            </Modal>
+                </DialogContent>
+            </Dialog>
         </>
 
     )

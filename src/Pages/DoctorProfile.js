@@ -5,6 +5,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
+import MDButton from 'components/MDButton';
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import StarIcon from '@mui/icons-material/Star';
@@ -15,9 +16,12 @@ import { Grid, Icon, IconButton, Menu, MenuItem } from '@mui/material';
 import Rating from "@mui/material/Rating";
 import img from "skel2.png";
 import { Edit, LocalActivityOutlined, LogoutOutlined, MoreVertOutlined, PrivacyTipOutlined, ShareOutlined, StarOutlineOutlined, WorkOutlineOutlined } from '@mui/icons-material';
-import MDButton from 'components/MDButton';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DoctorFormModal from './doctor/DoctorFormModal';
+import DoctorEditFormModal from './doctor/DoctorEditFormModal';
+import DoctorManageModal from './doctor/DoctorManageModal';
+import ShareModal from './extra/ShareModal';
+import PrivacyPolicy from './extra/PrivacyPolicy';
+import { toast } from 'react-toastify';
 
 
 const arrowStyle = {
@@ -54,7 +58,10 @@ function DoctorProfile() {
   const [doctorData, setDoctorData] = useState({});
   const [ratingsWithUser, setRatingsWithUser] = useState([]);
   const [averageRating, setAverageRating] = useState()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isManageModalOpen, setIsManageModalOpen] = useState(false)
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -72,8 +79,6 @@ function DoctorProfile() {
 
     setAverageRating(roundedRating)
   }
-
-
 
   const getDoctorDetails = async () => {
     const drID = localStorage.getItem("doctorID");
@@ -94,6 +99,12 @@ function DoctorProfile() {
     } catch (error) {
       console.error("Error fetching doctor data:", error);
     }
+  };
+
+  const handleLogout = () => {
+    handleMenuClose();
+    localStorage.clear();
+    navigate('/Sign-in');
   };
 
   console.log('average Ratig', averageRating)
@@ -176,7 +187,7 @@ function DoctorProfile() {
                     <MDTypography variant="h5" fontWeight="bold" sx={{ fontSize: "1.6rem", color: "#1a237e" }}>
                       {doctorData?.drname}
                       <MDButton variant="text" color="secondary" title="Edit doctor details" startIcon={<Edit />}
-                        onClick={() => { setIsModalOpen(true); }} />
+                        onClick={() => { setIsEditModalOpen(true); }} />
                     </MDTypography>
                     <MDTypography variant="body2" sx={{ color: "#1a237e" }}>
                       {doctorData?.designation}
@@ -204,12 +215,12 @@ function DoctorProfile() {
                       open={menuOpen}
                       onClose={handleMenuClose}
                     >
-                      <MenuItem onClick={() => { }}> <WorkOutlineOutlined /> &nbsp;&nbsp;Manage Job </MenuItem>
-                      <MenuItem onClick={() => { }}> <StarOutlineOutlined /> &nbsp;&nbsp;Read Reviews </MenuItem>
-                      <MenuItem onClick={() => { }}> <ShareOutlined /> &nbsp;&nbsp;Share with friends </MenuItem>
+                      <MenuItem onClick={() => { setIsManageModalOpen(true) }}> <WorkOutlineOutlined /> &nbsp;&nbsp;Manage Job </MenuItem>
+                      {/* <MenuItem onClick={() => { }}> <StarOutlineOutlined /> &nbsp;&nbsp;Read Reviews </MenuItem> */}
+                      <MenuItem onClick={() => { setIsShareModalOpen(true) }}> <ShareOutlined /> &nbsp;&nbsp;Share with friends </MenuItem>
                       <MenuItem onClick={() => { }}> <LocalActivityOutlined /> &nbsp;&nbsp;Add Ticket </MenuItem>
-                      <MenuItem onClick={() => { }}> <PrivacyTipOutlined /> &nbsp;&nbsp;Privacy Policy </MenuItem>
-                      <MenuItem onClick={() => { }}> <LogoutOutlined /> &nbsp;&nbsp;Log Out </MenuItem>
+                      <MenuItem onClick={() => { setIsPrivacyModalOpen(true) }}> <PrivacyTipOutlined /> &nbsp;&nbsp;Privacy Policy </MenuItem>
+                      <MenuItem onClick={() => { handleLogout }}> <LogoutOutlined /> &nbsp;&nbsp;Log Out </MenuItem>
                     </Menu>
                   </MDBox>
                 </Grid>
@@ -344,13 +355,41 @@ function DoctorProfile() {
         )}
       </MDBox>
 
-      {isModalOpen && (
-        <DoctorFormModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
+      {isEditModalOpen && (
+        <DoctorEditFormModal
+          isEditModalOpen={isEditModalOpen}
+          setIsEditModalOpen={setIsEditModalOpen}
           doctorDetails={doctorData}
+          getDoctorDetails={getDoctorDetails}
         />
       )}
+
+      {isManageModalOpen && (
+        <DoctorManageModal
+          isManageModalOpen={isManageModalOpen}
+          setIsManageModalOpen={setIsManageModalOpen}
+          doctorDetails={doctorData}
+          getDoctorDetails={getDoctorDetails}
+          handleMenuClose={handleMenuClose}
+        />
+      )}
+
+      {isShareModalOpen && (
+        <ShareModal
+          isShareModalOpen={isShareModalOpen}
+          setIsShareModalOpen={setIsShareModalOpen}
+          handleMenuClose={handleMenuClose}
+        />
+      )}
+
+      {isPrivacyModalOpen && (
+        <PrivacyPolicy
+          isPrivacyModalOpen={isPrivacyModalOpen}
+          setIsPrivacyModalOpen={setIsPrivacyModalOpen}
+          handleMenuClose={handleMenuClose}
+        />
+      )}
+
     </DashboardLayout>
   );
 }
