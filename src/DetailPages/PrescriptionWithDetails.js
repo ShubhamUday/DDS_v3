@@ -433,7 +433,7 @@ function PrescriptionWithDetails() {
           </MDBox>
         ))}
 
-        <Dialog open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false) }} >
+        <Dialog open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false) }}>
           <DialogTitle id="alert-dialog-title"> {"Are you sure you want to delete this medicine?"} </DialogTitle>
           <DialogActions>
             <MDButton onClick={() => { setOpenDeleteDialog(false); setSelectedMedId(null) }}> Cancel </MDButton>

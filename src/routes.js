@@ -70,14 +70,14 @@ const routes = [
     route: "/staffs",
     component: <Staffs />,
   },
-  {
-    type: "collapse",
-    name: "Test",
-    key: "profile",
-    icon: <Icon fontSize="small">medical_information</Icon>,
-    route: "/test",
-    component: <Test />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Test",
+  //   key: "profile",
+  //   icon: <Icon fontSize="small">medical_information</Icon>,
+  //   route: "/test",
+  //   component: <Test />,
+  // },
 ];
 
 export default routes;

@@ -375,8 +375,7 @@ function AppointmentWithDetails() {
                   <MDBox display="flex" justifyContent="space-between">
 
                     <MDButton variant="text" color="success" title="Family Tree" startIcon={<FamilyRestroomOutlined />}
-                      onClick={() => { setIsFamilyModalOpen(true) }}
-                    />
+                      onClick={() => { setIsFamilyModalOpen(true) }} />
 
                     <MDTypography variant="h6" fontWeight="bold" color="info"> Patient Details </MDTypography>
 
@@ -683,7 +682,6 @@ function AppointmentWithDetails() {
                       ))}
                     </MDBox>
                   </Grid>
-
                 </MDBox>
               </Grid>
             </Grid>

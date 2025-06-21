@@ -1,29 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  InputBase,
-  Badge,
-  Avatar,
-  Box,
-  Typography,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { AppBar, Toolbar, IconButton, InputBase, Badge, Avatar, Menu, MenuItem } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
-
-import {
-  useMaterialUIController,
-  setTransparentNavbar,
-  setMiniSidenav,
-} from "context";
+import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "context";
 import { navbarMobileMenu } from "examples/Navbars/DashboardNavbar/styles";
+import MDTypography from "components/MDTypography";
+import MDBox from "components/MDBox";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const role = localStorage.getItem("role");
@@ -35,6 +24,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -103,7 +95,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
     },
   });
 
+  console.log('isSmall', isSmallScreen)
   return (
+
     <AppBar
       position="sticky"
       elevation={0}
@@ -117,23 +111,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      <Toolbar sx={{ justifyContent: "space-between" }}>
+      <Toolbar sx={{ justifyContent: "space-between", flexWrap: "wrap" }}>
         {/* Welcome Text */}
-        <Typography
+        <MDTypography
           variant="body1"
           color="text.primary"
           sx={{ fontFamily: "Poppins, sans-serif" }}
         >
           Welcome,{" "}
-          <Box component="span" fontWeight={600}>
+          <MDBox component="span" fontWeight={600}>
             {role === "Co-Helper" ? localStorage.getItem("name") || "Unknown" : doctorData?.drname || "Doctor"}
-          </Box>
-        </Typography>
+          </MDBox>
+        </MDTypography>
 
-        {!isMini && (
-          <Box display="flex" alignItems="center" gap={2}>
+        {!isSmallScreen && (
+          <MDBox display="flex" alignItems="center" gap={2}>
             {/* Search Field */}
-            <Box
+            <MDBox
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -154,67 +148,73 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   fontFamily: "Poppins, sans-serif",
                 }}
               />
-            </Box>
+            </MDBox>
+          </MDBox>
+        )}
 
-            {/* Notification Icon with Badge */}
-            <IconButton>
-              <Badge variant="dot" color="error" overlap="circular">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+        <MDBox display="flex" alignItems="center" gap={2}></MDBox>
+        {/* Notification Icon with Badge */}
+        <IconButton>
+          <Badge variant="dot" color="error" overlap="circular">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
 
-            {/* User Profile Box with Dropdown */}
-            <Box
-              display="flex"
-              alignItems="center"
-              bgcolor="#f5f5f5"
-              px={1.5}
-              py={0.5}
-              borderRadius="30px"
-              sx={{ fontFamily: "Poppins, sans-serif" }}
-            >
-              <Avatar
-                src={doctorData?.profile_url || "https://i.pravatar.cc/300"}
-                alt={role === "Co-Helper" ? localStorage.getItem("name") || "Unknown" : doctorData?.drname || "Doctor"}
-                sx={{ width: 32, height: 32, mr: 1 }}
-              />
-              <Box textAlign="left" mr={1}>
-                <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+        {/* User Profile Box with Dropdown */}
+        <MDBox
+          display="flex"
+          alignItems="center"
+          bgcolor={!isSmallScreen ? "#f5f5f5" : "transparent"}
+          px={!isSmallScreen ? 1.5 : 0}
+          py={!isSmallScreen ? 0.5 : 0}
+          borderRadius="30px"
+          sx={{ fontFamily: "Poppins, sans-serif" }}
+        >
+          <Avatar
+            src={doctorData?.profile_url || "https://i.pravatar.cc/300"}
+            alt={role === "Co-Helper" ? localStorage.getItem("name") || "Unknown" : doctorData?.drname || "Doctor"}
+            sx={{ width: 32, height: 32, mr: 1 }}
+          />
+          {!isSmallScreen && (
+            <MDBox textAlign="left" mr={1}>
+              <MDTypography sx={{ fontSize: 14, fontWeight: 500 }}>
                 {role === "Co-Helper" ? localStorage.getItem("name") || "Unknown" : doctorData?.drname || "Doctor"}
-                </Typography>
-                <Typography sx={{ fontSize: 12, color: "gray" }}>
-                  {role || "Dr."}
-                </Typography>
-              </Box>
-              <IconButton size="small" onClick={handleMenuOpen}><ArrowDropDownIcon /></IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={menuOpen}
-                onClose={handleMenuClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
-              >
-                <MenuItem onClick={handleProfile}><Icon fontSize="small">medical_information</Icon>&nbsp;&nbsp;Profile</MenuItem>
-                <MenuItem onClick={handleLogout}><Icon fontSize="small">logout</Icon>&nbsp;&nbsp;Logout</MenuItem>
-              </Menu>
-            </Box>
+              </MDTypography>
+              <MDTypography sx={{ fontSize: 12, color: "gray" }}>
+                {role || "Dr."}
+              </MDTypography>
+            </MDBox>
+          )}
+          <IconButton size="small" onClick={handleMenuOpen}> <ArrowDropDownIcon /> </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <MenuItem onClick={handleProfile}><Icon fontSize="small">medical_information</Icon>&nbsp;&nbsp;Profile</MenuItem>
+            <MenuItem onClick={handleLogout}><Icon fontSize="small">logout</Icon>&nbsp;&nbsp;Logout</MenuItem>
+          </Menu>
+        </MDBox>
 
-            {/* Toggle Menu Icon */}
-            <IconButton
-              size="small"
-              disableRipple
-              color="inherit"
-              sx={navbarMobileMenu}
-              onClick={handleMiniSidenav}
-            >
-              <Icon sx={iconsStyle} fontSize="medium">
-                {miniSidenav ? "menu_open" : "menu"}
-              </Icon>
-            </IconButton>
-          </Box>
+        {/* Toggle Menu Icon */}
+        {(isSmallScreen || isMini) && (
+          <IconButton
+            size="small"
+            disableRipple
+            color="inherit"
+            sx={navbarMobileMenu}
+            onClick={handleMiniSidenav}
+          >
+            <Icon sx={iconsStyle} fontSize="medium">
+              {miniSidenav ? "menu_open" : "menu"}
+            </Icon>
+          </IconButton>
         )}
       </Toolbar>
     </AppBar>
+
   );
 }
 
