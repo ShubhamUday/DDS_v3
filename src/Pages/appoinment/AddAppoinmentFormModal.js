@@ -31,7 +31,7 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     },
 }));
 
-const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpen }) => {
+const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpen, getAllAppointments, selectedAppointment, formType }) => {
     const drID = localStorage.getItem('doctorID');
     const [clinicList, setClinicList] = useState([]);
     const [selectedClinic, setSelectedClinic] = useState(null);
@@ -44,12 +44,13 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     const [formData, setFormData] = useState({
         doctorID: "",
+        userID:"",
         patientName: "",
         phone: "",
         gender: "",
         age: "",
         Weight: "",
-        treatmentFor: "",
+        Treatmentfor: "",
         ProblemDetails: "",
         diabetes: "",
         Bloodpressure: "",
@@ -81,7 +82,6 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
         if (modifier === 'AM' && hours === 12) {
             hours = 0;
         }
-
         return hours;
     };
 
@@ -90,7 +90,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     //     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     // };
 
-    const handleClose = () => { setIsAppoinmentModalOpen(false) }
+    const handleClose = () => { setIsAppoinmentModalOpen(false); resetForm() }
 
     const handleChange = (field) => (e) => {
         const value = e.target.value;
@@ -110,6 +110,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     };
 
     const handleClinicSelect = (clinic) => {
+        console.log("clinic hndlr", clinic)
         setSelectedClinic(clinic);
         setFormData((prev) => ({
             ...prev,
@@ -195,8 +196,8 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     const handleSubmit = async () => {
         setSubmitAttempted(true)
-        const { patientName, age, gender, treatmentFor, ProblemDetails, Bookdate, clinicID } = formData;
-        if (!patientName.trim() || !age || !gender || !treatmentFor.trim() || !ProblemDetails.trim() || !Bookdate || !clinicID) {
+        const { patientName, age, gender, Treatmentfor, ProblemDetails, Bookdate, clinicID } = formData;
+        if (!patientName.trim() || !age || !gender || !Treatmentfor.trim() || !ProblemDetails.trim() || !Bookdate || !clinicID) {
             toast.error("Please fill all required fields: Name, Age, Gender, Treatment, Problem, Schedule, Clinic.");
             return;
         }
@@ -209,23 +210,32 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                 console.log('axios reslu', result.data)
                 resetForm()
                 setIsAppoinmentModalOpen(false)
+                getAllAppointments()
+                toast.success('Appointment booked sucsessfully!');
             }
-            toast.success('Appointment booked sucsessfully!');
         } catch (error) {
             toast.error("Something went wrong");
             console.log(error)
         }
     };
 
+    const handleUpdate = async()=>{
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
     const resetForm = () => {
         setFormData({
             doctorID: "",
+            userID: "",
             patientName: "",
             phone: "",
             gender: "",
             age: "",
             Weight: "",
-            treatmentFor: "",
+            Treatmentfor: "",
             ProblemDetails: "",
             diabetes: "",
             Bloodpressure: "",
@@ -237,10 +247,38 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
         });
     };
 
+    const initialValues = () => {
+        const data = selectedAppointment
+        setFormData({
+            doctorID: data?.doctorID || "",
+            userID: data?.userID?._id || "",
+            patientName: data?.userID?.name || data?.patientName || "",
+            phone: data?.userID?.number || data?.phone || "",
+            gender: data?.userID?.gender || data?.gender || "",
+            age: data?.userID?.age || data?.age || "",
+            Weight: data?.userID?.weight || data?.Weight || "",
+            Treatmentfor: data?.Treatmentfor || "",
+            ProblemDetails: data?.ProblemDetails || "",
+            diabetes: data?.diabetes || "",
+            Bloodpressure: data?.Bloodpressure || "",
+            plan: data?.plan || "",
+            Bookdate: data?.Bookdate || "",
+            BookTime: data?.BookTime || "",
+            PayType: data?.PayType || "",
+            clinicID: data?.clinicID || "",
+        })
+        setSelectedClinic(data?.clinicID)
+        generateTimeIntervals(data?.clinicID?.openTime, data?.clinicID?.closeTime)
+    }
+
+    console.log("intervals", intervalArray)
+
     useEffect(() => {
         fetchClinicList();
-        // getBookedSlots();
-    }, []);
+        if (formType === "edit") {
+            initialValues()
+        }
+    }, [selectedAppointment]);
 
     return (
         <>
@@ -369,10 +407,10 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                 <MDBox display="flex" mb={1}>
                                     {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography> */}
                                     <TextField label="Treatment" size="small" fullWidth
-                                        value={formData.treatmentFor}
-                                        onChange={handleChange('treatmentFor')}
-                                        error={submitAttempted && !formData.treatmentFor.trim()}
-                                        helperText={submitAttempted && !formData.treatmentFor.trim() && "Required"} />
+                                        value={formData.Treatmentfor}
+                                        onChange={handleChange('Treatmentfor')}
+                                        error={submitAttempted && !formData.Treatmentfor.trim()}
+                                        helperText={submitAttempted && !formData.Treatmentfor.trim() && "Required"} />
 
                                 </MDBox>
                             </Grid>
@@ -382,14 +420,14 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                     color="primary"
                                     exclusive
                                     fullWidth
-                                    value={formData.treatmentFor}
-                                    onChange={handleChange('treatmentFor')}
+                                    value={formData.Treatmentfor}
+                                    onChange={handleChange('Treatmentfor')}
 
                                 >
                                     <StyledToggleButton value="Tooth Pain"> Tooth Pain </StyledToggleButton>
-                                    <StyledToggleButton value="Brace"> Brace </StyledToggleButton>
+                                    <StyledToggleButton value="Braces"> Brace </StyledToggleButton>
                                     <StyledToggleButton value="Crown"> Crown </StyledToggleButton>
-                                    <StyledToggleButton value="Bridge"> Bridge </StyledToggleButton>
+                                    <StyledToggleButton value="Bridges"> Bridge </StyledToggleButton>
                                     <StyledToggleButton value="Tooth Ache"> Tooth Ache </StyledToggleButton>
                                 </ToggleButtonGroup>
                             </Grid>
@@ -508,7 +546,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                                         }}>
                                             {intervalArray.map((interval, index) => {
                                                 const isBooked = isSlotBooked(interval.label);
-                                                console.log('isBooked', isBooked)
+                                                // console.log('isBooked', isBooked)
 
                                                 return (
                                                     <MDButton
@@ -652,7 +690,11 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                             <Grid item xs={12} sm={12}>
                                 <MDBox display="flex" justifyContent="flex-end" gap={1}>
                                     <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
-                                    <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Book </MDButton>
+                                    {formType === "add" ? (
+                                        <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Book </MDButton>
+                                    ) : (
+                                        <MDButton variant="contained" color="success" size="small" onClick={handleUpdate}> Update </MDButton>
+                                    )}
                                 </MDBox>
                             </Grid>
                         </Grid>

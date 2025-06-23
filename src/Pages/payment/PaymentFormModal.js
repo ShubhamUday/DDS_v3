@@ -6,6 +6,7 @@ import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import { styled } from '@mui/material/styles';
 import { CloseOutlined } from '@mui/icons-material'
+import { toast } from 'react-toastify';
 
 const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     textTransform: "capitalize",
@@ -21,44 +22,51 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     },
 }));
 
-function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen, style }) {
+function PaymentFormModal({ appointmentData, isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen, getDetails }) {
     const [status, setStatus] = useState('');
     const [transactionType, setTransactionType] = useState('');
     const [amount, setAmount] = useState('');
     const [formData, setFormData] = useState({
-        status: '',
-        transaction_type: '',
-        amount: '',
+        PayStatus: '',
+        PayType: '',
+        PayAmount: '',
     });
 
+    const handleChange = (field) => (e) => {
+        const value = e.target.value;
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     const handleUpdate = async () => {
+        const values = formData
+
         try {
-            const payload = {
-                status,
-                transactionType,
-                amount,
-            };
-
-            await axios.put(`/api/appointments/${appointmentId}/payment`, payload);
-
-            alert('Payment updated successfully!');
-            handleClose();
-        } catch (error) {
-            console.error('Payment update failed:', error);
-            alert('Something went wrong. Please try again.');
+            const response = await axios.put(`${process.env.REACT_APP_HOS}/update-Appointment-Details/${appointmentData._id}`, values, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+            console.log("response data", response.data)
+            if (response.data) {
+                getDetails()
+                toast.success("Payment is updated successfully")
+                setIsPaymentUpdateModalOpen(false)
+            }
+        }
+        catch (error) {
+            console.log(error)
+            toast.error("Unable to update payment")
         }
     };
 
     useEffect(() => {
-        const data = selectedPayment
+        const data = appointmentData
         setFormData({
-            status: data?.PayStatus || '',
-            transaction_type: data?.PayType || '',
-            amount: data?.PayAmount || '',
+            PayStatus: data?.PayStatus || '',
+            PayType: data?.PayType || '',
+            PayAmount: data?.PayAmount || '',
         });
 
     }, [])
+
     return (
         <>
             <Dialog open={isPaymentUpdateModalOpen} onClose={() => { setIsPaymentUpdateModalOpen(false) }} fullWidth>
@@ -76,7 +84,6 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                     <CloseOutlined />
                 </IconButton>
                 <DialogContent>
-                    <MDTypography variant="h6" mb={2} fontWeight="bold"> Update Payment Details </MDTypography>
 
                     <Stack spacing={2}>
                         {/* Status */}
@@ -87,12 +94,12 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                                 <ToggleButtonGroup
                                     size="small"
                                     color="primary"
-                                    value={formData.status}
+                                    value={formData.PayStatus}
                                     exclusive
-                                    onChange={(e) => setStatus(e.target.value)}
+                                    onChange={handleChange('PayStatus')}
                                 >
-                                    <StyledToggleButton value="Paid">Paid</StyledToggleButton>
-                                    <StyledToggleButton value="Pending">Pending</StyledToggleButton>
+                                    <StyledToggleButton value="Paid"> Paid </StyledToggleButton>
+                                    <StyledToggleButton value="Pending"> Pending </StyledToggleButton>
                                 </ToggleButtonGroup>
                             </MDBox>
                         </FormControl>
@@ -104,12 +111,12 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                                 <ToggleButtonGroup
                                     size="small"
                                     color="primary"
-                                    value={formData.transaction_type}
+                                    value={formData.PayType}
                                     exclusive
-                                    onChange={(e) => setTransactionType(e.target.value)}
+                                    onChange={handleChange('PayType')}
                                 >
-                                    <StyledToggleButton value="Case">Cash</StyledToggleButton>
-                                    <StyledToggleButton value="Online">Online</StyledToggleButton>
+                                    <StyledToggleButton value="Case"> Cash </StyledToggleButton>
+                                    <StyledToggleButton value="Online"> Online </StyledToggleButton>
                                 </ToggleButtonGroup>
                             </MDBox>
                         </FormControl>
@@ -120,8 +127,19 @@ function PaymentFormModal({ selectedPayment, isPaymentUpdateModalOpen, setIsPaym
                             size="small"
                             label="Amount"
                             type="number"
-                            value={formData.amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            value={formData.PayAmount}
+                            onChange={handleChange("PayAmount")}
+                            sx={{
+                                // For Chrome, Safari, Edge
+                                '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                                    WebkitAppearance: 'none',
+                                    margin: 0,
+                                },
+                                // For Firefox
+                                '& input[type=number]': {
+                                    MozAppearance: 'textfield',
+                                },
+                            }}
                         />
 
                         {/* Action Buttons */}

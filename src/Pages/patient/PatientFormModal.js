@@ -21,7 +21,7 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     },
 }));
 
-function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, getDetails, style }) {
+function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, getDetails }) {
     const [formData, setFormData] = useState({
         gender: '',
         age: '',

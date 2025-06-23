@@ -95,7 +95,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     },
   });
 
-  console.log('isSmall', isSmallScreen)
+  // console.log('isSmall', isSmallScreen)
   return (
 
     <AppBar
@@ -115,7 +115,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {/* Welcome Text */}
         <MDTypography
           variant="body1"
-          color="text.primary"
+          color="primary"
           sx={{ fontFamily: "Poppins, sans-serif" }}
         >
           Welcome,{" "}

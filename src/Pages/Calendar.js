@@ -9,12 +9,13 @@ import { Card, Divider, Grid, Icon } from "@mui/material";
 import Calendar from "react-calendar";
 import "../examples/Calenders/CalendarStyles.css";
 
-import appointmentData from "../layouts/tables/data/AppointmentData";
+// import appointmentData from "../layouts/tables/data/AppointmentData";
 
 function CalendarPage() {
   const navigate = useNavigate();
   const [value, setValue] = useState(new Date());
-  const { appointmentdata } = appointmentData();
+  const [appointmentdata, setAppointmentdata] = useState([]);
+  // const { appointmentdata } = appointmentData();
   const [filteredData, setFilteredData] = useState([]);
 
   console.log("selected date", value);
@@ -34,8 +35,28 @@ function CalendarPage() {
     console.log("Filtered data for selected date:", filteredData);
   };
 
+  const getAllAppointments = async () => {
+    const drID = localStorage.getItem("doctorID");
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const appointments = result.data.appointmentID;
+      setAppointmentdata(appointments);
+      console.log("appointments", appointments);
+    } catch (error) {
+      toast.error("Error fetching appointments")
+      console.error("Error fetching appointments:", error);
+    }
+  };
+
   useEffect(() => {
     filterAppointment();
+    getAllAppointments();
   }, [value, appointmentdata]);
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Grid, CardContent, Divider, CardActions, Fab } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -19,24 +19,52 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 // Data
-import projectsTableData from "layouts/tables/data/AppointmentData";
 import { AlignVerticalBottomTwoTone } from "@mui/icons-material";
 import tab from "assets/theme/components/tabs/tab";
 import AddAppoinmentFormModal from "Pages/appoinment/AddAppoinmentFormModal";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { resetWarningCache } from "prop-types";
+import moment from 'moment';
 
 function Tables() {
-  const { appointmentdata, columns } = projectsTableData();
+  // const { appointmentdata, columns } = projectsTableData();
+  const [appointmentdata, setAppointmentdata] = useState([]);
   const [tabValue, setTabValue] = useState(0);
   const [isAppoinmentModalOpen, setIsAppoinmentModalOpen] = useState(false)
+  const [formType, setFormType] = useState("add")
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+
+  const navigate = useNavigate();
 
   // Filter rows based on the selected tab
   const filterRowsByStatus = (status) => {
     return appointmentdata.filter((appointment) => appointment.requestStatus === status);
   };
 
-  const navigate = useNavigate();
+
+  const statusController = async (id, request) => {
+    let requestStatus = request;
+
+    const values = { requestStatus }
+    console.log(values)
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_HOS}/update-Appointment-Details/${id}`, values, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log(response.data)
+      if (response.data) {
+        getAllAppointments()
+        toast.success("Appoinment is updated successfully")
+      }
+    }
+    catch (error) {
+      console.log(error)
+      toast.error("Unable to update appoinment")
+    }
+  };
 
   // Get filtered rows based on the tab
   const getFilteredRows = () => {
@@ -61,7 +89,6 @@ function Tables() {
     id: appointment._id,
     project: (
       <>
-
         <MDBox
           sx={{
             display: "flex",
@@ -83,7 +110,7 @@ function Tables() {
                 {appointment?.userID?.name || appointment.patientName}
               </MDTypography>
               <MDTypography fontSize="small" color="text">
-                {appointment.gender} | {appointment.age} yrs
+                {appointment?.userID?.gender || appointment.gender} | {appointment?.userID?.age || appointment.age} yrs
               </MDTypography>
             </MDBox>
           </MDBox>
@@ -106,10 +133,7 @@ function Tables() {
               justifyContent="flex-end"
             >
               <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>access_time</Icon>
-              {new Date(appointment.Bookdate).toLocaleTimeString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {appointment?.BookTime}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -174,6 +198,42 @@ function Tables() {
       textColor: "#fff",
     },
   ];
+
+  const getAllAppointments = async () => {
+    const drID = localStorage.getItem("doctorID");
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      
+      const appointments = result.data.appointmentID;
+      setAppointmentdata(appointments);
+      console.log("appointments", appointments);
+    } catch (error) {
+      toast.error("Error fetching appointments")
+      console.error("Error fetching appointments:", error);
+    }
+  };
+
+  const getSelectedAppoinemt = async (id)=>{
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_HOS}/get-single-appointment-with-details/${id}`,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      setSelectedAppointment(response.data)
+      console.log("Selected Appointment", selectedAppointment)
+    } catch (error) {
+       toast.error("Error fetching appointments")
+      console.error("Error fetching appointments:", error);
+    }
+  }
+  useEffect(() => {
+    getAllAppointments();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -270,15 +330,19 @@ function Tables() {
                             sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              console.log("Button clicked", row.id);
+                              console.log("Accept Button clicked", row.id);
+                              statusController(row.id, "Accepted")
                             }}
                           > Accept </MDButton>
                           <MDButton fullWidth size="small"
                             sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                            onClick={(e) => { e.stopPropagation(); console.log("Button clicked", row.id); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("Reject Button clicked", row.id);
+                              statusController(row.id, "Reject")
+                            }}
                           >
-                            Reject
-                          </MDButton>
+                            Reject </MDButton>
                         </>
                       )}
                       {tabValue === 1 && (
@@ -289,11 +353,13 @@ function Tables() {
                           sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            console.log("Button clicked", row.id);
+                            console.log("Reschedule Button clicked", row.id);
+                            setFormType("edit")
+                            getSelectedAppoinemt(row.id)
+                            setIsAppoinmentModalOpen(true)
                           }}
                         >
-                          Reschedule
-                        </MDButton>
+                          Reschedule </MDButton>
                       )}
                       {tabValue === 2 && <></>}
                     </CardActions>
@@ -304,7 +370,7 @@ function Tables() {
           </Grid>
 
           <Grid item >
-            <Fab color="primary" aria-label="add" onClick={() => { setIsAppoinmentModalOpen(true) }}
+            <Fab color="primary" aria-label="add" onClick={() => { setIsAppoinmentModalOpen(true); setFormType("add") }}
               sx={{
                 position: 'fixed',
                 bottom: 16,
@@ -312,11 +378,14 @@ function Tables() {
               }}
             > <AddIcon /> </Fab>
           </Grid>
-          
+
           {isAppoinmentModalOpen && (
             <AddAppoinmentFormModal
               isAppoinmentModalOpen={isAppoinmentModalOpen}
               setIsAppoinmentModalOpen={setIsAppoinmentModalOpen}
+              getAllAppointments={getAllAppointments}
+              formType={formType}
+              selectedAppointment={selectedAppointment}
             />
           )}
 

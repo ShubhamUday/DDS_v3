@@ -16,6 +16,7 @@ import PaymentFormModal from 'Pages/payment/PaymentFormModal';
 import moment from 'moment';
 import { CloseOutlined } from '@mui/icons-material'
 import Switch from '@mui/material/Switch';
+import { toast } from 'react-toastify';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -41,21 +42,6 @@ const prescriptions = [
   { date: "2025-05-15" },
 ];
 
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  maxHeight: 500,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  borderRadius: 3,
-  p: 3,
-  overflowY: 'auto',
-};
-
 const familyMembers = [
   { name: 'John Doe', relation: 'Father', gender: 'Male' },
   { name: 'Jane Doe', relation: 'Mother', gender: 'Female' },
@@ -74,8 +60,19 @@ function AppointmentWithDetails() {
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false)
   const [isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [requestStatus, setRequestStatus] = useState(null)
   const open2 = Boolean(anchorEl);
 
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event) => {
+    console.log('switch event', event.target.checked)
+
+    const isChecked = event.target.checked;
+    setChecked(isChecked);
+    statusController(isChecked ? "Completed" : "Accepted");
+
+  };
 
   const getGenderIcon = (gender) => {
     return gender === 'Male' ? <Male color="primary" /> : <Female color="secondary" />;
@@ -89,6 +86,7 @@ function AppointmentWithDetails() {
         { headers: { 'Content-Type': 'application/json' } }
       );
       setAppointmentData(result.data);
+      setRequestStatus(result.data.requestStatus)
     } catch (error) {
       setError('Failed to load appointment details.');
     } finally {
@@ -96,27 +94,71 @@ function AppointmentWithDetails() {
     }
   };
 
+
+  const statusController = async (request) => {
+    const requestStatus = request;
+    const values = { requestStatus }
+    console.log(values)
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_HOS}/update-Appointment-Details/${appointmentData._id}`, values, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log("response data", response.data)
+      if (response.data) {
+        getDetails()
+        toast.success("Appoinment is updated successfully")
+      }
+    }
+    catch (error) {
+      console.log(error)
+      toast.error("Unable to update appoinment")
+    }
+  };
+
   console.log('Appointment Data', appointmentData)
   console.log('status', appointmentData?.requestStatus)
+  console.log("checked", checked)
+  console.log("requestStatus", requestStatus)
 
   const handleClick2 = (event) => setAnchorEl(event.currentTarget);
   const handleClose2 = () => setAnchorEl(null);
 
   useEffect(() => {
     getDetails();
-  }, []);
+    if (requestStatus === "Completed") {
+      setChecked(true)
+    } else if (requestStatus === "Accepted") {
+      setChecked(false)
+    }
+  }, [requestStatus]);
 
   const renderButtons = () => {
     switch (appointmentData?.requestStatus) {
       case "Pending":
         return [
-          <MDButton key="reject" variant="outlined" color="error" size="small"> Reject </MDButton>,
-          <MDButton key="accept" variant="contained" color="success" size="small" onClick={() => { console.log('check resch btn') }} > Accept </MDButton>,
+          <MDButton key="reject" variant="outlined" color="error" size="small"
+            onClick={() => {
+              console.log('check Reject btn');
+              statusController("Rejected");
+            }}>
+            Reject
+          </MDButton>,
+          <MDButton key="accept" variant="contained" color="success" size="small"
+            onClick={() => {
+              console.log('check Accept btn');
+              statusController("Accepted");
+            }}>
+            Accept
+          </MDButton>,
         ];
       case "Completed":
         return [
           <MDButton key="feedback" variant="outlined" color="secondary" size="small"> Feedback </MDButton>,
-          <MDButton key="revisit_reminder" variant="contained" color="primary" size="small" > Revisit Reminder </MDButton>,
+          <MDButton key="revisit_reminder" variant="contained" color="primary" size="small"> Revisit Reminder </MDButton>,
+          <Switch key='switch' color="warning"
+            checked={checked}
+            onChange={handleChange}
+          />
         ];
       case "Accepted":
         return [
@@ -125,20 +167,10 @@ function AppointmentWithDetails() {
           >
             Reschedule
           </MDButton>,
-          // <Checkbox
-          //   key='check'
-          //   checked={selected}
-          //   onChange={(e) => setSelected(e.target.checked)}
-          //   icon={<CheckOutlined sx={{ color: 'grey.500' }} />}       // Unchecked icon
-          //   checkedIcon={<CheckOutlined sx={{ color: 'success.main' }} />} // Checked icon
-          //   sx={{
-          //     '&:hover': {
-          //       backgroundColor: 'transparent', // Remove hover bg
-          //     },
-          //   }}
-          // />,
-
-          <Switch key='switch' color="warning" />
+          <Switch key='switch' color="warning"
+            checked={checked}
+            onChange={handleChange}
+          />
         ];
       default:
         return null;
@@ -325,6 +357,7 @@ function AppointmentWithDetails() {
 
                     {buttons[0] && (<MDBox ml={'auto'}> {buttons[0]} </MDBox>)}
                     {buttons[1] && (<MDBox ml={1}> {buttons[1]} </MDBox>)}
+                    {buttons[2] && (<MDBox ml={1}> {buttons[2]} </MDBox>)}
 
 
                   </MDBox>
@@ -493,14 +526,14 @@ function AppointmentWithDetails() {
                     {/* Payment Details */}
                     <Grid item xs={12} sm={6}>
                       <MDBox position="relative">
-
-                        <IconButton size="small" color="primary" title="Update Payment"
-                          sx={{ position: 'absolute', top: 1, right: 4, }}
-                          onClick={() => { setIsPaymentUpdateModalOpen(true) }}
-                        >
-                          <UpgradeOutlined />
-                        </IconButton>
-
+                        {appointmentData?.PayStatus !== "Paid" && (
+                          <IconButton size="small" color="primary" title="Update Payment"
+                            sx={{ position: 'absolute', top: 1, right: 4, }}
+                            onClick={() => { setIsPaymentUpdateModalOpen(true) }}
+                          >
+                            <UpgradeOutlined />
+                          </IconButton>
+                        )}
 
                         <MDBox display="flex" mb={1}>
                           <MDTypography variant="button" fontWeight="bold" color="info" mr={1}> Payment Status: </MDTypography>
@@ -519,10 +552,10 @@ function AppointmentWithDetails() {
                   {/* Update Payment */}
                   {isPaymentUpdateModalOpen && (
                     <PaymentFormModal
-                      selectedPayment={appointmentData}
+                      appointmentData={appointmentData}
                       isPaymentUpdateModalOpen={isPaymentUpdateModalOpen}
                       setIsPaymentUpdateModalOpen={setIsPaymentUpdateModalOpen}
-                      style={style}
+                      getDetails={getDetails}
                     />
                   )}
 
@@ -707,7 +740,6 @@ function AppointmentWithDetails() {
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           getDetails={getDetails}
-          style={style}
         />
       )}
 
