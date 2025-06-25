@@ -57,7 +57,7 @@ const CustomPrevArrow = (props) => {
 function DoctorProfile() {
   const [doctorData, setDoctorData] = useState({});
   const [ratingsWithUser, setRatingsWithUser] = useState([]);
-  const [averageRating, setAverageRating] = useState()
+  const [averageRating, setAverageRating] = useState(0)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isManageModalOpen, setIsManageModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
@@ -65,11 +65,8 @@ function DoctorProfile() {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
 
-
   const handleMenuClose = () => { setAnchorEl(null); };
-
   const handleMenuOpen = (event) => { setAnchorEl(event.currentTarget); };
-
 
   const generateAverageRating = () => {
     const averageRating = ratingsWithUser.length
@@ -91,10 +88,7 @@ function DoctorProfile() {
       const extractedRatings = appointments
         .filter(app => app?.ratingID && app?.userID)
         .map(app => ({ ...app.ratingID, userId: app.userID }));
-      setRatingsWithUser(extractedRatings);
-
-      console.log('single-doc-app result', result)
-      console.log('extracted rating', extractedRatings)
+      setRatingsWithUser(extractedRatings)
 
     } catch (error) {
       console.error("Error fetching doctor data:", error);
@@ -112,8 +106,15 @@ function DoctorProfile() {
 
   useEffect(() => {
     getDoctorDetails();
-    generateAverageRating()
   }, []);
+
+  useEffect(() => {
+    if (ratingsWithUser.length) {
+      generateAverageRating(ratingsWithUser);
+    } else {
+      setAverageRating(0); // fallback
+    }
+  }, [ratingsWithUser]);
 
   const sliderSettings = {
     dots: false,
@@ -244,7 +245,7 @@ function DoctorProfile() {
             <MDBox display="flex" alignItems="center" gap={1}>
               <MDTypography> Average Rating </MDTypography>
               <Rating
-                value={averageRating}
+                value={averageRating ?? 0}
                 precision={0.1}
                 readOnly
                 emptyIcon={<StarIcon style={{ opacity: 0.3 }} fontSize="inherit" />}

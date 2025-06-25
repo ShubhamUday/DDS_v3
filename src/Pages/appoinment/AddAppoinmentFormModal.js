@@ -44,7 +44,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     const [formData, setFormData] = useState({
         doctorID: "",
-        userID:"",
+        // userID: "",
         patientName: "",
         phone: "",
         gender: "",
@@ -219,13 +219,25 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
         }
     };
 
-    const handleUpdate = async()=>{
+    const handleUpdate = async () => {
         try {
-            
+            const result = await axios.put(`${process.env.REACT_APP_HOS}/update-Appointment-Details/${selectedAppointment._id}`, formData, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (result.data) {
+                console.log('axios reslu', result.data)
+                resetForm()
+                setIsAppoinmentModalOpen(false)
+                getAllAppointments()
+                toast.success('Appointment rescheduled sucsessfully!');
+            }
         } catch (error) {
-            
+            toast.error("Something went wrong");
+            console.log(error)
         }
     }
+    
     const resetForm = () => {
         setFormData({
             doctorID: "",
@@ -272,6 +284,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     }
 
     console.log("intervals", intervalArray)
+    console.log("selected appotn", selectedAppointment)
 
     useEffect(() => {
         fetchClinicList();

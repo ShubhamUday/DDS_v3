@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 import { Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
 import { CloseOutlined } from '@mui/icons-material'
 import { styled } from '@mui/material/styles';
+import { toast } from 'react-toastify';
 
 
 const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
@@ -21,18 +23,22 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     },
 }));
 
-function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, getDetails }) {
+function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatientModalOpen, getDetails }) {
     const [formData, setFormData] = useState({
-        gender: '',
-        age: '',
-        weight: '',
-        treatmentFor: '',
-        problem: '',
-        diabities: '',
-        bloodPressure: '',
+        doctorID: "",
+        // userID: "",
+        patientName: "",
+        phone: "",
+        gender: "",
+        age: "",
+        Weight: "",
+        Treatmentfor: "",
+        ProblemDetails: "",
+        diabetes: "",
+        Bloodpressure: "",
     });
 
-    const handleClose = () => setIsModalOpen(false);
+    const handleClose = () => setIsPatientModalOpen(false);
 
     // Handlers
     const handleChange = (field) => (e) => {
@@ -46,27 +52,60 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
         }
     };
 
-    const handleSubmit = () => {
-        axios.put('/api/patient/123', formData) // Replace with your PUT endpoint
-            .then(() => {
-                alert('Updated successfully!');
-                getDetails();
-            })
-            .catch((err) => {
-                console.error('Error updating data:', err);
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.put(`${process.env.REACT_APP_HOS}/update-Appointment-Details/${selectedAppointment._id}`, formData, {
+                headers: { 'Content-Type': 'application/json' },
             });
+
+            if (response.data) {
+                console.log('edit patient response', response.data)
+                resetForm()
+                setIsPatientModalOpen(false)
+                getDetails()
+                toast.success('Patient details updated sucsessfully!');
+            }
+        } catch (error) {
+            toast.error("Something went wrong");
+            console.log(error)
+        }
+    }
+
+    const resetForm = () => {
+        setFormData({
+            doctorID: "",
+            userID: "",
+            patientName: "",
+            phone: "",
+            gender: "",
+            age: "",
+            Weight: "",
+            Treatmentfor: "",
+            ProblemDetails: "",
+            diabetes: "",
+            Bloodpressure: "",
+            plan: "",
+            Bookdate: "",
+            BookTime: "",
+            PayType: "",
+            clinicID: "",
+        });
     };
 
     useEffect(() => {
         const data = selectedAppointment
         setFormData({
-            gender: data?.userID?.gender || '',
-            age: data?.userID?.age || '',
-            weight: data?.userID?.weight || '',
-            treatmentFor: data?.Treatmentfor || '',
-            problem: data?.ProblemDetails || '',
-            diabities: data.hasDiabetes || '',
-            bloodPressure: data.bpStatus || '',
+            doctorID: data?.doctorID || "",
+            userID: data?.userID?._id || "",
+            patientName: data?.userID?.name || data?.patientName || "",
+            phone: data?.userID?.number || data?.phone || "",
+            gender: data?.userID?.gender || data?.gender || "",
+            age: data?.userID?.age || data?.age || "",
+            Weight: data?.userID?.weight || data?.Weight || "",
+            Treatmentfor: data?.Treatmentfor || "",
+            ProblemDetails: data?.ProblemDetails || "",
+            diabetes: data?.diabetes || "",
+            Bloodpressure: data?.Bloodpressure || "",
         });
     }, [])
 
@@ -74,8 +113,8 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
 
     return (
         <>
-            <Dialog open={isModalOpen} onClose={handleClose} fullWidth>
-                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Update Patient&apos;s Details </DialogTitle>
+            <Dialog open={isPatientModalOpen} onClose={handleClose} fullWidth>
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Edit Patient&apos;s Details </DialogTitle>
                 <IconButton
                     aria-label="close"
                     onClick={handleClose}
@@ -132,7 +171,7 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                 <MDBox display="flex">
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography>
                                     <TextField size="small" type="number"
-                                        value={formData.weight}
+                                        value={formData.Weight}
                                         onChange={handleChange('weight')}
                                         sx={{
                                             // For Chrome, Safari, Edge
@@ -156,7 +195,10 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                             <Grid item xs={12} sm={12}>
                                 <MDBox display="flex" mb={1}>
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography>
-                                    <TextField size="small" fullWidth />
+                                    <TextField size="small" fullWidth
+                                        value={formData.Treatmentfor}
+                                        onChange={handleChange('Treatmentfor')}
+                                    />
                                 </MDBox>
                             </Grid>
                             <Grid item xs={12} sm={12}>
@@ -165,8 +207,8 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                                     color="primary"
                                     exclusive
                                     fullWidth
-                                    value={formData.treatmentFor}
-                                    onChange={handleChange('treatmentFor')}
+                                    value={formData.Treatmentfor}
+                                    onChange={handleChange('Treatmentfor')}
                                 >
                                     <StyledToggleButton value="Tooth Pain">Tooth Pain</StyledToggleButton>
                                     <StyledToggleButton value="Brace">Brace</StyledToggleButton>
@@ -182,7 +224,7 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                         {/* Problem */}
                         <MDBox display="flex">
                             <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography>
-                            <TextField size="small" fullWidth value={formData.problem}
+                            <TextField size="small" fullWidth value={formData.ProblemDetails}
                                 onChange={handleChange('problem')} />
                         </MDBox>
 
@@ -192,7 +234,7 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                             <ToggleButtonGroup
                                 size="small"
                                 color="primary"
-                                value={formData.diabities}
+                                value={formData.diabetes}
                                 exclusive
                                 onChange={handleToggleChange('diabities')}
                             >
@@ -208,7 +250,7 @@ function PatientFormModal({ selectedAppointment, isModalOpen, setIsModalOpen, ge
                             <ToggleButtonGroup
                                 size="small"
                                 color="primary"
-                                value={formData.bloodPressure}
+                                value={formData.Bloodpressure}
                                 exclusive
                                 onChange={handleToggleChange('bloodPressure')}
                             >

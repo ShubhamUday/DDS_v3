@@ -82,7 +82,7 @@ function Tables() {
 
   // Handle row click
   const handleRowClick = (id) => {
-    navigate(`/appointment-with-details/${id}`);
+    navigate(`/test/${id}`);
   };
 
   const rows = getFilteredRows().map((appointment) => ({
@@ -208,7 +208,7 @@ function Tables() {
           headers: { "Content-Type": "application/json" },
         }
       );
-      
+
       const appointments = result.data.appointmentID;
       setAppointmentdata(appointments);
       console.log("appointments", appointments);
@@ -218,7 +218,7 @@ function Tables() {
     }
   };
 
-  const getSelectedAppoinemt = async (id)=>{
+  const getSelectedAppoinemt = async (id) => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_HOS}/get-single-appointment-with-details/${id}`,
@@ -227,7 +227,7 @@ function Tables() {
       setSelectedAppointment(response.data)
       console.log("Selected Appointment", selectedAppointment)
     } catch (error) {
-       toast.error("Error fetching appointments")
+      toast.error("Error fetching appointments")
       console.error("Error fetching appointments:", error);
     }
   }
@@ -239,59 +239,58 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox p={3} >
-        <Grid container spacing={6}>
 
-          {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
+
+        {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
                 <MDTypography variant="h6" color="white">
                   Appointments
                 </MDTypography>
               </MDBox> */}
-          <Grid item xs={12} md={12} lg={12}>
-            <AppBar position="sticky" color="default" sx={{ border: '.5px solid #ccc', borderRadius: 3, boxShadow: "none", top: '90px', zIndex: 1100, }}>
-              <Tabs
-                value={tabValue}
-                onChange={handleSetTabValue}
-                variant="fullWidth"
-                sx={{ background: "white" }}
-              >
-                {["Pending", "Upcoming", "Completed"].map((label, index) => (
-                  <Tab
-                    key={label}
-                    iconPosition="start"
-                    icon={
-                      <Icon sx={{ fontSize: 18, mr: 1 }}>
-                        {index === 0 ? "pending_actions" : index === 1 ? "event_upcoming" : "checklist"}
-                      </Icon>
-                    }
-                    label={
-                      <MDBox sx={{ display: "flex", alignItems: "center", color: tabValue === index ? "#fff" : "inherit", }} >
-                        {label}
-                      </MDBox>
-                    }
-                    sx={{
-                      flex: 1,
-                      borderRadius: 1,
-                      mx: 0.5,
-                      backgroundColor:
-                        tabValue === index ? tabStyles[index].selectedBg : "transparent",
-                      transition: "background-color 0.3s ease",
-                      "& .MuiTab-wrapper": {
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        color: tabValue === index ? "#fff" : "inherit", // For label and icon
-                      },
-                      "&:hover": {
-                        backgroundColor:
-                          tabValue === index ? tabStyles[index].selectedBg : "#f0f0f0",
-                      },
-                    }}
-                  />
-                ))}
-              </Tabs>
-            </AppBar>
-          </Grid>
 
-          <Grid item lg={12}>
+        <AppBar position="sticky" color="default" sx={{ border: '.5px solid #ccc', borderRadius: 3, boxShadow: "none", top: '90px', zIndex: 1100, }}>
+          <Tabs
+            value={tabValue}
+            onChange={handleSetTabValue}
+            variant="fullWidth"
+            sx={{ background: "white" }}
+          >
+            {["Pending", "Upcoming", "Completed"].map((label, index) => (
+              <Tab
+                key={label}
+                iconPosition="start"
+                icon={
+                  <Icon sx={{ fontSize: 18, mr: 1 }}>
+                    {index === 0 ? "pending_actions" : index === 1 ? "event_upcoming" : "checklist"}
+                  </Icon>
+                }
+                label={
+                  <MDBox sx={{ display: "flex", alignItems: "center", color: tabValue === index ? "#fff" : "inherit", }} >
+                    {label}
+                  </MDBox>
+                }
+                sx={{
+                  flex: 1,
+                  borderRadius: 1,
+                  mx: 0.5,
+                  backgroundColor:
+                    tabValue === index ? tabStyles[index].selectedBg : "transparent",
+                  transition: "background-color 0.3s ease",
+                  "& .MuiTab-wrapper": {
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    color: tabValue === index ? "#fff" : "inherit", // For label and icon
+                  },
+                  "&:hover": {
+                    backgroundColor:
+                      tabValue === index ? tabStyles[index].selectedBg : "#f0f0f0",
+                  },
+                }}
+              />
+            ))}
+          </Tabs>
+        </AppBar>
+
+        
 
             {/* Cards */}
             <Grid container spacing={2}>
@@ -300,6 +299,7 @@ function Tables() {
                   <Card
                     key={index}
                     sx={{
+                      mt:'10px',
                       display: "flex",
                       height: "100%",
                       flexDirection: "column",
@@ -367,9 +367,9 @@ function Tables() {
                 </Grid>
               ))}
             </Grid>
-          </Grid>
+         
 
-          <Grid item >
+        
             <Fab color="primary" aria-label="add" onClick={() => { setIsAppoinmentModalOpen(true); setFormType("add") }}
               sx={{
                 position: 'fixed',
@@ -377,7 +377,7 @@ function Tables() {
                 right: 16,
               }}
             > <AddIcon /> </Fab>
-          </Grid>
+          
 
           {isAppoinmentModalOpen && (
             <AddAppoinmentFormModal
@@ -389,7 +389,7 @@ function Tables() {
             />
           )}
 
-        </Grid>
+       
       </MDBox>
 
     </DashboardLayout>

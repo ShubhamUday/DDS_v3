@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -8,6 +8,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { Card, Divider, Grid, Icon } from "@mui/material";
 import Calendar from "react-calendar";
 import "../examples/Calenders/CalendarStyles.css";
+import { toast } from "react-toastify";
 
 // import appointmentData from "../layouts/tables/data/AppointmentData";
 
@@ -57,7 +58,7 @@ function CalendarPage() {
   useEffect(() => {
     filterAppointment();
     getAllAppointments();
-  }, [value, appointmentdata]);
+  }, [value]);
 
   return (
     <DashboardLayout>
@@ -71,7 +72,7 @@ function CalendarPage() {
                   key={{ index }}
                   onClick={() => navigate(`/appointment-with-details/${item._id}`)}
                   sx={{ m: 1, padding: 2, cursor: "pointer", "&:hover": { backgroundColor: "#f9f9f9" }, }} >
-                  <MDBox key={index}>
+                  <MDBox>
                     <MDBox sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, flexWrap: "wrap", }} >
                       <MDBox display="flex" alignItems="center" gap={1}>
                         <MDTypography variant="h6" fontWeight="bold">

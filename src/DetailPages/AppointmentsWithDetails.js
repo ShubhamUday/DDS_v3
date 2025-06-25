@@ -6,15 +6,15 @@ import { Grid, CircularProgress, Alert, Divider, IconButton, MenuItem, Menu, Che
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDButton from "components/MDButton";
-import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import calendarIcon from 'assets/images/schedule-calendar-and-blue-clock-18292.png'
 import { EditOutlined, FamilyRestroomOutlined, VisibilityOutlined, PrintOutlined, DownloadOutlined, UpgradeOutlined, MoreVertOutlined, CheckOutlined, Male, Female } from '@mui/icons-material';
+import { CloseOutlined } from '@mui/icons-material'
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import PatientFormModal from 'Pages/patient/PatientFormModal';
 import PaymentFormModal from 'Pages/payment/PaymentFormModal';
 import moment from 'moment';
-import { CloseOutlined } from '@mui/icons-material'
 import Switch from '@mui/material/Switch';
 import { toast } from 'react-toastify';
 
@@ -54,13 +54,12 @@ function AppointmentWithDetails() {
   const param1 = params.id;
   const [appointmentData, setAppointmentData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selected, setSelected] = useState(false);
+  const [error, setError] = useState("");
+  const [isPatientModalOpen, setIsPatientModalOpen] = useState(false)
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false)
   const [isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [requestStatus, setRequestStatus] = useState(null)
+  const [anchorEl, setAnchorEl] = useState("");
+  const [requestStatus, setRequestStatus] = useState("")
   const open2 = Boolean(anchorEl);
 
   const [checked, setChecked] = useState(false);
@@ -85,15 +84,14 @@ function AppointmentWithDetails() {
         `${process.env.REACT_APP_HOS}/get-single-appointment-with-details/${param1}`,
         { headers: { 'Content-Type': 'application/json' } }
       );
+
       setAppointmentData(result.data);
       setRequestStatus(result.data.requestStatus)
     } catch (error) {
       setError('Failed to load appointment details.');
-    } finally {
-      setLoading(false);
+      toast.error("Failed to load appointment detals.")
     }
   };
-
 
   const statusController = async (request) => {
     const requestStatus = request;
@@ -122,15 +120,6 @@ function AppointmentWithDetails() {
 
   const handleClick2 = (event) => setAnchorEl(event.currentTarget);
   const handleClose2 = () => setAnchorEl(null);
-
-  useEffect(() => {
-    getDetails();
-    if (requestStatus === "Completed") {
-      setChecked(true)
-    } else if (requestStatus === "Accepted") {
-      setChecked(false)
-    }
-  }, [requestStatus]);
 
   const renderButtons = () => {
     switch (appointmentData?.requestStatus) {
@@ -178,6 +167,14 @@ function AppointmentWithDetails() {
   };
   const buttons = renderButtons();
 
+  useEffect(() => {
+    getDetails();
+    if (requestStatus === "Completed") {
+      setChecked(true)
+    } else if (requestStatus === "Accepted") {
+      setChecked(false)
+    }
+  }, [requestStatus]);
 
   return (
     <DashboardLayout>
@@ -426,7 +423,7 @@ function AppointmentWithDetails() {
                       anchorOrigin={{ vertical: "bottom", horizontal: "right", }}
                       transformOrigin={{ vertical: "top", horizontal: "right", }}
                     >
-                      <MenuItem onClick={() => { setIsModalOpen(true); handleClose2(); console.log("Edit clicked"); }}> Edit </MenuItem>
+                      <MenuItem onClick={() => { setIsPatientModalOpen(true); handleClose2(); console.log("Edit clicked"); }}> Edit </MenuItem>
                       <MenuItem onClick={() => { handleClose2(); console.log("Delete clicked"); }}> Delete </MenuItem>
                       <MenuItem onClick={() => { handleClose2(); console.log("View History clicked"); }}> View History </MenuItem>
                     </Menu>
@@ -734,18 +731,16 @@ function AppointmentWithDetails() {
         </MDBox>
       </MDBox>
 
-      {isModalOpen && (
+      {isPatientModalOpen && (
         <PatientFormModal
           selectedAppointment={appointmentData}
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
+          isPatientModalOpen={isPatientModalOpen}
+          setIsPatientModalOpen={setIsPatientModalOpen}
           getDetails={getDetails}
         />
       )}
 
     </DashboardLayout >
-
-
   );
 }
 
