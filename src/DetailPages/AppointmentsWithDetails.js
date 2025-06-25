@@ -91,6 +91,9 @@ function AppointmentWithDetails() {
       setError('Failed to load appointment details.');
       toast.error("Failed to load appointment detals.")
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   const statusController = async (request) => {
@@ -104,12 +107,12 @@ function AppointmentWithDetails() {
       console.log("response data", response.data)
       if (response.data) {
         getDetails()
-        toast.success("Appoinment is updated successfully")
+        toast.success("Appointment is updated successfully")
       }
     }
     catch (error) {
       console.log(error)
-      toast.error("Unable to update appoinment")
+      toast.error("Unable to update appointment")
     }
   };
 
@@ -122,6 +125,8 @@ function AppointmentWithDetails() {
   const handleClose2 = () => setAnchorEl(null);
 
   const renderButtons = () => {
+    if (!appointmentData?.requestStatus) return [];
+
     switch (appointmentData?.requestStatus) {
       case "Pending":
         return [
@@ -165,7 +170,7 @@ function AppointmentWithDetails() {
         return null;
     }
   };
-  const buttons = renderButtons();
+  const buttons = renderButtons() || [];
 
   useEffect(() => {
     getDetails();
@@ -345,17 +350,19 @@ function AppointmentWithDetails() {
 
                   <MDBox display="flex" justifyContent="space-between" alignItems="center"  >
 
-
                     <MDTypography variant="h4" align="center" color="info" gutterBottom
                       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
                       <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
                       Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
                     </MDTypography>
 
-                    {buttons[0] && (<MDBox ml={'auto'}> {buttons[0]} </MDBox>)}
-                    {buttons[1] && (<MDBox ml={1}> {buttons[1]} </MDBox>)}
-                    {buttons[2] && (<MDBox ml={1}> {buttons[2]} </MDBox>)}
-
+                    {appointmentData?.requestStatus && (
+                      <>
+                        {buttons?.[0] && <MDBox ml={'auto'}>{buttons[0]}</MDBox>}
+                        {buttons?.[1] && <MDBox ml={1}>{buttons[1]}</MDBox>}
+                        {buttons?.[2] && <MDBox ml={1}>{buttons[2]}</MDBox>}
+                      </>
+                    )}
 
                   </MDBox>
 

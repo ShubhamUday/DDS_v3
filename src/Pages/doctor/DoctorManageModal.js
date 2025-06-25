@@ -80,7 +80,10 @@ const DoctorManageModal = ({ isManageModalOpen, setIsManageModalOpen, doctorDeta
         setActiveStep(step);
     };
 
-    const handleClose = () => { setIsManageModalOpen(false) }
+    const handleClose = () => { 
+        setIsManageModalOpen(false); 
+        handleMenuClose();
+    }
 
     const handleChange = (field) => (e) => {
         const value = e.target.value;
@@ -165,7 +168,7 @@ const DoctorManageModal = ({ isManageModalOpen, setIsManageModalOpen, doctorDeta
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Manage Doctor Details </DialogTitle>
                 <IconButton
                     aria-label="close"
-                    onClick={() => setIsManageModalOpen(false)}
+                    onClick={handleClose}
                     sx={(theme) => ({
                         position: 'absolute',
                         right: 8,

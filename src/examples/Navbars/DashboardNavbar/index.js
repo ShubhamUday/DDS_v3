@@ -77,8 +77,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
       );
     };
 
-    window.addEventListener("scroll", handleTransparentNavbar);
-    handleTransparentNavbar();
+    // window.addEventListener("scroll", handleTransparentNavbar);
+    // handleTransparentNavbar();
 
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);

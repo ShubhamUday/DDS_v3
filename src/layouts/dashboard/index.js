@@ -4,18 +4,6 @@ import { useNavigate } from "react-router-dom";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
-import Rating from "@mui/material/Rating";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -29,12 +17,14 @@ import MDAvatar from "components/MDAvatar";
 
 function Dashboard() {
   const drID = localStorage.getItem("doctorID");
+  const stID = localStorage.getItem("CoHelperID")
   const navigate = useNavigate();
   const [appointmentdata, setAppointmentdata] = useState({});
   const [staff, setStaff] = useState([]);
   const [appointment, setAppointment] = useState([]);
   const [clinic, setClinic] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [singleStaff, setSingleStaff] = useState()
 
   const getAllAppointments = async () => {
     try {
@@ -42,21 +32,28 @@ function Dashboard() {
         `${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`,
         { headers: { "Content-Type": "application/json" } }
       );
-      console.log(result.data)
+      console.log("doctr apptn details", result.data)
       setAppointment(result.data.appointmentID);
       const result1 = await axios.get(`${process.env.REACT_APP_HOS}/get-single-doctor/${drID}`, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(result1.data);
+      console.log("doctr detls", result1.data);
       setClinic(result1.data.clinicID);
       const result2 = await axios.get(`${process.env.REACT_APP_HOS}/get-doctor-with-staff/${drID}`, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(result2.data);
+      console.log("dotr with staff details", result2.data);
       setStaff(result2.data.staffIDs);
       setAppointmentdata(result.data);
       const uniqueEmailAppointments = filterUniqueEmails(result.data.appointmentID);
       setPatients(uniqueEmailAppointments);
+
+      const result3 = await axios.get(`${process.env.REACT_APP_HOS}/get-one-staff-with-details/${stID}`, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      setSingleStaff(result3.data)
+
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
@@ -75,6 +72,8 @@ function Dashboard() {
     });
   };
 
+  console.log("single staff", singleStaff)
+
   useEffect(() => {
     getAllAppointments();
   }, []);
@@ -85,14 +84,14 @@ function Dashboard() {
       <MDBox sx={{ p: 3 }}>
 
         <Grid container sx={{ alignItems: 'center', backgroundImage: 'url(https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg)', backgroundSize: 'cover', backgroundPosition: 'center', height: '300px' }}>
-          <Grid item xs={12} md={6} lg={2}sx={{ m: 1 }}>
+          <Grid item xs={12} md={6} lg={2} sx={{ m: 1 }}>
             <StatCard
               title="Total Patients"
               value={appointmentdata.patientchecked || 0}
               icon="group"
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={2}sx={{ m: 1 }}>
+          <Grid item xs={12} md={6} lg={2} sx={{ m: 1 }}>
             <StatCard
               title="Current Appointments"
               value={appointment.length}
@@ -101,7 +100,7 @@ function Dashboard() {
               gradient="#4db6ac"
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={2}sx={{ m: 1 }}>
+          <Grid item xs={12} md={6} lg={2} sx={{ m: 1 }}>
             <StatCard
               title="Experience"
               value={`${appointmentdata.yearsofexperience || 0} yrs`}

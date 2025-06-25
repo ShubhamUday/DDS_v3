@@ -19,9 +19,9 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 // Data
-import { AlignVerticalBottomTwoTone } from "@mui/icons-material";
+import { AlignVerticalBottomTwoTone, ConstructionOutlined } from "@mui/icons-material";
 import tab from "assets/theme/components/tabs/tab";
-import AddAppoinmentFormModal from "Pages/appoinment/AddAppoinmentFormModal";
+import AddAppointmentFormModal from "Pages/appointment/AddAppointmentFormModal";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { resetWarningCache } from "prop-types";
@@ -31,9 +31,13 @@ function Tables() {
   // const { appointmentdata, columns } = projectsTableData();
   const [appointmentdata, setAppointmentdata] = useState([]);
   const [tabValue, setTabValue] = useState(0);
-  const [isAppoinmentModalOpen, setIsAppoinmentModalOpen] = useState(false)
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
   const [formType, setFormType] = useState("add")
   const [selectedAppointment, setSelectedAppointment] = useState(null)
+  const stID = localStorage.getItem("CoHelperID")
+  const drID = localStorage.getItem("doctorID");
+
+  const [singleStaff, setSingleStaff] = useState()
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
@@ -57,12 +61,11 @@ function Tables() {
       console.log(response.data)
       if (response.data) {
         getAllAppointments()
-        toast.success("Appoinment is updated successfully")
+        toast.success("Appointment is updated successfully")
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
-      toast.error("Unable to update appoinment")
+      toast.error("Unable to update appointment")
     }
   };
 
@@ -82,7 +85,7 @@ function Tables() {
 
   // Handle row click
   const handleRowClick = (id) => {
-    navigate(`/test/${id}`);
+    navigate(`/appointment-with-details/${id}`);
   };
 
   const rows = getFilteredRows().map((appointment) => ({
@@ -200,18 +203,26 @@ function Tables() {
   ];
 
   const getAllAppointments = async () => {
-    const drID = localStorage.getItem("doctorID");
+
     try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+      const result = await axios.get(`${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`, {
+        headers: { "Content-Type": "application/json" }
+      }
       );
 
       const appointments = result.data.appointmentID;
       setAppointmentdata(appointments);
       console.log("appointments", appointments);
+
+      if (stID) {
+        const result3 = await axios.get(`${process.env.REACT_APP_HOS}/get-one-staff-with-details/${stID}`, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        console.log("reult3", result3.data)
+        setSingleStaff(result3.data)
+      }
+
+
     } catch (error) {
       toast.error("Error fetching appointments")
       console.error("Error fetching appointments:", error);
@@ -231,6 +242,8 @@ function Tables() {
       console.error("Error fetching appointments:", error);
     }
   }
+  console.log("single staff", singleStaff)
+
   useEffect(() => {
     getAllAppointments();
   }, []);
@@ -239,8 +252,6 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox p={3} >
-
-
         {/* <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info" >
                 <MDTypography variant="h6" color="white">
                   Appointments
@@ -290,106 +301,108 @@ function Tables() {
           </Tabs>
         </AppBar>
 
-        
 
-            {/* Cards */}
-            <Grid container spacing={2}>
-              {rows.map((row, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
-                  <Card
-                    key={index}
-                    sx={{
-                      mt:'10px',
-                      display: "flex",
-                      height: "100%",
-                      flexDirection: "column",
-                      p: 0,
-                      borderRadius: 4,
-                      transition: "all 0.3s ease",
-                      boxShadow:
-                        tabValue === 0
-                          ? "0px 2px 0px #25408f"
-                          : tabValue === 1
-                            ? "0px 2px 0px #ff914d"
-                            : "0px 2px 0px #3e87d9",
-                      "&:hover": {
-                        transform: "translateY(-5px)",
-                        boxShadow: 2,
-                      },
-                    }}
-                    onClick={() => handleRowClick(row.id)}
-                  >
-                    <CardContent>
-                      <MDBox sx={{ display: "flex", flexDirection: "column", mb: 0 }}> {row.project} </MDBox>
-                    </CardContent>
 
-                    <CardActions sx={{ marginTop: "auto" }}>
-                      {tabValue === 0 && (
-                        <>
-                          <MDButton fullWidth size="small" color="primary"
-                            sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("Accept Button clicked", row.id);
-                              statusController(row.id, "Accepted")
-                            }}
-                          > Accept </MDButton>
-                          <MDButton fullWidth size="small"
-                            sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("Reject Button clicked", row.id);
-                              statusController(row.id, "Reject")
-                            }}
-                          >
-                            Reject </MDButton>
-                        </>
-                      )}
-                      {tabValue === 1 && (
-                        <MDButton
-                          fullWidth
-                          size="small"
-                          // color="secondary"
-                          sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            console.log("Reschedule Button clicked", row.id);
-                            setFormType("edit")
-                            getSelectedAppoinemt(row.id)
-                            setIsAppoinmentModalOpen(true)
-                          }}
-                        >
-                          Reschedule </MDButton>
-                      )}
-                      {tabValue === 2 && <></>}
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))}
+        {/* Cards */}
+        <Grid container spacing={2}>
+          {rows.map((row, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
+              <Card
+                key={index}
+                sx={{
+                  mt: '10px',
+                  display: "flex",
+                  height: "100%",
+                  flexDirection: "column",
+                  p: 0,
+                  borderRadius: 4,
+                  transition: "all 0.3s ease",
+                  boxShadow:
+                    tabValue === 0
+                      ? "0px 2px 0px #25408f"
+                      : tabValue === 1
+                        ? "0px 2px 0px #ff914d"
+                        : "0px 2px 0px #3e87d9",
+                  "&:hover": {
+                    transform: "translateY(-5px)",
+                    boxShadow: 2,
+                  },
+                }}
+                onClick={() => handleRowClick(row.id)}
+              >
+                <CardContent>
+                  <MDBox sx={{ display: "flex", flexDirection: "column", mb: 0 }}> {row.project} </MDBox>
+                </CardContent>
+
+
+                <CardActions sx={{ marginTop: "auto" }}>
+                  {tabValue === 0 && (
+                    <>
+                      <MDButton fullWidth size="small" color="primary"
+                        sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log("Accept Button clicked", row.id);
+                          statusController(row.id, "Accepted")
+                        }}
+                      > Accept </MDButton>
+                      <MDButton fullWidth size="small"
+                        sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log("Reject Button clicked", row.id);
+                          statusController(row.id, "Reject")
+                        }}
+                      >
+                        Reject </MDButton>
+                    </>
+                  )}
+                  {tabValue === 1 && (
+                    <MDButton
+                      fullWidth
+                      size="small"
+                      // color="secondary"
+                      sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log("Reschedule Button clicked", row.id);
+                        setFormType("edit")
+                        getSelectedAppoinemt(row.id)
+                        setIsAppointmentModalOpen(true)
+                      }}
+                    >
+                      Reschedule </MDButton>
+                  )}
+                  {tabValue === 2 && <></>}
+                </CardActions>
+
+              </Card>
             </Grid>
-         
+          ))}
+        </Grid>
 
-        
-            <Fab color="primary" aria-label="add" onClick={() => { setIsAppoinmentModalOpen(true); setFormType("add") }}
-              sx={{
-                position: 'fixed',
-                bottom: 16,
-                right: 16,
-              }}
-            > <AddIcon /> </Fab>
-          
 
-          {isAppoinmentModalOpen && (
-            <AddAppoinmentFormModal
-              isAppoinmentModalOpen={isAppoinmentModalOpen}
-              setIsAppoinmentModalOpen={setIsAppoinmentModalOpen}
-              getAllAppointments={getAllAppointments}
-              formType={formType}
-              selectedAppointment={selectedAppointment}
-            />
-          )}
 
-       
+        <Fab color="primary" aria-label="add" onClick={() => { setIsAppointmentModalOpen(true); setFormType("add") }}
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+          }}
+        > <AddIcon /> </Fab>
+
+
+        {isAppointmentModalOpen && (
+          <AddAppointmentFormModal
+            isAppointmentModalOpen={isAppointmentModalOpen}
+            setIsAppointmentModalOpen={setIsAppointmentModalOpen}
+            getAllAppointments={getAllAppointments}
+            formType={formType}
+            selectedAppointment={selectedAppointment}
+          />
+        )}
+
+
       </MDBox>
 
     </DashboardLayout>

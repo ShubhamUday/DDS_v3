@@ -126,22 +126,22 @@ export default function App() {
     </MDBox>
   );
 
-  return  (
+  return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       <ToastContainer
-              autoClose={2000}
-              position="top-center"
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable
-              pauseOnHover
-              theme="light"
-              style={{ width: '350px', font: 'message-box' }}
-            />
+        autoClose={2000}
+        position="top-center"
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ width: '350px', font: 'message-box' }}
+      />
       {layout === "dashboard" && (
         <>
           <Sidenav
@@ -157,23 +157,23 @@ export default function App() {
       {layout === "vr"}
       <Routes>
         <Route element={<PrivateComponets />}>
-        {getRoutes(routes)}
-        {
-          role === "Co-Helper" ? <Route path="/profile" element={<StaffrProfile />} /> : <Route path="/profile" element={<DoctorProfile />} />
-        }
-        <Route path="/clinic-with-details/:id" element={<ClinicWithDetails />} />
-        <Route path="/add-staff/:id" element={<AddStaff />} />
-        <Route path="/add-clinic/:id" element={<AddClinic />} />
-        <Route path="/authentication/sign-in" element={<Basic />} />
-        <Route path="/patient-with-details/:id" element={<PatientWithDetails />} />
-        <Route path="/appointment-with-details/:id" element={<AppointmentWithDetails />} />
-        <Route path="/prescription-with-details/:id" element={<PrescriptionWithDetails />} />
-        <Route path="/test" element={<Test />} />
-        <Route path="*" element={<Navigate to="/sign-in" />} />
+          {getRoutes(routes)}
+          {
+            role === "Co-Helper" ? <Route path="/profile" element={<StaffrProfile />} /> : <Route path="/profile" element={<DoctorProfile />} />
+          }
+          <Route path="/clinic-with-details/:id" element={<ClinicWithDetails />} />
+          <Route path="/add-staff/:id" element={<AddStaff />} />
+          <Route path="/add-clinic/:id" element={<AddClinic />} />
+          <Route path="/authentication/sign-in" element={<Basic />} />
+          <Route path="/patient-with-details/:id" element={<PatientWithDetails />} />
+          <Route path="/appointment-with-details/:id" element={<AppointmentWithDetails />} />
+          <Route path="/prescription-with-details/:id" element={<PrescriptionWithDetails />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="*" element={<Navigate to="/sign-in" />} />
         </Route>
         <Route path="/sign-in" element={<Basic />} />
       </Routes>
-      
+
     </ThemeProvider>
   );
 }

@@ -22,6 +22,7 @@ import DoctorManageModal from './doctor/DoctorManageModal';
 import ShareModal from './extra/ShareModal';
 import PrivacyPolicy from './extra/PrivacyPolicy';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 
 const arrowStyle = {
@@ -64,6 +65,7 @@ function DoctorProfile() {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
+  const navigate = useNavigate()
 
   const handleMenuClose = () => { setAnchorEl(null); };
   const handleMenuOpen = (event) => { setAnchorEl(event.currentTarget); };
@@ -221,7 +223,7 @@ function DoctorProfile() {
                       <MenuItem onClick={() => { setIsShareModalOpen(true) }}> <ShareOutlined /> &nbsp;&nbsp;Share with friends </MenuItem>
                       <MenuItem onClick={() => { }}> <LocalActivityOutlined /> &nbsp;&nbsp;Add Ticket </MenuItem>
                       <MenuItem onClick={() => { setIsPrivacyModalOpen(true) }}> <PrivacyTipOutlined /> &nbsp;&nbsp;Privacy Policy </MenuItem>
-                      <MenuItem onClick={() => { handleLogout }}> <LogoutOutlined /> &nbsp;&nbsp;Log Out </MenuItem>
+                      <MenuItem onClick={handleLogout}> <LogoutOutlined /> &nbsp;&nbsp;Log Out </MenuItem>
                     </Menu>
                   </MDBox>
                 </Grid>

@@ -9,6 +9,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/appointment.jpg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { toast } from "react-toastify";
 
 function Basic() {
   const navigate = useNavigate();
@@ -73,14 +74,15 @@ function Basic() {
             console.log("Error updating FCM");
           }
         } else if (result.data === "no data found") {
-          console.log("Wrong username or password! Please try again.");
+          console.log("Wrong username or password! Please try again");
+          toast.error("Wrong username or password! Please try again");
         }
       } catch (error) {
         console.error("Error submitting doctor login:", error);
-        console.log("An error occurred. Please try again.");
+        console.log("An error occurred. Please try again");
       }
     } else {
-      console.log("Please enter Email ID & Password!");
+      toast.error("Please enter Email ID & Password!");
     }
   };
 
@@ -90,9 +92,7 @@ function Basic() {
       const password = pass;
       const values = { email, password };
       try {
-        const result = await axios.post(
-          `${process.env.REACT_APP_HOS}/login-dental-staff`,
-          values,
+        const result = await axios.post(`${process.env.REACT_APP_HOS}/login-dental-staff`, values,
           {
             headers: { "Content-Type": "application/json" },
           }
@@ -111,14 +111,15 @@ function Basic() {
           console.log("Co-Helper login successful!");
           navigate("/dashboard");
         } else if (result.data === "no data found") {
-          console.log("Wrong username or password! Please try again.");
+          console.log("Wrong username or password! Please try again");
+          toast.error("Wrong username or password! Please try again")
         }
       } catch (error) {
         console.error("Error submitting co-helper login:", error);
         console.log("An error occurred. Please try again.");
       }
     } else {
-      console.log("Please enter Email ID & Password!");
+      toast.error("Please enter Email ID & Password!");
     }
   };
 
