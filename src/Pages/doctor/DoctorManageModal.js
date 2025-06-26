@@ -80,8 +80,8 @@ const DoctorManageModal = ({ isManageModalOpen, setIsManageModalOpen, doctorDeta
         setActiveStep(step);
     };
 
-    const handleClose = () => { 
-        setIsManageModalOpen(false); 
+    const handleClose = () => {
+        setIsManageModalOpen(false);
         handleMenuClose();
     }
 
@@ -440,7 +440,7 @@ const DoctorManageModal = ({ isManageModalOpen, setIsManageModalOpen, doctorDeta
                             )}
 
                             <MDBox sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                <MDButton variant="outlined" color="secondary" size="small"
+                                <MDButton variant="outlined" color="error" size="small"
                                     disabled={activeStep === 0}
                                     onClick={handleBack}
                                     sx={{ mr: 1 }}
@@ -449,7 +449,11 @@ const DoctorManageModal = ({ isManageModalOpen, setIsManageModalOpen, doctorDeta
                                 </MDButton>
                                 <MDBox sx={{ flex: '1 1 auto' }} />
                                 {/* <MDButton variant="contained" color="primary" size="small" onClick={handleNext} sx={{ mr: 1 }}> Next </MDButton> */}
-                                <MDButton variant="contained" color="primary" size="small" onClick={handleNext}>
+
+                                <MDButton variant="contained" size="small" onClick={handleNext}
+                                    color='primary'
+                                    disabled={isLastStep && !agree}
+                                >
                                     {isLastStep ? 'Submit' : 'Next'}
                                 </MDButton>
                             </MDBox>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
-import { Card, Grid, Divider, TextField, Select, FormControl, InputLabel, IconButton, MenuItem} from '@mui/material';
+import { Card, Grid, Divider, TextField, Select, FormControl, InputLabel, IconButton, MenuItem } from '@mui/material';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -173,14 +173,14 @@ function AddClinic() {
 
   return (
     <DashboardLayout>
-     
+
 
 
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, p: 4, backgroundColor: '#ffffff' }}>
 
           <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center"> ➕ Add New Clinic </MDTypography>
-          <Divider/>
+          <Divider />
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid item xs={12} sm={6} md={4}>
               <TextField fullWidth label="Clinic Name" variant="outlined" size="small" value={clinicName}
@@ -351,15 +351,26 @@ function AddClinic() {
           </Grid>
 
           <MDBox mt={4}>
-            <MDButton
-              variant="contained"
-              onClick={handler}
+            <MDButton variant="outlined" color="error" onClick={() => navigate(-1)}
+              sx={{
+                color: 'white',
+                borderRadius: 2,
+                textTransform: 'none',
+                px: 4,
+                py: 1.5,
+                fontWeight: 'medium',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
+              }}>
+              Cancel
+            </MDButton>
+            <MDButton variant="contained" color="success" onClick={handler}
               disabled={loading}
               sx={{
                 color: 'white',
-                bgcolor: '#051aa1',
                 borderRadius: 2,
                 textTransform: 'none',
+                ml: 2,
                 px: 4,
                 py: 1.5,
                 fontWeight: 'medium',
@@ -369,22 +380,6 @@ function AddClinic() {
               startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
             >
               {loading ? "Adding..." : "Add Clinic"}
-            </MDButton>
-            <MDButton variant="contained"
-              onClick={() => navigate(-1)}
-              sx={{
-                color: 'white',
-                bgcolor: '#051aa1',
-                borderRadius: 2,
-                textTransform: 'none',
-                ml: 2,
-                px: 4,
-                py: 1.5,
-                fontWeight: 'medium',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
-              }}>
-              Cancel
             </MDButton>
           </MDBox>
         </Card>

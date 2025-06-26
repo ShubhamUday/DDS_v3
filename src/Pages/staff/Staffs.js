@@ -22,8 +22,7 @@ function StaffList() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox sx={{ padding: 3 }}>
-        {
-          role === "Doctor" &&
+        {role === "Doctor" &&
           <MDBox display="flex" justifyContent="flex-end" mb={3}>
             <MDButton
               variant="contained"

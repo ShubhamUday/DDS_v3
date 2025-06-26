@@ -31,7 +31,7 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
     },
 }));
 
-const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpen, getAllAppointments, selectedAppointment, formType }) => {
+const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModalOpen, getAllAppointments, selectedAppointment, formType }) => {
     const drID = localStorage.getItem('doctorID');
     const [clinicList, setClinicList] = useState([]);
     const [selectedClinic, setSelectedClinic] = useState(null);
@@ -90,7 +90,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     //     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     // };
 
-    const handleClose = () => { setIsAppoinmentModalOpen(false); resetForm() }
+    const handleClose = () => { setIsAppointmentModalOpen(false); resetForm() }
 
     const handleChange = (field) => (e) => {
         const value = e.target.value;
@@ -209,7 +209,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
             if (result.data) {
                 console.log('axios reslu', result.data)
                 resetForm()
-                setIsAppoinmentModalOpen(false)
+                setIsAppointmentModalOpen(false)
                 getAllAppointments()
                 toast.success('Appointment booked sucsessfully!');
             }
@@ -228,7 +228,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
             if (result.data) {
                 console.log('axios reslu', result.data)
                 resetForm()
-                setIsAppoinmentModalOpen(false)
+                setIsAppointmentModalOpen(false)
                 getAllAppointments()
                 toast.success('Appointment rescheduled sucsessfully!');
             }
@@ -237,7 +237,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
             console.log(error)
         }
     }
-    
+
     const resetForm = () => {
         setFormData({
             doctorID: "",
@@ -295,7 +295,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
 
     return (
         <>
-            <Dialog open={isAppoinmentModalOpen} onClose={handleClose} maxWidth="md" fullWidth>
+            <Dialog open={isAppointmentModalOpen} onClose={handleClose} maxWidth="md" fullWidth>
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Appoinment </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -630,7 +630,7 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
                             {/* Diabities */}
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex">
-                                    <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Diabities </MDTypography>
+                                    <MDTypography variant="subtitle2" color="Primary" mt={0.5} mr={1}> Diabities </MDTypography>
                                     <ToggleButtonGroup
                                         size="small"
                                         color="primary"
@@ -719,4 +719,4 @@ const AddAppoinmentFormModal = ({ isAppoinmentModalOpen, setIsAppoinmentModalOpe
     )
 }
 
-export default AddAppoinmentFormModal
+export default AddAppointmentFormModal

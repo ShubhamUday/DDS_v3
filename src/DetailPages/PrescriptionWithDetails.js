@@ -69,7 +69,7 @@ function PrescriptionWithDetails() {
   const handleSubmit = async () => {
 
     if (!formData.medicinename || !formData.medicinetype || !formData.count || !formData.days) {
-      toast.error("Please fill all required fields.");
+      toast.error("Please fill all required fields");
       return
     }
 
@@ -224,7 +224,7 @@ function PrescriptionWithDetails() {
           {/* Clinic & Appointment Info */}
           <MDBox sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
             <MDBox mb={0} sx={{ maxWidth: 200, wordBreak: 'break-word' }}>
-              <MDTypography fontWeight="bold" color="green" fontSize="lg"> {alldetails?.clinicID?.clinicname} </MDTypography>
+              <MDTypography fontWeight="bold" color="success" fontSize="lg"> {alldetails?.clinicID?.clinicname} </MDTypography>
               <MDTypography fontSize="small">Near {alldetails?.clinicID?.clinicAddress} </MDTypography>
               <MDTypography fontSize="small"> <strong>Timing:</strong> {alldetails?.clinicID?.openTime} - {alldetails?.clinicID?.closeTime} </MDTypography>
             </MDBox>

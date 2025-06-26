@@ -17,6 +17,8 @@ import PaymentFormModal from 'Pages/payment/PaymentFormModal';
 import moment from 'moment';
 import Switch from '@mui/material/Switch';
 import { toast } from 'react-toastify';
+import AddAppointmentFormModal from 'Pages/appointment/AddAppointmentFormModal';
+import theme from 'assets/theme';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -60,7 +62,9 @@ function AppointmentWithDetails() {
   const [isPaymentUpdateModalOpen, setIsPaymentUpdateModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState("");
   const [requestStatus, setRequestStatus] = useState("")
+  const [formType, setFormType] = useState("edit")
   const open2 = Boolean(anchorEl);
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
 
   const [checked, setChecked] = useState(false);
 
@@ -70,7 +74,7 @@ function AppointmentWithDetails() {
     const isChecked = event.target.checked;
     setChecked(isChecked);
     statusController(isChecked ? "Completed" : "Accepted");
-
+    setRequestStatus(isChecked ? "Completed" : "Accepted")
   };
 
   const getGenderIcon = (gender) => {
@@ -88,8 +92,8 @@ function AppointmentWithDetails() {
       setAppointmentData(result.data);
       setRequestStatus(result.data.requestStatus)
     } catch (error) {
-      setError('Failed to load appointment details.');
-      toast.error("Failed to load appointment detals.")
+      setError('Failed to load appointment details');
+      toast.error("Failed to load appointment detals")
     }
     finally {
       setLoading(false);
@@ -97,16 +101,16 @@ function AppointmentWithDetails() {
   };
 
   const statusController = async (request) => {
-    const requestStatus = request;
-    const values = { requestStatus }
+    const values = { requestStatus: request };
     console.log(values)
     try {
       const response = await axios.put(`${process.env.REACT_APP_HOS}/update-Appointment-Details/${appointmentData._id}`, values, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log("response data", response.data)
+      console.log("response data", response.data.requestStatus)
       if (response.data) {
-        getDetails()
+        // getDetails()
+        // setRequestStatus(response.data.requestStatus)
         toast.success("Appointment is updated successfully")
       }
     }
@@ -147,7 +151,7 @@ function AppointmentWithDetails() {
         ];
       case "Completed":
         return [
-          <MDButton key="feedback" variant="outlined" color="secondary" size="small"> Feedback </MDButton>,
+          // <MDButton key="feedback" variant="outlined" color="secondary" size="small"> Feedback </MDButton>,
           <MDButton key="revisit_reminder" variant="contained" color="primary" size="small"> Revisit Reminder </MDButton>,
           <Switch key='switch' color="warning"
             checked={checked}
@@ -157,7 +161,11 @@ function AppointmentWithDetails() {
       case "Accepted":
         return [
           <MDButton key="reschedule" variant="contained" color="primary" size="small"
-            onClick={() => { console.log('check resch btn') }}
+            onClick={() => {
+              console.log('check resch btn');
+              setFormType("edit");
+              setIsAppointmentModalOpen(true);
+            }}
           >
             Reschedule
           </MDButton>,
@@ -174,12 +182,15 @@ function AppointmentWithDetails() {
 
   useEffect(() => {
     getDetails();
-    if (requestStatus === "Completed") {
+  }, []);
+
+  useEffect(() => {
+    if (requestStatus === "Completed" && !checked) {
       setChecked(true)
-    } else if (requestStatus === "Accepted") {
+    } else if (requestStatus === "Accepted" && checked) {
       setChecked(false)
     }
-  }, [requestStatus]);
+  }, [requestStatus])
 
   return (
     <DashboardLayout>
@@ -356,13 +367,73 @@ function AppointmentWithDetails() {
                       Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
                     </MDTypography>
 
-                    {appointmentData?.requestStatus && (
+                    {/* {appointmentData?.requestStatus && (
                       <>
                         {buttons?.[0] && <MDBox ml={'auto'}>{buttons[0]}</MDBox>}
                         {buttons?.[1] && <MDBox ml={1}>{buttons[1]}</MDBox>}
                         {buttons?.[2] && <MDBox ml={1}>{buttons[2]}</MDBox>}
                       </>
+                    )} */}
+
+                    {requestStatus === "Pending" && (
+                      <>
+                        <MDButton key="reject" variant="outlined" color="error" size="small"
+                          sx={{ ml: "auto", mr: "10px" }}
+                          onClick={() => {
+                            console.log('check Reject btn');
+                            statusController("Rejected");
+                          }}>
+                          Reject
+                        </MDButton>
+                        <MDButton key="accept" variant="contained" color="success" size="small"
+                          onClick={() => {
+                            console.log('check Accept btn');
+                            statusController("Accepted");
+                          }}>
+                          Accept
+                        </MDButton>
+                      </>
                     )}
+                    {/* {requestStatus === "Completed" && (
+                      <>
+                        <MDButton key="revisit_reminder" variant="contained" color="primary" size="small"
+                          sx={{ ml: "auto", mr: "10px" }}
+                        > Revisit Reminder
+                        </MDButton>
+                        <Switch key='switch' color="warning"
+                          checked={checked}
+                          onChange={handleChange}
+                        />
+                      </>
+
+                    )} */}
+
+                    {(requestStatus === "Accepted" || requestStatus === "Completed") && (
+                      <>
+                        <MDButton
+                          key="reschedule"
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          sx={{ ml: "auto", mr: "10px" }}
+                          onClick={() => {
+                            if (requestStatus === "Accepted") {
+                              console.log('Reschedule clicked');
+                              setFormType("edit");
+                              setIsAppointmentModalOpen(true);
+                            } else {
+                              console.log('Revisit clicked');
+                              // You can handle revisit-specific logic here if needed
+                            }
+                          }}
+                        >
+                          {requestStatus === "Accepted" ? "Reschedule" : "Revisit Reminder"}
+                        </MDButton>
+
+                        <Switch color="success" checked={checked} onChange={handleChange} />
+                      </>
+                    )}
+
 
                   </MDBox>
 
@@ -371,7 +442,7 @@ function AppointmentWithDetails() {
                   {/* IDs Section */}
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={4}>
-                      <MDTypography variant="button" fontWeight="bold" color='info'>Booking ID</MDTypography>
+                      <MDTypography variant="button" fontWeight="bold" color='info'> Booking ID </MDTypography>
                       <MDTypography fontSize="medium" color="text">{appointmentData?._id}</MDTypography>
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -745,6 +816,15 @@ function AppointmentWithDetails() {
           setIsPatientModalOpen={setIsPatientModalOpen}
           getDetails={getDetails}
         />
+      )}
+
+      {isAppointmentModalOpen && (
+        <AddAppointmentFormModal
+          isAppointmentModalOpen={isAppointmentModalOpen}
+          setIsAppointmentModalOpen={setIsAppointmentModalOpen}
+          formType={formType}
+          getAllAppointments={getDetails}
+          selectedAppointment={appointmentData} />
       )}
 
     </DashboardLayout >

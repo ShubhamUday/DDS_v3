@@ -18,6 +18,7 @@ const StatCard = ({ title, value, icon, bgColor, gradient, bgImage }) => {
         color: "#fff",
         background: 'transparent',
         height: '100px',
+        // width:'165px'
       }}
     >
       <MDBox display="flex" alignItems="center" height="100%">

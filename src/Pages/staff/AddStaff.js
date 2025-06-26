@@ -330,23 +330,24 @@ function AddStaff() {
           </Grid>
 
           <MDBox mt={4}>
-            <MDButton variant="contained" onClick={handler} disabled={loading}
+             <MDButton variant="outlined" color="error"
+              onClick={() => navigate(-1)}
               sx={{
-                color: 'white', bgcolor: '#051aa1', borderRadius: 2, textTransform: 'none', px: 4, py: 1.5, fontWeight: 'medium', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                color: 'white', borderRadius: 2, textTransform: 'none', px: 4, py: 1.5, fontWeight: 'medium', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
+              }}>
+              Cancel
+            </MDButton>
+            <MDButton variant="contained" color="success" onClick={handler} disabled={loading}
+              sx={{
+                color: 'white', borderRadius: 2, textTransform: 'none', ml: 2, px: 4, py: 1.5, fontWeight: 'medium', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
                 '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
               }}
               startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
             >
               {loading ? "Adding..." : "Add Staff"}
             </MDButton>
-            <MDButton variant="contained"
-              onClick={() => navigate(-1)}
-              sx={{
-                color: 'white', bgcolor: '#051aa1', borderRadius: 2, textTransform: 'none', ml: 2, px: 4, py: 1.5, fontWeight: 'medium', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
-              }}>
-              Cancel
-            </MDButton>
+           
           </MDBox>
         </Card>
       </MDBox>

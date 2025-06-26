@@ -34,10 +34,14 @@ function Tables() {
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
   const [formType, setFormType] = useState("add")
   const [selectedAppointment, setSelectedAppointment] = useState(null)
+  const [singleStaff, setSingleStaff] = useState()
   const stID = localStorage.getItem("CoHelperID")
   const drID = localStorage.getItem("doctorID");
+  const isDrID = !!drID;
+  const canDo = singleStaff?.CanAddAppointment === "Yes";
+  const canNotDo = singleStaff?.CanAddAppointment === "No";
+  const isStaff = !!singleStaff;
 
-  const [singleStaff, setSingleStaff] = useState()
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
@@ -68,6 +72,8 @@ function Tables() {
       toast.error("Unable to update appointment")
     }
   };
+
+  console.log("tabvalue", tabValue)
 
   // Get filtered rows based on the tab
   const getFilteredRows = () => {
@@ -110,10 +116,10 @@ function Tables() {
             />
             <MDBox>
               <MDTypography fontWeight="bold" fontSize="lg">
-                {appointment?.userID?.name || appointment.patientName}
+                {appointment?.userID?.name || appointment?.patientName}
               </MDTypography>
               <MDTypography fontSize="small" color="text">
-                {appointment?.userID?.gender || appointment.gender} | {appointment?.userID?.age || appointment.age} yrs
+                {appointment?.userID?.gender || appointment?.gender} | {appointment?.userID?.age || appointment?.age} yrs
               </MDTypography>
             </MDBox>
           </MDBox>
@@ -127,7 +133,7 @@ function Tables() {
               justifyContent="flex-end"
             >
               <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
-              {new Date(appointment.Bookdate).toLocaleDateString("en-GB")}
+              {new Date(appointment?.Bookdate).toLocaleDateString("en-GB")}
             </MDTypography>
             <MDTypography
               fontSize="small"
@@ -145,7 +151,7 @@ function Tables() {
 
         {/* Treatment Details */}
         <MDBox>
-          {appointment.Treatmentfor && (
+          {appointment?.Treatmentfor && (
             <MDTypography
               fontSize="small"
               sx={{ mb: 0.5 }}
@@ -154,10 +160,10 @@ function Tables() {
               textTransform="capitalize"
             >
               <Icon sx={{ fontSize: 18, mr: 1, color: "primary.main" }}>medical_services</Icon>
-              <strong>Treatment:</strong>&nbsp;{appointment.Treatmentfor}
+              <strong>Treatment:</strong>&nbsp;{appointment?.Treatmentfor}
             </MDTypography>
           )}
-          {appointment.ProblemDetails && (
+          {appointment?.ProblemDetails && (
             <MDTypography
               fontSize="small"
               sx={{ mb: 0.5 }}
@@ -166,10 +172,10 @@ function Tables() {
               textTransform="capitalize"
             >
               <Icon sx={{ fontSize: 18, mr: 1, color: "secondary.main" }}>assignment</Icon>
-              <strong>Details:</strong>&nbsp;{appointment.ProblemDetails}
+              <strong>Details:</strong>&nbsp;{appointment?.ProblemDetails}
             </MDTypography>
           )}
-          {appointment.clinicID?.clinicname && (
+          {appointment?.clinicID?.clinicname && (
             <MDTypography
               fontSize="small"
               sx={{ mt: 1 }}
@@ -178,11 +184,10 @@ function Tables() {
               textTransform="capitalize"
             >
               <Icon sx={{ fontSize: 18, mr: 1, color: "info.main" }}>local_hospital</Icon>
-              <strong>Clinic:</strong>&nbsp;{appointment.clinicID.clinicname}
+              <strong>Clinic:</strong>&nbsp;{appointment?.clinicID.clinicname}
             </MDTypography>
           )}
         </MDBox>
-
       </>
     ),
   }));
@@ -207,12 +212,12 @@ function Tables() {
     try {
       const result = await axios.get(`${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`, {
         headers: { "Content-Type": "application/json" }
-      }
-      );
+      });
 
       const appointments = result.data.appointmentID;
       setAppointmentdata(appointments);
       console.log("appointments", appointments);
+      console.log("Doctor's data", result.data);
 
       if (stID) {
         const result3 = await axios.get(`${process.env.REACT_APP_HOS}/get-one-staff-with-details/${stID}`, {
@@ -243,6 +248,7 @@ function Tables() {
     }
   }
   console.log("single staff", singleStaff)
+  console.log("stff ID", stID)
 
   useEffect(() => {
     getAllAppointments();
@@ -336,16 +342,8 @@ function Tables() {
 
 
                 <CardActions sx={{ marginTop: "auto" }}>
-                  {tabValue === 0 && (
+                  {(tabValue === 0 && drID && (singleStaff ? singleStaff.CanAcceptAppointment === "Yes" : true)) ? (
                     <>
-                      <MDButton fullWidth size="small" color="primary"
-                        sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log("Accept Button clicked", row.id);
-                          statusController(row.id, "Accepted")
-                        }}
-                      > Accept </MDButton>
                       <MDButton fullWidth size="small"
                         sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
                         onClick={(e) => {
@@ -355,8 +353,19 @@ function Tables() {
                         }}
                       >
                         Reject </MDButton>
+                      <MDButton fullWidth size="small" color="primary"
+                        sx={{ margin: 1, border: '1px solid grey', borderRadius: '999px' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log("Accept Button clicked", row.id);
+                          statusController(row.id, "Accepted")
+                        }}
+                      > Accept </MDButton>
                     </>
+                  ) : (
+                    <></>
                   )}
+
                   {tabValue === 1 && (
                     <MDButton
                       fullWidth
@@ -373,6 +382,7 @@ function Tables() {
                     >
                       Reschedule </MDButton>
                   )}
+
                   {tabValue === 2 && <></>}
                 </CardActions>
 
@@ -382,15 +392,26 @@ function Tables() {
         </Grid>
 
 
+        {(drID && (singleStaff ? singleStaff.CanAddAppointment === "Yes" : true)) ? (
+          <Fab color="primary" aria-label="add"
+            onClick={() => {
+              setIsAppointmentModalOpen(true);
+              setFormType("add");
+              console.log("add clicked")
+            }}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+            }}
+          > <AddIcon /> </Fab>
+        ) : (
+          <></>
+        )}
 
-        <Fab color="primary" aria-label="add" onClick={() => { setIsAppointmentModalOpen(true); setFormType("add") }}
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-          }}
-        > <AddIcon /> </Fab>
-
+        {/* {isDrID && (canDo || !isStaff) && (
+          
+        )} */}
 
         {isAppointmentModalOpen && (
           <AddAppointmentFormModal
@@ -402,9 +423,7 @@ function Tables() {
           />
         )}
 
-
       </MDBox>
-
     </DashboardLayout>
   );
 }

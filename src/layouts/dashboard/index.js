@@ -83,7 +83,18 @@ function Dashboard() {
       <DashboardNavbar />
       <MDBox sx={{ p: 3 }}>
 
-        <Grid container sx={{ alignItems: 'center', backgroundImage: 'url(https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg)', backgroundSize: 'cover', backgroundPosition: 'center', height: '300px' }}>
+        <Grid container sx={{
+          alignItems: 'center',
+          backgroundImage: 'url(https://buybootstrap.com/demos/medflex/medflex-admin-dashboard/assets/images/banner3.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderRadius: 4,
+          backgroundRepeat: 'no-repeat',
+          // height: '300px' ,
+          minHeight: '300px', // ✅ ensures at least 100px but can grow
+          flexWrap: 'wrap', // ✅ important for mobile wrapping
+          // alignItems: 'stretch', // ⬅️ optional: keeps height consistent
+        }}>
           <Grid item xs={12} md={6} lg={2} sx={{ m: 1 }}>
             <StatCard
               title="Total Patients"
