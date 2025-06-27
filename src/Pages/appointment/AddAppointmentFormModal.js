@@ -469,6 +469,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                                     border: selectedClinic?._id === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
                                                     backgroundColor: selectedClinic?._id === clinic._id ? '#f3e5f5' : '#fff',
                                                     transition: 'all 0.3s ease',
+                                                    minHeight: '115px',
                                                     '&:hover': {
                                                         boxShadow: 4,
                                                         backgroundColor: '#fafafa',

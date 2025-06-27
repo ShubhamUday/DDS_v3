@@ -12,7 +12,7 @@ import StarIcon from '@mui/icons-material/Star';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { Grid, Icon, IconButton, Menu, MenuItem } from '@mui/material';
+import { Grid, Icon, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import Rating from "@mui/material/Rating";
 import img from "skel2.png";
 import { Edit, LocalActivityOutlined, LogoutOutlined, MoreVertOutlined, PrivacyTipOutlined, ShareOutlined, StarOutlineOutlined, WorkOutlineOutlined } from '@mui/icons-material';
@@ -23,6 +23,7 @@ import ShareModal from './extra/ShareModal';
 import PrivacyPolicy from './extra/PrivacyPolicy';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import AddTicketModal from './extra/AddTicketModal';
 
 
 const arrowStyle = {
@@ -63,6 +64,7 @@ function DoctorProfile() {
   const [isManageModalOpen, setIsManageModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const navigate = useNavigate()
@@ -184,23 +186,28 @@ function DoctorProfile() {
                   />
                 </Grid>
 
-                {/* Name and designation */}
+                {/* Name and Designation */}
                 <Grid item sx={{ mr: "auto" }}>
-                  <MDBox>
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center" >
                     <MDTypography variant="h5" fontWeight="bold" sx={{ fontSize: "1.6rem", color: "#1a237e" }}>
                       {doctorData?.drname}
-                      <MDButton variant="text" color="secondary" title="Edit doctor details" startIcon={<Edit />}
-                        onClick={() => { setIsEditModalOpen(true); }} />
+                      {/* <MDButton variant="text" color="secondary" title="Edit doctor details" startIcon={<Edit />}
+                        onClick={() => { setIsEditModalOpen(true) }} /> */}
                     </MDTypography>
-                    <MDTypography variant="body2" sx={{ color: "#1a237e" }}>
-                      {doctorData?.designation}
+                    <MDTypography variant="body2" color="secondary" ml={2} sx={{ cursor: "pointer" }}
+                      onClick={() => { setIsEditModalOpen(true) }}>
+                      <Tooltip title="Edit profile" placement="top">
+                        <Icon>edit</Icon>
+                      </Tooltip>
                     </MDTypography>
                   </MDBox>
+                  <MDTypography variant="body2" sx={{ color: "#1a237e" }}>
+                    {doctorData?.designation}
+                  </MDTypography>
                 </Grid>
 
                 <Grid item >
                   <MDBox textAlign="right">
-
                     <MDTypography variant="subtitle1" sx={{ color: "#25408f", fontWeight: "medium" }}>
                       {doctorData?.yearsofexperience} Years of experience
                     </MDTypography>
@@ -221,7 +228,7 @@ function DoctorProfile() {
                       <MenuItem onClick={() => { setIsManageModalOpen(true) }}> <WorkOutlineOutlined /> &nbsp;&nbsp;Manage Job </MenuItem>
                       {/* <MenuItem onClick={() => { }}> <StarOutlineOutlined /> &nbsp;&nbsp;Read Reviews </MenuItem> */}
                       <MenuItem onClick={() => { setIsShareModalOpen(true) }}> <ShareOutlined /> &nbsp;&nbsp;Share with friends </MenuItem>
-                      <MenuItem onClick={() => { }}> <LocalActivityOutlined /> &nbsp;&nbsp;Add Ticket </MenuItem>
+                      <MenuItem onClick={() => { setIsTicketModalOpen(true) }}> <LocalActivityOutlined /> &nbsp;&nbsp;Add Ticket </MenuItem>
                       <MenuItem onClick={() => { setIsPrivacyModalOpen(true) }}> <PrivacyTipOutlined /> &nbsp;&nbsp;Privacy Policy </MenuItem>
                       <MenuItem onClick={handleLogout}> <LogoutOutlined /> &nbsp;&nbsp;Log Out </MenuItem>
                     </Menu>
@@ -389,6 +396,14 @@ function DoctorProfile() {
         <PrivacyPolicy
           isPrivacyModalOpen={isPrivacyModalOpen}
           setIsPrivacyModalOpen={setIsPrivacyModalOpen}
+          handleMenuClose={handleMenuClose}
+        />
+      )}
+
+      {isTicketModalOpen && (
+        <AddTicketModal
+          isTicketModalOpen={isTicketModalOpen}
+          setIsTicketModalOpen={setIsTicketModalOpen}
           handleMenuClose={handleMenuClose}
         />
       )}

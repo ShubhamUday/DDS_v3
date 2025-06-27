@@ -26,10 +26,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { resetWarningCache } from "prop-types";
 import moment from 'moment';
+import breakpoints from "assets/theme/base/breakpoints";
 
 function Tables() {
   // const { appointmentdata, columns } = projectsTableData();
   const [appointmentdata, setAppointmentdata] = useState([]);
+  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
   const [formType, setFormType] = useState("add")
@@ -103,7 +105,7 @@ function Tables() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 2,
+            mb: 1,
             flexWrap: "wrap",
           }}
         >
@@ -123,29 +125,30 @@ function Tables() {
               </MDTypography>
             </MDBox>
           </MDBox>
-
-          {/* Right: Date & Time */}
-          <MDBox sx={{ textAlign: "right" }}>
-            <MDTypography
-              fontSize="small"
-              display="flex"
-              alignItems="center"
-              justifyContent="flex-end"
-            >
-              <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
-              {new Date(appointment?.Bookdate).toLocaleDateString("en-GB")}
-            </MDTypography>
-            <MDTypography
-              fontSize="small"
-              display="flex"
-              alignItems="center"
-              justifyContent="flex-end"
-            >
-              <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>access_time</Icon>
-              {appointment?.BookTime}
-            </MDTypography>
-          </MDBox>
         </MDBox>
+
+        {/* Right: Date & Time */}
+        <MDBox sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+          <MDTypography
+            fontSize="small"
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
+            {new Date(appointment?.Bookdate).toLocaleDateString("en-GB")}
+          </MDTypography>
+          <MDTypography
+            fontSize="small"
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>access_time</Icon>
+            {appointment?.BookTime}
+          </MDTypography>
+        </MDBox>
+
 
         <Divider sx={{ mb: 2, mt: 0 }} />
 
@@ -254,6 +257,24 @@ function Tables() {
     getAllAppointments();
   }, []);
 
+  useEffect(() => {
+    // A function that sets the orientation state of the tabs.
+    function handleTabsOrientation() {
+      return window.innerWidth < breakpoints.values.sm
+        ? setTabsOrientation("vertical")
+        : setTabsOrientation("horizontal");
+    }
+
+    // The event listener that's calling the handleTabsOrientation function when resizing the window.
+    window.addEventListener("resize", handleTabsOrientation);
+
+    // Call the handleTabsOrientation function to set the state with the initial value.
+    handleTabsOrientation();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleTabsOrientation);
+  }, [tabsOrientation]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -266,6 +287,7 @@ function Tables() {
 
         <AppBar position="sticky" color="default" sx={{ border: '.5px solid #ccc', borderRadius: 3, boxShadow: "none", top: '90px', zIndex: 1100, }}>
           <Tabs
+            orientation={tabsOrientation}
             value={tabValue}
             onChange={handleSetTabValue}
             variant="fullWidth"

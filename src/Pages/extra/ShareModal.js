@@ -11,13 +11,17 @@ import { CloseOutlined } from '@mui/icons-material';
 const ShareModal = ({ isShareModalOpen, setIsShareModalOpen, handleMenuClose }) => {
     const shareUrl = window.location.href;
 
+    const handleClose=()=>{
+        setIsShareModalOpen(false);
+        handleMenuClose()
+    }
     return (
         <>
-            <Dialog open={isShareModalOpen} onClose={() => { setIsShareModalOpen(false); handleMenuClose() }}>
+            <Dialog open={isShareModalOpen} onClose={handleClose}>
                 <DialogTitle> Share with Friends </DialogTitle>
                 <IconButton
                     aria-label="close"
-                    onClick={() => { setIsShareModalOpen(false); handleMenuClose() }}
+                    onClick={handleClose}
                     sx={(theme) => ({
                         position: 'absolute',
                         right: 8,
