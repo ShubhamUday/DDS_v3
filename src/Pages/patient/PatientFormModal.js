@@ -101,7 +101,7 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
             phone: data?.userID?.number || data?.phone || "",
             gender: data?.userID?.gender || data?.gender || "",
             age: data?.userID?.age || data?.age || "",
-            Weight: data?.userID?.weight || data?.Weight || "",
+            Weight: data?.userID?.Weight || data?.Weight || "",
             Treatmentfor: data?.Treatmentfor || "",
             ProblemDetails: data?.ProblemDetails || "",
             diabetes: data?.diabetes || "",
@@ -129,142 +129,148 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
                 </IconButton>
                 <DialogContent>
 
-                    <Stack spacing={2}>
+
+                    <Grid container spacing={2}>
+
                         {/* Gender */}
-                        <MDBox display="flex">
-                            <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Gender </MDTypography>
-                            <ToggleButtonGroup
-                                size="small"
-                                color="primary"
-                                value={formData.gender}
-                                exclusive
-                                onChange={handleToggleChange('gender')}
-                            >
-                                <StyledToggleButton value="Male"> Male </StyledToggleButton>
-                                <StyledToggleButton value="Female"> Female </StyledToggleButton>
-                            </ToggleButtonGroup>
-                        </MDBox>
-
-                        {/* Age, Weight */}
-                        <Grid container>
-                            <Grid item xs={12} sm={6}>
-                                <MDBox display="flex">
-                                    <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Age </MDTypography>
-                                    <TextField size="small" type="number"
-                                        value={formData.age}
-                                        onChange={handleChange('age')}
-                                        InputLabelProps={{ shrink: true }}
-                                        sx={{
-                                            // For Chrome, Safari, Edge
-                                            '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                                                WebkitAppearance: 'none',
-                                                margin: 0,
-                                            },
-                                            // For Firefox
-                                            '& input[type=number]': {
-                                                MozAppearance: 'textfield',
-                                            },
-                                        }} />
-                                </MDBox>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <MDBox display="flex">
-                                    <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography>
-                                    <TextField size="small" type="number"
-                                        value={formData.Weight}
-                                        onChange={handleChange('weight')}
-                                        sx={{
-                                            // For Chrome, Safari, Edge
-                                            '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                                                WebkitAppearance: 'none',
-                                                margin: 0,
-                                            },
-                                            // For Firefox
-                                            '& input[type=number]': {
-                                                MozAppearance: 'textfield',
-                                            },
-                                        }} />
-                                </MDBox>
-                            </Grid>
-
-                        </Grid>
-
-                        {/* Treatment Options */}
-                        <Grid container>
-
-                            <Grid item xs={12} sm={12}>
-                                <MDBox display="flex" mb={1}>
-                                    <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography>
-                                    <TextField size="small" fullWidth
-                                        value={formData.Treatmentfor}
-                                        onChange={handleChange('Treatmentfor')}
-                                    />
-                                </MDBox>
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
+                        <Grid item xs={12} sm={4}>
+                            <MDBox display="flex">
+                                {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Gender </MDTypography> */}
                                 <ToggleButtonGroup
                                     size="small"
                                     color="primary"
+                                    value={formData.gender}
                                     exclusive
-                                    fullWidth
+                                    onChange={handleToggleChange('gender')}
+                                >
+                                    <StyledToggleButton value="Male"> Male </StyledToggleButton>
+                                    <StyledToggleButton value="Female"> Female </StyledToggleButton>
+                                </ToggleButtonGroup>
+                            </MDBox>
+                        </Grid>
+
+                        {/* Age */}
+                        <Grid item xs={12} sm={4}>
+                            <MDBox display="flex">
+                                {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Age </MDTypography> */}
+                                <TextField size="small" type="number" label="Age"
+                                    value={formData.age}
+                                    onChange={handleChange('age')}
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{
+                                        // For Chrome, Safari, Edge
+                                        '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                                            WebkitAppearance: 'none',
+                                            margin: 0,
+                                        },
+                                        // For Firefox
+                                        '& input[type=number]': {
+                                            MozAppearance: 'textfield',
+                                        },
+                                    }} />
+                            </MDBox>
+                        </Grid>
+
+                        {/* Weight  */}
+                        <Grid item xs={12} sm={4}>
+                            <MDBox display="flex">
+                                {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography> */}
+                                <TextField size="small" type="number" label="Weight"
+                                    value={formData.Weight}
+                                    onChange={handleChange('Weight')}
+                                    sx={{
+                                        // For Chrome, Safari, Edge
+                                        '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                                            WebkitAppearance: 'none',
+                                            margin: 0,
+                                        },
+                                        // For Firefox
+                                        '& input[type=number]': {
+                                            MozAppearance: 'textfield',
+                                        },
+                                    }} />
+                            </MDBox>
+                        </Grid>
+
+                        {/* Treatment Options */}
+                        <Grid item xs={12} sm={12}>
+                            <MDBox display="flex" mb={1}>
+                                <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography>
+                                <TextField size="small" fullWidth
                                     value={formData.Treatmentfor}
                                     onChange={handleChange('Treatmentfor')}
-                                >
-                                    <StyledToggleButton value="Tooth Pain">Tooth Pain</StyledToggleButton>
-                                    <StyledToggleButton value="Brace">Brace</StyledToggleButton>
-                                    <StyledToggleButton value="Crown">Crown</StyledToggleButton>
-                                    <StyledToggleButton value="Bridge">Bridge</StyledToggleButton>
-                                    <StyledToggleButton value="Tooth Ache">Tooth Ache</StyledToggleButton>
-                                </ToggleButtonGroup>
-                            </Grid>
-
-
+                                />
+                            </MDBox>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <ToggleButtonGroup
+                                size="small"
+                                color="primary"
+                                exclusive
+                                fullWidth
+                                value={formData.Treatmentfor}
+                                onChange={handleChange('Treatmentfor')}
+                            >
+                                <StyledToggleButton value="Tooth Pain">Tooth Pain</StyledToggleButton>
+                                <StyledToggleButton value="Brace">Brace</StyledToggleButton>
+                                <StyledToggleButton value="Crown">Crown</StyledToggleButton>
+                                <StyledToggleButton value="Bridge">Bridge</StyledToggleButton>
+                                <StyledToggleButton value="Tooth Ache">Tooth Ache</StyledToggleButton>
+                            </ToggleButtonGroup>
                         </Grid>
 
                         {/* Problem */}
-                        <MDBox display="flex">
-                            <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography>
-                            <TextField size="small" fullWidth value={formData.ProblemDetails}
-                                onChange={handleChange('problem')} />
-                        </MDBox>
-
+                        <Grid item xs={12} sm={12} lg={12}>
+                            <MDBox display="flex">
+                                <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography>
+                                <TextField size="small" fullWidth value={formData.ProblemDetails}
+                                    onChange={handleChange('problem')} />
+                            </MDBox>
+                        </Grid>
                         {/* Diabities */}
-                        <MDBox display="flex">
-                            <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Diabities </MDTypography>
-                            <ToggleButtonGroup
-                                size="small"
-                                color="primary"
-                                value={formData.diabetes}
-                                exclusive
-                                onChange={handleToggleChange('diabities')}
-                            >
-                                <StyledToggleButton value="Yes">Yes</StyledToggleButton>
-                                <StyledToggleButton value="No">No</StyledToggleButton>
-                                <StyledToggleButton value="Pre">Pre</StyledToggleButton>
-                            </ToggleButtonGroup>
-                        </MDBox>
+                        <Grid item xs={12} sm={12} lg={6}>
+                            <MDBox display="flex">
+                                <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Diabities </MDTypography>
+                                <ToggleButtonGroup
+                                    size="small"
+                                    color="primary"
+                                    value={formData.diabetes}
+                                    exclusive
+                                    onChange={handleToggleChange('diabities')}
+                                >
+                                    <StyledToggleButton value="Yes">Yes</StyledToggleButton>
+                                    <StyledToggleButton value="No">No</StyledToggleButton>
+                                    <StyledToggleButton value="Pre">Pre</StyledToggleButton>
+                                </ToggleButtonGroup>
+                            </MDBox>
+                        </Grid>
 
                         {/* Blood Pressure */}
-                        <MDBox display="flex">
-                            <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Blood Pressure </MDTypography>
-                            <ToggleButtonGroup
-                                size="small"
-                                color="primary"
-                                value={formData.Bloodpressure}
-                                exclusive
-                                onChange={handleToggleChange('bloodPressure')}
-                            >
-                                <StyledToggleButton value="Yes">Yes</StyledToggleButton>
-                                <StyledToggleButton value="No">No</StyledToggleButton>
-                            </ToggleButtonGroup>
-                        </MDBox>
+                        <Grid item xs={12} sm={12} lg={6}>
+                            <MDBox display="flex">
+                                <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Blood Pressure </MDTypography>
+                                <ToggleButtonGroup
+                                    size="small"
+                                    color="primary"
+                                    value={formData.Bloodpressure}
+                                    exclusive
+                                    onChange={handleToggleChange('bloodPressure')}
+                                >
+                                    <StyledToggleButton value="Yes">Yes</StyledToggleButton>
+                                    <StyledToggleButton value="No">No</StyledToggleButton>
+                                </ToggleButtonGroup>
+                            </MDBox>
+                        </Grid>
 
                         {/* Buttons */}
-                        <MDBox display="flex" justifyContent="flex-end" gap={1}>
-                            <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
-                            <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Save </MDButton>
-                        </MDBox>
-                    </Stack>
+                        <Grid item xs={12} sm={12} lg={12}>
+                            <Divider />
+                            <MDBox display="flex" justifyContent="flex-end" gap={1}>
+                                <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
+                                <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Save </MDButton>
+                            </MDBox>
+                        </Grid>
+                    </Grid>
                 </DialogContent>
             </Dialog>
         </>

@@ -15,9 +15,9 @@ import Slider from "react-slick";
 import { Checkbox, Grid, Icon, IconButton, Menu, MenuItem, Switch, Tooltip } from '@mui/material';
 import { LocalActivityOutlined, LogoutOutlined, PrivacyTipOutlined, ShareOutlined, WorkOutlineOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import PrivacyPolicy from './extra/PrivacyPolicy';
-import ShareModal from './extra/ShareModal';
-import AddTicketModal from './extra/AddTicketModal';
+import PrivacyPolicy from '../extra/PrivacyPolicy';
+import ShareModal from '../extra/ShareModal';
+import AddTicketModal from '../extra/AddTicketModal';
 
 const arrowStyle = {
   display: "flex",

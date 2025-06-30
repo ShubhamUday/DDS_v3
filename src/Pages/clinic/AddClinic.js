@@ -10,7 +10,7 @@ import MDTypography from "components/MDTypography";
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import MDButton from 'components/MDButton';
-import img from "../assets/Frame9347.png";
+import img from "../../assets/Frame9347.png";
 import ClearIcon from '@mui/icons-material/Clear';
 
 function AddClinic() {
@@ -174,20 +174,24 @@ function AddClinic() {
   return (
     <DashboardLayout>
 
-
-
       <MDBox sx={{ padding: 3 }}>
         <Card sx={{ borderRadius: 4, p: 4, backgroundColor: '#ffffff' }}>
 
-          <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center"> ➕ Add New Clinic </MDTypography>
-          <Divider />
-          <Grid container spacing={3} sx={{ mt: 2 }}>
+          <Grid container spacing={3} sx={{}}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <MDTypography variant="h6" fontWeight="medium" gutterBottom textAlign="center"> ➕ Add New Clinic </MDTypography>
+              <Divider />
+            </Grid>
+
+            {/* Clinic Name */}
             <Grid item xs={12} sm={6} md={4}>
               <TextField fullWidth label="Clinic Name" variant="outlined" size="small" value={clinicName}
                 onChange={(e) => setClinicName(e.target.value)}
                 sx={{ backgroundColor: '#fafafa', borderRadius: 1 }}
               />
             </Grid>
+
+            {/* Clinic Address */}
             <Grid item xs={12} sm={6} md={8}>
               <MDBox sx={{ position: 'relative' }}>
                 <TextField fullWidth label="Clinic Address" variant="outlined" size="small" value={clinicAddress}
@@ -220,11 +224,8 @@ function AddClinic() {
                 )}
               </MDBox>
             </Grid>
-          </Grid>
 
-          <Divider sx={{ my: 2 }} />
-
-          <Grid container spacing={2}>
+            {/* Timing */}
             {[['Open Time', checkInTime, setCheckInTime], ['Close Time', checkOutTime, setCheckOutTime]].map(([label, value, setter]) => (
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
@@ -237,11 +238,8 @@ function AddClinic() {
                 </FormControl>
               </Grid>
             ))}
-          </Grid>
 
-          <Divider sx={{ my: 3 }} />
-
-          <Grid container spacing={2}>
+            {/* Emergency */}
             {[['Emergency Open Time', EmergencycheckInTime, setEmergencyCheckInTime], ['Emergency Close Time', EmergencycheckOutTime, setEmergencyCheckOutTime]].map(([label, value, setter]) => (
               <Grid item xs={12} sm={6} key={label}>
                 <FormControl fullWidth size="small">
@@ -254,11 +252,7 @@ function AddClinic() {
                 </FormControl>
               </Grid>
             ))}
-          </Grid>
 
-          <Divider sx={{ my: 3 }} />
-
-          <Grid container spacing={2}>
             {[
               ['AppointmentFee', 'Consultation Appointment Fee'],
               ['MessageFee', 'Messaging Fee'],
@@ -276,17 +270,24 @@ function AddClinic() {
                       onChange={(e) =>
                         setPermissions((prev) => ({ ...prev, [key]: e.target.value }))}
                       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                      sx={{ width: 100 }}
+                      sx={{
+                        width: 100,
+                        // For Chrome, Safari, Edge to remove arrows
+                        '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                          WebkitAppearance: 'none',
+                          margin: 0,
+                        },
+                        // For Firefox to remove arrows
+                        '& input[type=number]': {
+                          MozAppearance: 'textfield',
+                        },
+                      }}
                     />
                   </MDBox>
                 </FormControl>
               </Grid>
             ))}
-          </Grid>
 
-          <Divider sx={{ my: 3 }} />
-
-          <Grid container spacing={2}>
             <Grid item xs={12}>
               <MDBox
                 sx={{ border: '2px dashed #bbb', borderRadius: 2, padding: 3, backgroundColor: '#f9f9f9', }} >
@@ -348,40 +349,23 @@ function AddClinic() {
                 placeholder="Enter details about the clinic, facilities, etc."
               />
             </Grid>
-          </Grid>
 
-          <MDBox mt={4}>
-            <MDButton variant="outlined" color="error" onClick={() => navigate(-1)}
-              sx={{
-                color: 'white',
-                borderRadius: 2,
-                textTransform: 'none',
-                px: 4,
-                py: 1.5,
-                fontWeight: 'medium',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
-              }}>
-              Cancel
-            </MDButton>
-            <MDButton variant="contained" color="success" onClick={handler}
-              disabled={loading}
-              sx={{
-                color: 'white',
-                borderRadius: 2,
-                textTransform: 'none',
-                ml: 2,
-                px: 4,
-                py: 1.5,
-                fontWeight: 'medium',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
-              }}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
-            >
-              {loading ? "Adding..." : "Add Clinic"}
-            </MDButton>
-          </MDBox>
+            <Grid item xs={12} lg={12}>
+              <MDBox mt={4} display="flex" justifyContent="flex-end" gap={1}>
+                <MDButton variant="outlined" color="error" onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </MDButton>
+                <MDButton variant="contained" color="success" onClick={handler}
+                  disabled={loading}
+                  startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
+                >
+                  {loading ? "Adding..." : "Add Clinic"}
+                </MDButton>
+              </MDBox>
+            </Grid>
+
+          </Grid>
         </Card>
       </MDBox>
 

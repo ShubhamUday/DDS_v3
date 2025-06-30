@@ -5,7 +5,7 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Patients from "Pages/Patients";
 import Earning from "Pages/Earnings";
-import Clinics from "Pages/Clinics";
+import Clinics from "Pages/clinic/Clinics";
 import Calendar from "Pages/Calendar";
 import Staffs from "Pages/staff/Staffs";
 import DoctorProfile from "Pages/DoctorProfile";

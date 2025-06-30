@@ -125,32 +125,32 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDTypography>
 
         <MDBox display="flex" alignItems="center" gap={2}>
-          {!isSmallScreen && (<>
-            {/* Search Field */}
-            <MDBox
+
+          {/* Search Field */}
+          <MDBox
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#f1f1f1",
+              borderRadius: "30px",
+              px: 2,
+              py: 0.5,
+              // width: "22vw",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+
+            <SearchIcon sx={{ color: "gray", mr: 1 }} />
+            <InputBase
+              placeholder={isSmallScreen ? "Search" : "Search for anything..."}
               sx={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "#f1f1f1",
-                borderRadius: "30px",
-                px: 2,
-                py: 0.5,
-                width: "22vw",
+                minWidth: "70px",
+                fontSize: 14,
                 fontFamily: "Poppins, sans-serif",
               }}
-            >
-              <SearchIcon sx={{ color: "gray", mr: 1 }} />
-              <InputBase
-                placeholder="Search for anything..."
-                fullWidth
-                sx={{
-                  fontSize: 14,
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              />
-            </MDBox>
-          </>
-          )}
+            />
+          </MDBox>
+
 
           {/* <MDBox display="flex" alignItems="center" gap={2}></MDBox> */}
 

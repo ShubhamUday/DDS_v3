@@ -296,7 +296,11 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
     return (
         <>
             <Dialog open={isAppointmentModalOpen} onClose={handleClose} maxWidth="md" fullWidth>
-                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Appoinment </DialogTitle>
+                {formType === "add" ? (
+                    <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Appointment </DialogTitle>
+                ) : (
+                    <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Reschedule Appointment </DialogTitle>
+                )}
                 <IconButton
                     aria-label="close"
                     onClick={handleClose}
@@ -337,7 +341,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                 </MDBox>
                             </Grid>
                             {/* Phone Number */}
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={7} sm={6}>
                                 <TextField fullWidth size="small" id="outlined-number" label="Phone Number" type="number"
                                     value={formData.phone}
                                     onChange={handleChange("phone")}
@@ -356,7 +360,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             </Grid>
 
                             {/* Gender */}
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={5} sm={4}>
                                 <MDBox display="flex">
                                     {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Gender </MDTypography> */}
                                     <ToggleButtonGroup
@@ -373,7 +377,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             </Grid>
 
                             {/* Age */}
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={6} sm={4}>
                                 <TextField size="small" id="outlined-number" label="Age" type="number"
                                     value={formData.age}
                                     onChange={handleChange('age')}
@@ -394,25 +398,23 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             </Grid>
 
                             {/* Weight */}
-                            <Grid item xs={12} sm={4}>
-                                <MDBox display="flex" justifyContent="flex-end">
-                                    {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography> */}
-                                    <TextField label="Weight" size="small" type="number"
-                                        value={formData.Weight}
-                                        onChange={handleChange('Weight')}
-                                        sx={{
-                                            // For Chrome, Safari, Edge
-                                            '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                                                WebkitAppearance: 'none',
-                                                margin: 0,
-                                            },
-                                            // For Firefox
-                                            '& input[type=number]': {
-                                                MozAppearance: 'textfield',
-                                            },
-                                        }}
-                                    />
-                                </MDBox>
+                            <Grid item xs={6} sm={4}>
+                                {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography> */}
+                                <TextField label="Weight" size="small" type="number"
+                                    value={formData.Weight}
+                                    onChange={handleChange('Weight')}
+                                    sx={{
+                                        // For Chrome, Safari, Edge to remove arrows
+                                        '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                                            WebkitAppearance: 'none',
+                                            margin: 0,
+                                        },
+                                        // For Firefox to remove arrows
+                                        '& input[type=number]': {
+                                            MozAppearance: 'textfield',
+                                        },
+                                    }}
+                                />
                             </Grid>
 
                             {/* Treatment */}
@@ -466,8 +468,8 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                                 sx={{
                                                     cursor: 'pointer',
                                                     borderRadius: 2,
-                                                    border: selectedClinic?._id === clinic._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
-                                                    backgroundColor: selectedClinic?._id === clinic._id ? '#f3e5f5' : '#fff',
+                                                    border: selectedClinic?._id === clinic?._id ? '2px solid #7e57c2' : '1px solid #e0e0e0',
+                                                    backgroundColor: selectedClinic?._id === clinic?._id ? '#f3e5f5' : '#fff',
                                                     transition: 'all 0.3s ease',
                                                     minHeight: '115px',
                                                     '&:hover': {
@@ -480,8 +482,8 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                                     {/* Clinic Image */}
                                                     <MDBox sx={{ width: 70, height: 70, borderRadius: 2, overflow: 'hidden', flexShrink: 0 }}>
                                                         <img
-                                                            src={clinic.imgarry[0]?.profile_url}
-                                                            alt={clinic.clinicname}
+                                                            src={clinic?.imgarry[0]?.profile_url}
+                                                            alt={clinic?.clinicname}
                                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                         />
                                                     </MDBox>
@@ -489,15 +491,15 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                                     {/* Clinic Info */}
                                                     <MDBox sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                                         <MDTypography variant="body2" fontWeight="bold">
-                                                            {clinic.clinicname}
+                                                            {clinic?.clinicname}
                                                         </MDTypography>
 
                                                         <MDTypography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                            <PhoneIcon fontSize="inherit" color="secondary" /> {clinic.phone || 'N/A'}
+                                                            <PhoneIcon fontSize="inherit" color="secondary" /> {clinic?.phone || 'N/A'}
                                                         </MDTypography>
 
                                                         <MDTypography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                            <AccessTimeIcon fontSize="inherit" color="success" /> {clinic.openTime} - {clinic.closeTime}
+                                                            <AccessTimeIcon fontSize="inherit" color="success" /> {clinic?.openTime} - {clinic?.closeTime}
                                                         </MDTypography>
 
                                                         <MDTypography
@@ -514,13 +516,12 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                                                 WebkitBoxOrient: 'vertical',
                                                             }}
                                                         >
-                                                            <LocationOnIcon fontSize="inherit" color="info" /> {clinic.clinicAddress}
+                                                            <LocationOnIcon fontSize="inherit" color="info" /> {clinic?.clinicAddress}
                                                         </MDTypography>
                                                     </MDBox>
                                                 </MDBox>
                                             </Card>
                                         </Grid>
-
                                     ))}
                                 </Grid>
                             </Grid>
@@ -702,6 +703,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
 
                             {/* Buttons */}
                             <Grid item xs={12} sm={12}>
+                                <Divider />
                                 <MDBox display="flex" justifyContent="flex-end" gap={1}>
                                     <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
                                     {formType === "add" ? (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Grid, CircularProgress, Alert, Divider, IconButton, MenuItem, Menu, Checkbox, List, ListItem, ListItemIcon, ListItemText, DialogTitle, DialogContent, Dialog, FormControlLabel } from '@mui/material';
 import MDBox from 'components/MDBox';
@@ -19,6 +19,7 @@ import Switch from '@mui/material/Switch';
 import { toast } from 'react-toastify';
 import AddAppointmentFormModal from 'Pages/appointment/AddAppointmentFormModal';
 import theme from 'assets/theme';
+import RevisitReminder from 'Pages/appointment/RevisitReminder';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -54,6 +55,7 @@ const familyMembers = [
 function AppointmentWithDetails() {
   const params = useParams();
   const param1 = params.id;
+  const navigate = useNavigate()
   const [appointmentData, setAppointmentData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -65,6 +67,7 @@ function AppointmentWithDetails() {
   const [formType, setFormType] = useState("edit")
   const open2 = Boolean(anchorEl);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
+  const [isRevisitModalOpen, setIsRevisitModalOpen] = useState(false)
 
   const [checked, setChecked] = useState(false);
 
@@ -112,6 +115,9 @@ function AppointmentWithDetails() {
         // getDetails()
         // setRequestStatus(response.data.requestStatus)
         toast.success("Appointment is updated successfully")
+      }
+      if (request === "Rejected") {
+        navigate(-1)
       }
     }
     catch (error) {
@@ -360,14 +366,18 @@ function AppointmentWithDetails() {
                   }}>
 
                   <MDBox display="flex" justifyContent="space-between" alignItems="center"  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} lg={8}>
+                        <MDBox display="flex" justifyContent="flex-start">
+                        <MDTypography variant="h4" align="center" color="info" gutterBottom
+                          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                          <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
+                          Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
+                        </MDTypography>
+                        </MDBox>
+                      </Grid>
 
-                    <MDTypography variant="h4" align="center" color="info" gutterBottom
-                      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} >
-                      <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
-                      Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
-                    </MDTypography>
-
-                    {/* {appointmentData?.requestStatus && (
+                      {/* {appointmentData?.requestStatus && (
                       <>
                         {buttons?.[0] && <MDBox ml={'auto'}>{buttons[0]}</MDBox>}
                         {buttons?.[1] && <MDBox ml={1}>{buttons[1]}</MDBox>}
@@ -375,26 +385,33 @@ function AppointmentWithDetails() {
                       </>
                     )} */}
 
-                    {requestStatus === "Pending" && (
-                      <>
-                        <MDButton key="reject" variant="outlined" color="error" size="small"
-                          sx={{ ml: "auto", mr: "10px" }}
-                          onClick={() => {
-                            console.log('check Reject btn');
-                            statusController("Rejected");
-                          }}>
-                          Reject
-                        </MDButton>
-                        <MDButton key="accept" variant="contained" color="success" size="small"
-                          onClick={() => {
-                            console.log('check Accept btn');
-                            statusController("Accepted");
-                          }}>
-                          Accept
-                        </MDButton>
-                      </>
-                    )}
-                    {/* {requestStatus === "Completed" && (
+                      {requestStatus === "Pending" && (
+                        <>
+                          <Grid item xs={12} lg={4}>
+                            <MDBox display="flex" justifyContent="flex-end">
+                              <MDButton key="reject" variant="outlined" color="error" size="small"
+                                sx={{ ml: "auto", mr: "10px" }}
+                                onClick={() => {
+                                  console.log('check Reject btn');
+                                  statusController("Rejected");
+                                }}>
+                                Reject
+                              </MDButton>
+
+
+                              <MDButton key="accept" variant="contained" color="success" size="small"
+                                onClick={() => {
+                                  console.log('check Accept btn');
+                                  statusController("Accepted");
+                                }}>
+                                Accept
+                              </MDButton>
+
+                            </MDBox>
+                          </Grid>
+                        </>
+                      )}
+                      {/* {requestStatus === "Completed" && (
                       <>
                         <MDButton key="revisit_reminder" variant="contained" color="primary" size="small"
                           sx={{ ml: "auto", mr: "10px" }}
@@ -408,33 +425,39 @@ function AppointmentWithDetails() {
 
                     )} */}
 
-                    {(requestStatus === "Accepted" || requestStatus === "Completed") && (
-                      <>
-                        <MDButton
-                          key="reschedule"
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          sx={{ ml: "auto", mr: "10px" }}
-                          onClick={() => {
-                            if (requestStatus === "Accepted") {
-                              console.log('Reschedule clicked');
-                              setFormType("edit");
-                              setIsAppointmentModalOpen(true);
-                            } else {
-                              console.log('Revisit clicked');
-                              // You can handle revisit-specific logic here if needed
-                            }
-                          }}
-                        >
-                          {requestStatus === "Accepted" ? "Reschedule" : "Revisit Reminder"}
-                        </MDButton>
+                      {(requestStatus === "Accepted" || requestStatus === "Completed") && (
+                        <>
+                          <Grid item xs={12} lg={4}>
+                            <MDBox display="flex" justifyContent="flex-end">
 
-                        <Switch color="success" checked={checked} onChange={handleChange} />
-                      </>
-                    )}
+                              <MDButton
+                                key="reschedule"
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                sx={{ ml: "auto", mr: "10px" }}
+                                onClick={() => {
+                                  if (requestStatus === "Accepted") {
+                                    console.log('Reschedule clicked');
+                                    setFormType("edit");
+                                    setIsAppointmentModalOpen(true);
+                                  } else {
+                                    console.log('Revisit clicked');
+                                    setIsRevisitModalOpen(true)
+                                  }
+                                }}
+                              >
+                                {requestStatus === "Accepted" ? "Reschedule" : "Revisit Reminder"}
+                              </MDButton>
 
+                              <Switch color="success" checked={checked} onChange={handleChange} />
 
+                            </MDBox>
+                          </Grid>
+
+                        </>
+                      )}
+                    </Grid>
                   </MDBox>
 
                   <Divider sx={{ mb: 2 }} />
@@ -597,6 +620,7 @@ function AppointmentWithDetails() {
                       <MDTypography variant="button" fontWeight="bold" color='info' mr={1}> Address</MDTypography>
                       <MDTypography variant="button" fontWeight="bold" color="text"> {appointmentData?.clinicID?.clinicAddress} </MDTypography>
                     </Grid>
+
 
                     {/* Payment Details */}
                     <Grid item xs={12} sm={6}>
@@ -825,6 +849,13 @@ function AppointmentWithDetails() {
           formType={formType}
           getAllAppointments={getDetails}
           selectedAppointment={appointmentData} />
+      )}
+
+      {isRevisitModalOpen && (
+        <RevisitReminder
+        isRevisitModalOpen={isRevisitModalOpen}
+        setIsRevisitModalOpen={setIsRevisitModalOpen}
+        />
       )}
 
     </DashboardLayout >
