@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Grid, CardContent, Divider, CardActions, Fab } from "@mui/material";
+import { Card, Grid, CardContent, Divider, CardActions, Fab, Chip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -13,6 +13,7 @@ import MDAvatar from "components/MDAvatar";
 import MDButton from "components/MDButton";
 import img from "skel2.png";
 import AddIcon from '@mui/icons-material/Add';
+import ContactEmergencyIcon from '@mui/icons-material/ContactEmergency';
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -104,13 +105,20 @@ function Tables() {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: "flex-start", // Aligns both top
             mb: 1,
             flexWrap: "wrap",
           }}
         >
           {/* Left: Patient Info */}
-          <MDBox sx={{ display: "flex", alignItems: "center" }}>
+          <MDBox
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flex: 1,
+              minWidth: "200px",
+            }}
+          >
             <MDAvatar
               src={appointment?.userID?.profile_url || img}
               alt="User Avatar"
@@ -121,13 +129,41 @@ function Tables() {
                 {appointment?.userID?.name || appointment?.patientName}
               </MDTypography>
               <MDTypography fontSize="small" color="text">
-                {appointment?.userID?.gender || appointment?.gender} | {appointment?.userID?.age || appointment?.age} yrs
+                {appointment?.userID?.gender || appointment?.gender} |{" "}
+                {appointment?.userID?.age || appointment?.age} yrs
               </MDTypography>
             </MDBox>
           </MDBox>
+
+          {/* Right: Emergency */}
+          {appointment?.Emergency === "Yes" && (
+            // <MDBox
+            // color="error"
+            //   sx={{
+            //     display: "flex",
+            //     alignItems: "center",
+            //     fontWeight: "bold",
+            //     mt: { xs: 2, md: 1 }, // spacing on mobile
+            //   }}
+            // >
+            //   <Icon sx={{ mr: 0.5 }}>contact_emergency</Icon>
+            //   <MDTypography color="error" fontSize="small">Emergency</MDTypography>
+            // </MDBox>
+            <Chip icon={<ContactEmergencyIcon />} color='error' label="Emergency" size="small"
+              sx={{
+                borderRadius: 2,
+                mr: { xs: 0, lg: -2 },
+                mt: { xs: 0, lg: 0.8 },
+              }}
+            />
+          )}
+
         </MDBox>
 
-        {/* Right: Date & Time */}
+
+
+
+        {/* Date & Time */}
         <MDBox sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
           <MDTypography
             fontSize="small"
@@ -135,20 +171,20 @@ function Tables() {
             alignItems="center"
             justifyContent="flex-end"
           >
-            <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>calendar_today</Icon>
+            <Icon color="info" sx={{ fontSize: 18, mr: 1 }}>calendar_today</Icon>
             {new Date(appointment?.Bookdate).toLocaleDateString("en-GB")}
           </MDTypography>
+
           <MDTypography
             fontSize="small"
             display="flex"
             alignItems="center"
             justifyContent="flex-end"
           >
-            <Icon sx={{ fontSize: 18, mr: 1, color: "info" }}>access_time</Icon>
+            <Icon color="info" sx={{ fontSize: 18, mr: 1, }}>access_time</Icon>
             {appointment?.BookTime}
           </MDTypography>
         </MDBox>
-
 
         <Divider sx={{ mb: 2, mt: 0 }} />
 

@@ -1,12 +1,18 @@
 * {
-    background:"#f7f7f7",
+    background: "#f7f7f7",
 }
 
-h4,h5,h6 {
-    font-family: 'Poppins', sans-serif!important;
+h4,
+h5,
+h6 {
+    font-family: 'Poppins', sans-serif !important;
 
 }
 
+.highlight {
+    background: #aacdfc !important;
+    border-radius: 20%;
+}
 
 /* .MuiAvatar-circular{position: relative!important;}
 .MuiAvatar-circular:before{content:'';background-color: red;}

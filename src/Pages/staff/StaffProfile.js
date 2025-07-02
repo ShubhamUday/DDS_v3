@@ -143,6 +143,7 @@ function StaffrProfile() {
           <Card
             sx={{
               p: 3,
+              position: "relative", // ✅ make this the positioning context
               display: "flex",
               flexDirection: { xs: "column", sm: "row" },
               alignItems: "center", // Keeps avatar vertically centered
@@ -158,48 +159,65 @@ function StaffrProfile() {
           >
             <MDBox sx={{ flex: 1, width: "100%" }}>
               <MDBox sx={{ mb: 1 }}>
-                <Grid container spacing={2} >
-                  <Grid item >
-                    <MDAvatar
-                      src="https://png.pngtree.com/png-clipart/20231002/original/pngtree-young-afro-professional-doctor-png-image_13227671.png"
-                      alt="Staff Profile"
-                      size="xl"
-                      shadow="lg"
+                <Grid container spacing={2} alignItems="center">
+                  {/* Avatar */}
+                  <Grid item xs={12} md={1}>
+                    <MDBox display="flex" justifyContent={{ xs: 'center', md: 'flex-start' }}>
+                      <MDAvatar
+                        src="https://png.pngtree.com/png-clipart/20231002/original/pngtree-young-afro-professional-doctor-png-image_13227671.png"
+                        alt="Staff Profile"
+                        size="xl"
+                        shadow="lg"
+                        sx={{
+                          boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                          transition: "transform 0.3s",
+                          '&:hover': { transform: "scale(1.1)" },
+                        }}
+                      />
+                    </MDBox>
+                  </Grid>
+
+                  {/* Staff Name and Designation */}
+                  <Grid item xs={12} md={5}>
+                    <MDBox textAlign={{ xs: "center", md: "left" }}>
+                      <MDTypography variant="h5" fontWeight="medium"> {singleStaff?.name} </MDTypography>
+                      <MDTypography variant="button" color="text" fontWeight="regular"> {singleStaff?.gender} | {singleStaff?.assignAs} </MDTypography>
+                    </MDBox>
+                  </Grid>
+
+                  {/* Clinic Info */}
+                  <Grid item xs={12} md={6}>
+                    <MDBox
                       sx={{
-                        // border: "3px solid #25408f",
-                        boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-                        transition: "transform 0.3s",
-                        '&:hover': { transform: "scale(1.1)" },
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: { xs: 'center', md: 'flex-end' },
+                        textAlign: { xs: 'center', md: 'right' },
+                        gap: 0.5, mr: 2
                       }}
-                    />
-                  </Grid>
-
-                  {/* Name and Designation */}
-                  <Grid item sx={{ mr: "auto" }}>
-                    <MDBox>
-                      <MDTypography variant="h5" fontWeight="medium" >
-                        {singleStaff?.name}
-                        {/* <MDButton variant="text" color="secondary" title="Edit doctor details" startIcon={<Edit />}
-                        onClick={() => { setIsEditModalOpen(true); }} /> */}
+                    >
+                      <MDTypography fontWeight="bold" color="success" fontSize="lg">
+                        {singleStaff?.clinicID?.clinicname}
                       </MDTypography>
-                      <MDTypography variant="button" color="text" fontWeight="regular">
-                        {singleStaff?.gender} | {singleStaff?.assignAs}
+                      <MDTypography fontSize="small">
+                        Near {singleStaff?.clinicID?.clinicAddress}
+                      </MDTypography>
+                      <MDTypography fontSize="small">
+                        <strong>Timing:</strong> {singleStaff?.clinicID?.openTime} - {singleStaff?.clinicID?.closeTime}
                       </MDTypography>
                     </MDBox>
                   </Grid>
 
-                  {/* Clinic Details */}
-                  <Grid item xs={12} md={6} xl={4} sx={{ ml: "auto" }}>
-                    <MDBox sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-                      <MDTypography fontWeight="bold" color="success" fontSize="lg"> {singleStaff?.clinicID?.clinicname} </MDTypography>
-                      <MDTypography fontSize="small">Near {singleStaff?.clinicID?.clinicAddress} </MDTypography>
-                      <MDTypography fontSize="small"> <strong>Timing:</strong> {singleStaff?.clinicID?.openTime} - {singleStaff?.clinicID?.closeTime} </MDTypography>
-                    </MDBox>
-                  </Grid>
 
-                  {/* More options */}
+                  {/* MoreVert options */}
                   <Grid item>
-                    <MDBox>
+                    <MDBox
+                      sx={{
+                        position: "absolute",
+                        top: 10,
+                        right: 10,
+                        zIndex: 1300, // ensure it's above other elements if needed
+                      }}>
                       <IconButton onClick={handleMenuOpen} size="small"> <MoreVertIcon /> </IconButton>
                       <Menu
                         anchorEl={anchorEl}

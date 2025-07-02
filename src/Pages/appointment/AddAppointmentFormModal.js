@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
-import { Card, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Modal, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Card, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Modal, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import MDTypography from 'components/MDTypography';
@@ -41,6 +41,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
     const [bookedSlots, setBookedSlots] = useState([]);
     const [availableTime, setAvailableTime] = useState(null);
     const [bookTimenew, setBookTimenew] = useState(null);
+    const [checked, setChecked] = useState(false)
 
     const [formData, setFormData] = useState({
         doctorID: "",
@@ -59,6 +60,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
         BookTime: "",
         PayType: "",
         clinicID: "",
+        Emergency: "",
     });
 
     // Helper
@@ -91,6 +93,13 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
     // };
 
     const handleClose = () => { setIsAppointmentModalOpen(false); resetForm() }
+
+    const handleSwitch = (e) => {
+        const value = e.target.checked ? "Yes" : "No"
+        console.log("switch", value)
+        setChecked(e.target.checked)
+        setFormData((prev) => ({ ...prev, Emergency: value }))
+    }
 
     const handleChange = (field) => (e) => {
         const value = e.target.value;
@@ -256,6 +265,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
             BookTime: "",
             PayType: "",
             clinicID: "",
+            Emergency: "",
         });
     };
 
@@ -278,13 +288,16 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
             BookTime: data?.BookTime || "",
             PayType: data?.PayType || "",
             clinicID: data?.clinicID || "",
+            Emergency: data?.Emergency || "",
         })
         setSelectedClinic(data?.clinicID)
         generateTimeIntervals(data?.clinicID?.openTime, data?.clinicID?.closeTime)
+        setChecked(data?.Emergency === "Yes" ? true : false)
     }
 
     console.log("intervals", intervalArray)
     console.log("selected appotn", selectedAppointment)
+    console.log("form data", formData)
 
     useEffect(() => {
         fetchClinicList();
@@ -325,10 +338,10 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                         }}
                     >
                         {/* <MDTypography variant="h6" mb={2} fontWeight="bold"> Add Appoinment </MDTypography>
-
                         <Divider /> */}
 
                         <Grid container spacing={2}>
+
                             {/* Name */}
                             <Grid item xs={12} sm={6}>
                                 <MDBox display="flex" >
@@ -340,6 +353,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                         helperText={submitAttempted && !formData.patientName.trim() && "Required"} />
                                 </MDBox>
                             </Grid>
+
                             {/* Phone Number */}
                             <Grid item xs={7} sm={6}>
                                 <TextField fullWidth size="small" id="outlined-number" label="Phone Number" type="number"
@@ -377,7 +391,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             </Grid>
 
                             {/* Age */}
-                            <Grid item xs={6} sm={4}>
+                            <Grid item xs={6} sm={4} display="flex" justifyContent="center">
                                 <TextField size="small" id="outlined-number" label="Age" type="number"
                                     value={formData.age}
                                     onChange={handleChange('age')}
@@ -398,7 +412,7 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             </Grid>
 
                             {/* Weight */}
-                            <Grid item xs={6} sm={4}>
+                            <Grid item xs={6} sm={4} display="flex" justifyContent="flex-end">
                                 {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography> */}
                                 <TextField label="Weight" size="small" type="number"
                                     value={formData.Weight}
@@ -630,8 +644,10 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             <Divider />
 
                             {/* Diabities */}
-                            <Grid item xs={12} sm={6}>
-                                <MDBox display="flex">
+                            <Grid item xs={12} sm={4}>
+                                <MDBox display="flex" justifyContent="space-between"
+                                    sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                                >
                                     <MDTypography variant="subtitle2" color="Primary" mt={0.5} mr={1}> Diabities </MDTypography>
                                     <ToggleButtonGroup
                                         size="small"
@@ -649,8 +665,10 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                             </Grid>
 
                             {/* Blood Pressure */}
-                            <Grid item xs={12} sm={6}>
-                                <MDBox display="flex">
+                            <Grid item xs={12} sm={4}>
+                                <MDBox display="flex" justifyContent="space-between"
+                                    sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                                >
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Blood Pressure </MDTypography>
                                     <ToggleButtonGroup
                                         size="small"
@@ -665,9 +683,21 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
                                 </MDBox>
                             </Grid>
 
+                            {/* Emergency */}
+                            <Grid item xs={12} sm={4}>
+                                <MDBox display="flex" justifyContent="space-between"
+                                    sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                                >
+                                    <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Emergency </MDTypography>
+                                    <Switch color="error" checked={checked} onChange={handleSwitch}></Switch>
+                                </MDBox>
+                            </Grid>
+
                             {/* Plan */}
                             <Grid item xs={12} sm={6}>
-                                <MDBox display="flex">
+                                <MDBox display="flex" justifyContent="space-between"
+                                    sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                                >
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Plan </MDTypography>
                                     <ToggleButtonGroup
                                         size="small"
@@ -684,7 +714,9 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
 
                             {/* Payment */}
                             <Grid item xs={12} sm={6}>
-                                <MDBox display="flex">
+                                <MDBox display="flex" justifyContent="space-between"
+                                    sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                                >
                                     <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Payment </MDTypography>
                                     <ToggleButtonGroup
                                         size="small"
@@ -703,7 +735,6 @@ const AddAppointmentFormModal = ({ isAppointmentModalOpen, setIsAppointmentModal
 
                             {/* Buttons */}
                             <Grid item xs={12} sm={12}>
-                                <Divider />
                                 <MDBox display="flex" justifyContent="flex-end" gap={1}>
                                     <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
                                     {formType === "add" ? (

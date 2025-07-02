@@ -18,6 +18,7 @@ function CalendarPage() {
   const [appointmentdata, setAppointmentdata] = useState([]);
   // const { appointmentdata } = appointmentData();
   const [filteredData, setFilteredData] = useState([]);
+  const appointmentDates = appointmentdata.map(item => item.Bookdate);
 
   console.log("selected date", value);
 
@@ -39,11 +40,8 @@ function CalendarPage() {
   const getAllAppointments = async () => {
     const drID = localStorage.getItem("doctorID");
     try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+      const result = await axios.get(`${process.env.REACT_APP_HOS}/get-single-doctor-with-appointment/${drID}`,
+        { headers: { "Content-Type": "application/json" } }
       );
 
       const appointments = result.data.appointmentID;
@@ -120,6 +118,13 @@ function CalendarPage() {
               onChange={setValue}
               value={value}
               selectRange={false}
+              tileClassName={({ date, view }) => {
+                const dateStr = date.toISOString().split('T')[0];
+                if (view === 'month' && appointmentDates.includes(dateStr)) {
+                  return 'highlight';
+                }
+                return null;
+              }}
             />
           </Card>
         </Grid>

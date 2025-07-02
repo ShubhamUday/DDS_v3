@@ -88,7 +88,9 @@ function PaymentFormModal({ appointmentData, isPaymentUpdateModalOpen, setIsPaym
                     <Stack spacing={2}>
                         {/* Status */}
                         <FormControl fullWidth size="small">
-                            <MDBox display="flex">
+                            <MDBox display="flex" justifyContent="space-between"
+                                sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, mb: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                            >
                                 <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Status </MDTypography>
 
                                 <ToggleButtonGroup
@@ -106,7 +108,9 @@ function PaymentFormModal({ appointmentData, isPaymentUpdateModalOpen, setIsPaym
 
                         {/* Transaction Type */}
                         <FormControl fullWidth size="small">
-                            <MDBox display="flex">
+                            <MDBox display="flex" justifyContent="space-between"
+                                sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, mb: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                            >
                                 <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Transaction Type </MDTypography>
                                 <ToggleButtonGroup
                                     size="small"

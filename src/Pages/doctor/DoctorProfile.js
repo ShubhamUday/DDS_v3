@@ -17,13 +17,14 @@ import Rating from "@mui/material/Rating";
 import img from "skel2.png";
 import { Edit, LocalActivityOutlined, LogoutOutlined, MoreVertOutlined, PrivacyTipOutlined, ShareOutlined, StarOutlineOutlined, WorkOutlineOutlined } from '@mui/icons-material';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DoctorEditFormModal from './doctor/DoctorEditFormModal';
-import DoctorManageModal from './doctor/DoctorManageModal';
-import ShareModal from './extra/ShareModal';
-import PrivacyPolicy from './extra/PrivacyPolicy';
+import DoctorEditFormModal from './DoctorEditFormModal';
+import DoctorManageModal from './DoctorManageModal';
+import ShareModal from '../extra/ShareModal';
+import PrivacyPolicy from '../extra/PrivacyPolicy';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import AddTicketModal from './extra/AddTicketModal';
+import AddTicketModal from '../extra/AddTicketModal';
+import { alignProperty } from '@mui/material/styles/cssUtils';
 
 
 const arrowStyle = {
@@ -154,6 +155,7 @@ function DoctorProfile() {
         <Card
           sx={{
             p: 3,
+            position: "relative", // ✅ make this the positioning context
             display: "flex",
             flexDirection: { xs: "column", sm: "row" },
             // alignItems: "center", // Keeps avatar vertically centered
@@ -169,26 +171,28 @@ function DoctorProfile() {
         >
           <MDBox sx={{ flex: 1, width: "100%" }}>
             <MDBox sx={{ mb: 1 }}>
-              <Grid container spacing={2}>
+              <Grid container spacing={2} alignItems='center'>
 
-                <Grid item>
-                  <MDAvatar
-                    src={doctorData.profile_url}
-                    alt="Doctor Profile"
-                    size="xl"
-                    shadow="lg"
-                    sx={{
-                      // border: "3px solid #25408f",
-                      boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-                      transition: "transform 0.3s",
-                      '&:hover': { transform: "scale(1.1)" },
-                    }}
-                  />
+                <Grid item xs={12} sm={1} lg={1}>
+                  <MDBox display="flex" justifyContent={{ xs: 'center', md: 'flex-start' }}>
+                    <MDAvatar
+                      src={doctorData.profile_url}
+                      alt="Doctor Profile"
+                      size="xl"
+                      shadow="lg"
+                      sx={{
+                        // border: "3px solid #25408f",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                        transition: "transform 0.3s",
+                        '&:hover': { transform: "scale(1.1)" },
+                      }}
+                    />
+                  </MDBox>
                 </Grid>
 
-                {/* Name and Designation */}
-                <Grid item sx={{ mr: "auto" }}>
-                  <MDBox display="flex" justifyContent="space-between" alignItems="center" >
+                {/* Doctor's Name and Designation */}
+                <Grid item xs={12} sm={5} lg={5}>
+                  <MDBox display='flex' sx={{ alignItems: { xs: 'center' } }} >
                     <MDTypography variant="h5" fontWeight="bold" sx={{ fontSize: "1.6rem", color: "#1a237e" }}>
                       {doctorData?.drname}
                       {/* <MDButton variant="text" color="secondary" title="Edit doctor details" startIcon={<Edit />}
@@ -201,13 +205,18 @@ function DoctorProfile() {
                       </Tooltip>
                     </MDTypography>
                   </MDBox>
-                  <MDTypography variant="body2" sx={{ color: "#1a237e" }}>
-                    {doctorData?.designation}
-                  </MDTypography>
+                  <MDBox textAlign={{ xs: "center", md: "left" }}>
+                    <MDTypography variant="body2" sx={{ color: "#1a237e" }}> {doctorData?.designation} </MDTypography>
+                  </MDBox>
                 </Grid>
 
-                <Grid item >
-                  <MDBox textAlign="right">
+                {/* Year's / Patients */}
+                <Grid item xs={12} sm={6} lg={6}>
+                  <MDBox sx={{
+                    display: 'flex', flexDirection: 'column', mr: 2,
+                    alignItems: { xs: 'center', sm: 'flex-end', lg: 'flex-end' },
+                    textAlign: { xs: 'left', lg: 'right' }, gap: 0.5,
+                  }}>
                     <MDTypography variant="subtitle1" sx={{ color: "#25408f", fontWeight: "medium" }}>
                       {doctorData?.yearsofexperience} Years of experience
                     </MDTypography>
@@ -217,8 +226,15 @@ function DoctorProfile() {
                   </MDBox>
                 </Grid>
 
+                {/* Morevert Option */}
                 <Grid item>
-                  <MDBox>
+                  <MDBox
+                    sx={{
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      zIndex: 1300, // ensure it's above other elements if needed
+                    }}>
                     <IconButton onClick={handleMenuOpen} size="small"> <MoreVertIcon /> </IconButton>
                     <Menu
                       anchorEl={anchorEl}
@@ -234,6 +250,7 @@ function DoctorProfile() {
                     </Menu>
                   </MDBox>
                 </Grid>
+
               </Grid>
             </MDBox>
 
@@ -251,6 +268,8 @@ function DoctorProfile() {
               {doctorData?.biography || "No biography available."}
             </MDTypography>
 
+            {/* Average Rating */}
+            <Divider />
             <MDBox display="flex" alignItems="center" gap={1}>
               <MDTypography> Average Rating </MDTypography>
               <Rating

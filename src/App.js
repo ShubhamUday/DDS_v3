@@ -38,7 +38,7 @@ import ClinicWithDetails from "DetailPages/ClinicWithDetails";
 import AddStaff from "Pages/staff/AddStaff";
 import PrescriptionWithDetails from "DetailPages/PrescriptionWithDetails";
 import AddClinic from "Pages/clinic/AddClinic"
-import DoctorProfile from "Pages/DoctorProfile";
+import DoctorProfile from "Pages/doctor/DoctorProfile";
 import StaffrProfile from "Pages/staff/StaffProfile";
 
 

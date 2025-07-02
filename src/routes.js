@@ -8,7 +8,7 @@ import Earning from "Pages/Earnings";
 import Clinics from "Pages/clinic/Clinics";
 import Calendar from "Pages/Calendar";
 import Staffs from "Pages/staff/Staffs";
-import DoctorProfile from "Pages/DoctorProfile";
+import DoctorProfile from "Pages/doctor/DoctorProfile";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Test from "DetailPages/Test";
@@ -26,7 +26,7 @@ const routes = [
     type: "collapse",
     name: "Appointments",
     key: "appointments",
-    icon: <Icon fontSize="small">date_range</Icon>,
+    icon: <Icon fontSize="small">edit_note</Icon>,
     route: "/appointments",
     component: <Appointments />,
   },

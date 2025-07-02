@@ -150,7 +150,7 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
                         </Grid>
 
                         {/* Age */}
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={6} sm={4}>
                             <MDBox display="flex">
                                 {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Age </MDTypography> */}
                                 <TextField size="small" type="number" label="Age"
@@ -172,8 +172,7 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
                         </Grid>
 
                         {/* Weight  */}
-                        <Grid item xs={12} sm={4}>
-                            <MDBox display="flex">
+                        <Grid item xs={6} sm={4} display="flex" justifyContent="flex-end">
                                 {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} ml={1} mr={1}> Weight </MDTypography> */}
                                 <TextField size="small" type="number" label="Weight"
                                     value={formData.Weight}
@@ -189,19 +188,20 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
                                             MozAppearance: 'textfield',
                                         },
                                     }} />
-                            </MDBox>
                         </Grid>
 
                         {/* Treatment Options */}
                         <Grid item xs={12} sm={12}>
-                            <MDBox display="flex" mb={1}>
-                                <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography>
-                                <TextField size="small" fullWidth
+                            <MDBox display="flex">
+                                {/* <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Treatment </MDTypography> */}
+                                <TextField size="small" fullWidth label="Treatment"
                                     value={formData.Treatmentfor}
                                     onChange={handleChange('Treatmentfor')}
                                 />
                             </MDBox>
                         </Grid>
+
+                        
                         <Grid item xs={12} sm={12}>
                             <ToggleButtonGroup
                                 size="small"
@@ -222,14 +222,18 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
                         {/* Problem */}
                         <Grid item xs={12} sm={12} lg={12}>
                             <MDBox display="flex">
-                                <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography>
+                                {/* <MDTypography variant="subtitle2" mt={0.5} mr={1}>Problem</MDTypography> */}
                                 <TextField size="small" fullWidth value={formData.ProblemDetails}
-                                    onChange={handleChange('problem')} />
+                                    label="Problem"
+                                    onChange={handleChange('ProblemDetails')} />
                             </MDBox>
                         </Grid>
+
                         {/* Diabities */}
                         <Grid item xs={12} sm={12} lg={6}>
-                            <MDBox display="flex">
+                            <MDBox display="flex" justifyContent="space-between"
+                                sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                            >
                                 <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Diabities </MDTypography>
                                 <ToggleButtonGroup
                                     size="small"
@@ -247,7 +251,9 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
 
                         {/* Blood Pressure */}
                         <Grid item xs={12} sm={12} lg={6}>
-                            <MDBox display="flex">
+                            <MDBox display="flex" justifyContent="space-between"
+                                sx={{ alignItems: 'center', backgroundColor: '#f8f9fa', padding: 1, borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', }}
+                            >
                                 <MDTypography variant="subtitle2" color="textPrimary" mt={0.5} mr={1}> Blood Pressure </MDTypography>
                                 <ToggleButtonGroup
                                     size="small"
@@ -264,7 +270,6 @@ function PatientFormModal({ selectedAppointment, isPatientModalOpen, setIsPatien
 
                         {/* Buttons */}
                         <Grid item xs={12} sm={12} lg={12}>
-                            <Divider />
                             <MDBox display="flex" justifyContent="flex-end" gap={1}>
                                 <MDButton variant="outlined" color="error" size="small" onClick={handleClose}> Cancel </MDButton>
                                 <MDButton variant="contained" color="success" size="small" onClick={handleSubmit}> Save </MDButton>

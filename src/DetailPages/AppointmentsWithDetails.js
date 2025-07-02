@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, CircularProgress, Alert, Divider, IconButton, MenuItem, Menu, Checkbox, List, ListItem, ListItemIcon, ListItemText, DialogTitle, DialogContent, Dialog, FormControlLabel } from '@mui/material';
+import { Grid, CircularProgress, Alert, Divider, IconButton, MenuItem, Menu, Checkbox, List, ListItem, ListItemIcon, ListItemText, DialogTitle, DialogContent, Dialog, FormControlLabel, Card, Icon, Chip } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDButton from "components/MDButton";
@@ -20,6 +20,9 @@ import { toast } from 'react-toastify';
 import AddAppointmentFormModal from 'Pages/appointment/AddAppointmentFormModal';
 import theme from 'assets/theme';
 import RevisitReminder from 'Pages/appointment/RevisitReminder';
+import MDAvatar from 'components/MDAvatar';
+import img from 'skel2.png'
+import ContactEmergencyIcon from '@mui/icons-material/ContactEmergency';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -366,16 +369,25 @@ function AppointmentWithDetails() {
                   }}>
 
                   <MDBox display="flex" justifyContent="space-between" alignItems="center"  >
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} lg={8}>
+                    <Grid container spacing={2} justifyContent='space-between'>
+                      <Grid item xs={12} sm={9} lg={7}>
                         <MDBox display="flex" justifyContent="flex-start">
-                        <MDTypography variant="h4" align="center" color="info" gutterBottom
-                          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                          <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
-                          Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
-                        </MDTypography>
+                          <MDTypography variant="h4" align="center" color="info" gutterBottom
+                            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                            <MDBox component="img" src={calendarIcon} alt="calendar icon" sx={{ width: 40, height: 40 }} />
+                            Appointment : {new Date(appointmentData?.Bookdate).toLocaleDateString("en-GB")} at {moment(appointmentData?.BookTime, ["h:mm A"]).format("HH:mm")}
+                          </MDTypography>
                         </MDBox>
                       </Grid>
+
+                      {appointmentData?.Emergency === "Yes" && (
+                        <Grid item xs={4} sm={3} lg={2}>
+                          <Chip icon={<ContactEmergencyIcon />} color='error' label="Emergency" 
+                            sx={{
+                              borderRadius: 2,
+                            }} />
+                        </Grid>
+                      )}
 
                       {/* {appointmentData?.requestStatus && (
                       <>
@@ -387,7 +399,7 @@ function AppointmentWithDetails() {
 
                       {requestStatus === "Pending" && (
                         <>
-                          <Grid item xs={12} lg={4}>
+                          <Grid item xs={8} sm={10} lg={3}>
                             <MDBox display="flex" justifyContent="flex-end">
                               <MDButton key="reject" variant="outlined" color="error" size="small"
                                 sx={{ ml: "auto", mr: "10px" }}
@@ -411,25 +423,11 @@ function AppointmentWithDetails() {
                           </Grid>
                         </>
                       )}
-                      {/* {requestStatus === "Completed" && (
-                      <>
-                        <MDButton key="revisit_reminder" variant="contained" color="primary" size="small"
-                          sx={{ ml: "auto", mr: "10px" }}
-                        > Revisit Reminder
-                        </MDButton>
-                        <Switch key='switch' color="warning"
-                          checked={checked}
-                          onChange={handleChange}
-                        />
-                      </>
-
-                    )} */}
 
                       {(requestStatus === "Accepted" || requestStatus === "Completed") && (
                         <>
-                          <Grid item xs={12} lg={4}>
+                          <Grid item xs={12} sm={10} lg={3}>
                             <MDBox display="flex" justifyContent="flex-end">
-
                               <MDButton
                                 key="reschedule"
                                 variant="contained"
@@ -591,7 +589,7 @@ function AppointmentWithDetails() {
                         <CloseOutlined />
                       </IconButton>
                       <DialogContent>
-                        <List>
+                        {/* <List>
                           {familyMembers.map((member, index) => (
                             <ListItem key={index}>
                               <ListItemIcon>{getGenderIcon(member.gender)}</ListItemIcon>
@@ -602,7 +600,28 @@ function AppointmentWithDetails() {
                               />
                             </ListItem>
                           ))}
-                        </List>
+                        </List> */}
+
+                        {familyMembers.map((member, index) => (
+                          <Card key={index}
+                            sx={{
+                              p: 2, mb: 2, borderRadius: 2,
+                              boxShadow: "0px 2px 3px rgba(0, 0, 0, 0.1)",
+                              backgroundColor: "#f9f9f9",
+                              "&:hover": { backgroundColor: "#f1f1f1" },
+                            }}>
+                            <MDBox display="flex" alignItems="center" lineHeight={1}>
+                              <MDAvatar
+                                src={img}
+                                name={member.name}
+                                size="sm" />
+                              <MDBox ml={2} lineHeight={1}>
+                                <MDTypography display="block" variant="button" fontWeight="medium">{member.name}</MDTypography>
+                                <MDTypography variant="caption">{member.relation}</MDTypography>
+                              </MDBox>
+                            </MDBox>
+                          </Card>
+                        ))}
                       </DialogContent>
                     </Dialog>
                   )}
@@ -853,8 +872,8 @@ function AppointmentWithDetails() {
 
       {isRevisitModalOpen && (
         <RevisitReminder
-        isRevisitModalOpen={isRevisitModalOpen}
-        setIsRevisitModalOpen={setIsRevisitModalOpen}
+          isRevisitModalOpen={isRevisitModalOpen}
+          setIsRevisitModalOpen={setIsRevisitModalOpen}
         />
       )}
 

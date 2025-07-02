@@ -13,6 +13,7 @@ import html2canvas from "html2canvas";
 import img from "assets/images/abc.jpg";
 import { AddCard } from "@mui/icons-material";
 import AddLinkIcon from '@mui/icons-material/AddLink';
+import half from '../assets/images/half.png'
 
 function PrescriptionWithDetails() {
   const { id: param1 } = useParams();
@@ -195,44 +196,56 @@ function PrescriptionWithDetails() {
       )}
 
       {/* Prescription Content */}
+
       <MDBox id="prescription-capture" p={3}
         sx={{ backgroundColor: "#fff", borderRadius: 2, boxShadow: 3, }}>
-        <MDBox sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
 
-          {/* Doctor & Patient Info */}
-          <MDBox sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <MDTypography fontWeight="bold" color="teal" fontSize="lg"> {alldetails?.userID?.name} </MDTypography>
-            <MDTypography fontSize="small">Booking No: {alldetails?.userID?._id?.slice(0, 7)} </MDTypography>
-            <MDTypography fontSize="small"><strong>Contact:</strong> {alldetails?.userID?.number} </MDTypography>
+        <MDBox sx={{ mb: 3 }}>
+          <Grid container spacing={2} alignItems="center">
 
-            <MDBox mt={2}>
-              <MDTypography fontSize="small"><strong>Diabities:</strong> {alldetails?.diabetes}</MDTypography>
-              <MDTypography fontSize="small"><strong>Blood Pressure:</strong> {alldetails?.Bloodpressure}</MDTypography>
-            </MDBox>
-          </MDBox>
+            {/* Doctor & Patient Info */}
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                <MDTypography fontWeight="bold" color="teal" fontSize="lg"> {alldetails?.userID?.name} </MDTypography>
+                <MDTypography fontSize="small"> Booking No: {alldetails?.userID?._id?.slice(0, 7)} </MDTypography>
+                <MDTypography fontSize="small"> <strong>Contact:</strong> {alldetails?.userID?.number} </MDTypography>
+                <MDBox mt={1}>
+                  <MDTypography fontSize="small"> <strong>Diabetes:</strong> {alldetails?.diabetes} </MDTypography>
+                  <MDTypography fontSize="small"> <strong>Blood Pressure:</strong> {alldetails?.Bloodpressure} </MDTypography>
+                </MDBox>
+              </MDBox>
+            </Grid>
 
-          {/* Avatar */}
-          <MDBox mx={4}>
-            <MDAvatar
-              src={img || ""}
-              alt={alldetails?.clinicID?.clinicname || "C"}
-              size="xxl"
-              sx={{ boxShadow: 3, border: '4px solid #fff', }}
-            />
-          </MDBox>
+            {/* Avatar */}
+            <Grid item xs={12} sm={6} md={4} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'center' }}>
+              <MDAvatar
+                src={img || ""}
+                alt={alldetails?.clinicID?.clinicname || "C"}
+                sx={{
+                  boxShadow: 3,
+                  border: '4px solid #fff',
+                  width: { sm: 80, md: 100, lg: 120 },
+                  height: { sm: 80, md: 100, lg: 120 },
+                }}
+              />
+            </Grid>
 
-          {/* Clinic & Appointment Info */}
-          <MDBox sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-            <MDBox mb={0} sx={{ maxWidth: 200, wordBreak: 'break-word' }}>
-              <MDTypography fontWeight="bold" color="success" fontSize="lg"> {alldetails?.clinicID?.clinicname} </MDTypography>
-              <MDTypography fontSize="small">Near {alldetails?.clinicID?.clinicAddress} </MDTypography>
-              <MDTypography fontSize="small"> <strong>Timing:</strong> {alldetails?.clinicID?.openTime} - {alldetails?.clinicID?.closeTime} </MDTypography>
-            </MDBox>
-            <MDBox>
-              <MDTypography fontSize="small"><strong>Date:</strong> {alldetails?.Bookdate?.slice(0, 10)}, {alldetails?.BookTime} </MDTypography>
-              <MDTypography fontSize="small"><strong>Plan:</strong> {alldetails?.Plan} </MDTypography>
-            </MDBox>
-          </MDBox>
+            {/* Clinic & Appointment Info */}
+            <Grid item xs={12} md={12} lg={4}>
+              <MDBox sx={{
+                display: 'flex', flexDirection: 'column',
+                alignItems: { xs: 'flex-start', lg: 'flex-end' },
+                textAlign: { xs: 'left', lg: 'right' }, gap: 0.5,
+              }}
+              >
+                <MDTypography fontWeight="bold" color="success" fontSize="lg"> {alldetails?.clinicID?.clinicname} </MDTypography>
+                <MDTypography fontSize="small"> Near {alldetails?.clinicID?.clinicAddress} </MDTypography>
+                <MDTypography fontSize="small"> <strong>Timing:</strong> {alldetails?.clinicID?.openTime} - {alldetails?.clinicID?.closeTime} </MDTypography>
+                <MDTypography fontSize="small"> <strong>Date:</strong> {alldetails?.Bookdate?.slice(0, 10)}, {alldetails?.BookTime} </MDTypography>
+                <MDTypography fontSize="small"> <strong>Plan:</strong> {alldetails?.Plan} </MDTypography>
+              </MDBox>
+            </Grid>
+          </Grid>
         </MDBox>
 
         <Divider sx={{ my: 2 }} />
@@ -363,7 +376,7 @@ function PrescriptionWithDetails() {
 
             </Grid>
 
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
               <MDButton size="small" variant="outlined" color="error" onClick={handleCancel}> Cancel </MDButton>
               {/* <MDButton size="small" variant="contained" color="primary" onClick={handleAddMore}> Add More </MDButton> */}
               {mode === 'add' ? (
@@ -379,47 +392,58 @@ function PrescriptionWithDetails() {
         <Divider />
 
         {/* Prescription Table */}
-        <MDBox sx={{ display: 'flex', fontWeight: 'bold', backgroundColor: '#f0f0f0', p: 1, borderRadius: 1 }}>
-          <MDBox sx={{ flex: 2 }}> <MDTypography fontSize="small" color="dark"> Medicine </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> Food </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> Duration </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> M </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> A </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> E </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> N </MDTypography> </MDBox>
-          <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> Action </MDTypography> </MDBox>
-        </MDBox>
-
-        {medicines.map((med, index) => (
-          <MDBox key={index}
-            sx={{
-              display: 'flex', alignItems: 'center', p: 1, borderBottom: '1px solid #eee',
-              '&:hover': { backgroundColor: '#f9f9f9', }
-            }} >
-            <MDBox sx={{ flex: 2 }}> <MDTypography fontSize="small"> {`${index + 1}. ${med.medicinename}`} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> {med.foodtime || "-"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small"> {med.days ? `${med.days} Days` : "-"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.morningdos === "Morning" ? "✔️" : "—"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.afternoon === "Afternoon" ? "✔️" : "—"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.evening === "Evening" ? "✔️" : "—"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small" fontWeight="light"> {med.night === "Night" ? "✔️" : "—"} </MDTypography> </MDBox>
-            <MDBox sx={{ flex: 1, textAlign: 'center' }}>
-              <MDTypography fontSize="small" fontWeight="light" sx={{ cursor: "pointer" }}
-                onClick={() => { setMode('edit'); setFormData(med); setAddMedicine(true); setSelectedMedId(med._id); }}
-              > Edit </MDTypography>
-
-              <MDTypography fontSize="small" fontWeight="light" sx={{ cursor: "pointer" }}
-                onClick={() => { setSelectedMedId(med._id); setOpenDeleteDialog(true); }}
-              > Delete </MDTypography>
+        <MDBox sx={{ overflowX: 'auto' }}>
+          <MDBox sx={{ minWidth: 700 }}> {/* Adjust minWidth as needed */}
+            {/* Header Row */}
+            <MDBox sx={{ display: 'flex', fontWeight: 'bold', backgroundColor: '#f0f0f0', p: 1, borderRadius: 1 }} >
+              <MDBox sx={{ flex: 2 }}> <MDTypography fontSize="small" color="dark">Medicine</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">Food</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">Duration</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">M</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">A</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">E</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">N</MDTypography> </MDBox>
+              <MDBox sx={{ flex: 1, textAlign: 'center' }}> <MDTypography fontSize="small">Action</MDTypography> </MDBox>
             </MDBox>
 
-            {/* <MDButton size="small" variant="contained" color="primary" onClick={() => handleEdit(med)}> Edit </MDButton> */}
+            {/* Data Rows */}
+            {medicines.map((med, index) => (
+              <MDBox key={index}
+                sx={{
+                  display: 'flex', alignItems: 'center', p: 1, borderBottom: '1px solid #eee',
+                  '&:hover': { backgroundColor: '#f9f9f9', }
+                }} >
+                <MDBox sx={{ flex: 2 }}> <MDTypography fontSize="small"> {`${index + 1}. ${med.medicinename}`} </MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small">{med.foodtime || '-'}</MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small"> {med.days ? `${med.days} Days` : '-'} </MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small"> {med.morningdos === 'Morning' ? med.count != 1 ? `✔️ (${med.count})` : '✔️' : '—'} </MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small"> {med.afternoon === 'Afternoon' ? med.count != 1 ? `✔️ (${med.count})` : '✔️' : '—'} </MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small"> {med.evening === 'Evening' ? med.count != 1 ? `✔️ (${med.count})` : '✔️' : '—'} </MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small"> {med.night === 'Night' ? med.count != 1 ? `✔️ (${med.count})` : '✔️' : '—'} </MDTypography> </MDBox>
+                <MDBox sx={{ flex: 1, textAlign: 'center' }}>
+                  <MDTypography fontSize="small" sx={{ cursor: 'pointer' }}
+                    onClick={() => { setMode('edit'); setFormData(med); setAddMedicine(true); setSelectedMedId(med._id); }} >
+                    Edit </MDTypography>
+
+                  <MDTypography fontSize="small" sx={{ cursor: 'pointer' }}
+                    onClick={() => { setSelectedMedId(med._id); setOpenDeleteDialog(true); }}
+                  > Delete </MDTypography>
+                </MDBox>
+              </MDBox>
+            ))}
 
           </MDBox>
-        ))}
+        </MDBox>
+
 
         <Dialog open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false) }}>
-          <DialogTitle> {"Are you sure you want to delete this medicine?"} </DialogTitle>
+          <DialogTitle> {"Are you sure you want to delete this medicine ?"} </DialogTitle>
           <DialogActions>
             <MDButton onClick={() => { setOpenDeleteDialog(false); setSelectedMedId(null) }}> Cancel </MDButton>
             <MDButton onClick={async () => {
